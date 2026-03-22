@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lighty Studio</title>
+    <style>
+        /* Rainbow Border Setup */
+        body {
+            background-color: #121212; /* Dark Mode Background */
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            border: 8px solid;
+            border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background: #252525;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .tab-btn:hover {
+            border-color: #888;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* News Tab Specifics */
+        .construction-note {
+            background: #332b00;
+            border-left: 5px solid #ffd700;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Games Tab Specifics */
+        .game-card {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+
+        .download-btn {
+            background: #00c853;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .download-btn:hover {
+            background: #00e676;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Lighty Studio</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
+        <button class="tab-btn" onclick="openTab(event, 'games')">Recent Games</button>
+    </div>
+
+    <div id="news" class="content-section active">
+        <h2>Latest Updates</h2>
+        <div class="construction-note">
+            ⚠️ <strong>Notice:</strong> This website is currently under construction. Please check back later for more updates!
+        </div>
+    </div>
+
+    <div id="games" class="content-section">
+        <h2>Offline Games</h2>
+        <p>Download and play these games anywhere!</p>
+        
+        <div class="game-card">
+            <div>
+                <h3>Neon Runner v1.2</h3>
+                <p>Fast-paced platformer for Windows/Mac.</p>
+            </div>
+            <a href="#" class="download-btn">Download .ZIP</a>
+        </div>
+
+        <div class="game-card">
+            <div>
+                <h3>Shadow Quest</h3>
+                <p>Turn-based RPG adventure.</p>
+            </div>
+            <a href="#" class="download-btn">Download .EXE</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, content, tablinks;
+        
+        // Hide all sections
+        content = document.getElementsByClassName("content-section");
+        for (i = 0; i < content.length; i++) {
+            content[i].classList.remove("active");
+        }
+
+        // Deactivate all buttons
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+
+        // Show current tab and set button to active
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
