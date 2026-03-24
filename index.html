@@ -5,110 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lighty Studio</title>
     <style>
-        /* Rainbow Border Setup */
+        /* THE RAINBOW BORDER */
         body {
-            background-color: #121212; /* Dark Mode Background */
+            background-color: #121212;
             color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            border: 8px solid;
+            border: 10px solid;
             border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
             box-sizing: border-box;
         }
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
-        }
+        .container { width: 95%; max-width: 800px; text-align: center; }
 
-        h1 {
-            color: #ffffff;
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-
-        /* Tab Navigation */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
+        /* NAVIGATION TABS */
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        
         .tab-btn {
-            background: #252525;
-            color: white;
-            border: 1px solid #444;
-            padding: 10px 25px;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 5px;
-            font-size: 1rem;
+            background: #252525; color: white; border: 1px solid #444;
+            padding: 12px 20px; cursor: pointer; border-radius: 8px; transition: 0.2s;
         }
 
-        .tab-btn.active {
-            background: #ffffff;
-            color: #000;
-            font-weight: bold;
+        .tab-btn.active { background: white; color: black; font-weight: bold; }
+
+        /* CONTENT SECTIONS */
+        .content-section { 
+            display: none; background: #1e1e1e; padding: 35px; 
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
         }
 
-        .tab-btn:hover {
-            border-color: #888;
-        }
+        .content-section.active { display: block; }
 
-        /* Content Sections */
-        .content-section {
-            display: none;
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        /* News Tab Specifics */
-        .construction-note {
-            background: #332b00;
-            border-left: 5px solid #ffd700;
-            padding: 20px;
-            font-style: italic;
-        }
-
-        /* Games Tab Specifics */
+        /* GAME CARD STYLE */
         .game-card {
-            background: #2a2a2a;
-            border: 1px solid #333;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
+            background: #2a2a2a; border: 1px solid #333; padding: 20px;
+            margin-bottom: 15px; border-radius: 10px; display: flex;
+            justify-content: space-between; align-items: center; text-align: left;
         }
 
         .download-btn {
-            background: #00c853;
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
+            background: #00c853; color: white; text-decoration: none;
+            padding: 10px 18px; border-radius: 5px; font-weight: bold;
         }
 
-        .download-btn:hover {
-            background: #00e676;
+        /* INPUT FIELDS */
+        input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: #2a2a2a; border: 1px solid #444; color: white;
+            border-radius: 5px; box-sizing: border-box;
         }
 
+        .submit-btn {
+            background: #ff00ff; color: white; border: none;
+            padding: 12px; cursor: pointer; border-radius: 5px;
+            font-weight: bold; width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -118,57 +73,50 @@
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
-        <button class="tab-btn" onclick="openTab(event, 'games')">Recent Games</button>
+        <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
+        <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
+        <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <div class="construction-note">
-            ⚠️ <strong>Notice:</strong> This website is currently under construction. Please check back later for more updates!
-        </div>
+        <p style="color: #ffd700;">⚠️ Website is currently under construction!</p>
     </div>
 
     <div id="games" class="content-section">
         <h2>Offline Games</h2>
-        <p>Download and play these games anywhere!</p>
-        
         <div class="game-card">
             <div>
-                <h3>Neon Runner v1.2</h3>
-                <p>Fast-paced platformer for Windows/Mac.</p>
+                <h3>My Best Game</h3>
+                <p>Version 1.0 (Windows)</p>
             </div>
-            <a href="#" class="download-btn">Download .ZIP</a>
+            <a href="https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing" class="download-btn">Download .ZIP</a>
         </div>
+    </div>
 
-        <div class="game-card">
-            <div>
-                <h3>Shadow Quest</h3>
-                <p>Turn-based RPG adventure.</p>
-            </div>
-            <a href="#" class="download-btn">Download .EXE</a>
-        </div>
+    <div id="upload" class="content-section">
+        <h2>Submit Your Game</h2>
+        <input type="text" placeholder="Your Name">
+        <input type="text" placeholder="Game Name">
+        <input type="url" placeholder="Paste Link Here">
+        <button type="button" class="submit-btn" onclick="alert('Sent!')">Submit</button>
+    </div>
+
+    <div id="support" class="content-section">
+        <h2>Support</h2>
+        <p>Email: contact@lightystudio.com</p>
     </div>
 </div>
 
 <script>
     function openTab(evt, tabName) {
         var i, content, tablinks;
-        
-        // Hide all sections
         content = document.getElementsByClassName("content-section");
-        for (i = 0; i < content.length; i++) {
-            content[i].classList.remove("active");
-        }
-
-        // Deactivate all buttons
+        for (i = 0; i < content.length; i++) { content[i].style.display = "none"; }
         tablinks = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].classList.remove("active");
-        }
-
-        // Show current tab and set button to active
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
     }
 </script>
 
