@@ -21,6 +21,15 @@
 
         .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
 
+        /* Logo & Spin Animation */
+        .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
+        .main-logo { 
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; 
+            background: white; transition: transform 0.8s ease-in-out; 
+            object-fit: cover;
+        }
+        .main-logo:hover { transform: rotate(360deg); }
+
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         
         .tab-btn {
@@ -38,7 +47,6 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         .content-section.active { display: block; }
 
         .game-card {
@@ -46,6 +54,8 @@
             margin-bottom: 15px; border-radius: 10px; display: flex;
             justify-content: space-between; align-items: center; text-align: left;
         }
+
+        .profile-img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid #ff00ff; background: white; object-fit: cover; }
 
         .submit-btn {
             background: #ff00ff; color: white; border: none;
@@ -56,11 +66,8 @@
         #welcomeUser { color: #00ffd5; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px; display: block; }
 
         .danger-zone {
-            margin-top: 30px;
-            border: 2px dashed #ff4444;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(255, 68, 68, 0.05);
+            margin-top: 30px; border: 2px dashed #ff4444; padding: 20px;
+            border-radius: 10px; background: rgba(255, 68, 68, 0.05);
         }
 
         .delete-btn {
@@ -69,21 +76,25 @@
         }
 
         .check-box-container {
-            display: flex; align-items: center; gap: 10px;
-            background: #252525; padding: 10px; border-radius: 5px;
-            margin: 10px 0; border: 1px solid #444;
+            display: flex; align-items: center; gap: 10px; justify-content: center;
+            background: #252525; padding: 5px; border-radius: 5px; margin: 10px 0; border: 1px solid #444;
         }
+        .check-box-container input { width: auto; margin: 0; }
 
         input {
             width: 100%; padding: 12px; margin: 10px 0;
-            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px;
+            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Lighty Studio</h1>
+    <div class="header-box">
+        <img src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
+        <h1>Lighty Studio</h1>
+    </div>
+
     <div id="userArea">
         <span id="welcomeUser"></span>
         <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="logout()">Logout</button>
@@ -104,6 +115,7 @@
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
         <p style="color: #ffd700;">⚠️ Website is currently under construction!</p>
+        <p>Stay tuned for more updates from Lighty Studio.</p>
     </div>
 
     <div id="games" class="content-section">
@@ -151,6 +163,7 @@
     </div>
 
     <div id="profile" class="content-section">
+        <img src="Lighty studio.png" class="profile-img" alt="User Logo">
         <h2>Account Profile</h2>
         <div class="game-card" style="display: block;">
             <p><strong>Username:</strong> <span id="profName"></span></p>
@@ -180,7 +193,7 @@
 
     <div id="support" class="content-section">
         <h2>Support</h2>
-        <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" style="color: #ff0000;">YouTube: LightbulbPlayzZzz</a>
+        <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" style="color: #ff0000; text-decoration: none; font-weight: bold;">YouTube: LightbulbPlayzZzz</a>
     </div>
 </div>
 
@@ -196,7 +209,6 @@
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        
         document.getElementById(tabName).classList.add("active");
         
         if (evt) {
@@ -217,7 +229,6 @@
             const userData = users.find(u => u.username === currentU);
             document.getElementById("profName").innerText = currentU;
             document.getElementById("profCount").innerText = userData ? (userData.submissions || 0) : 0;
-            
             if (currentU === ownerName) {
                 document.getElementById("profAge").innerText = "Tue, Mar 24, 11:18 PM";
             } else {
@@ -234,59 +245,25 @@
         field.type = checkbox.checked ? "text" : "password";
     }
 
-    function changePassword() {
-        const currentU = localStorage.getItem("lightyUser");
-        const newP = document.getElementById("newPass").value;
-        if (newP.length < 6) return alert("❌ Password too short!");
-        
-        let userObj = users.find(u => u.username === currentU);
-        if (userObj) {
-            userObj.password = newP;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("✅ Password updated!");
-            document.getElementById("newPass").value = "";
-        }
-    }
-
-    function submitProject() {
-        const currentU = localStorage.getItem("lightyUser");
-        let userObj = users.find(u => u.username === currentU);
-        if (userObj) {
-            userObj.submissions = (userObj.submissions || 0) + 1;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("🚀 Sent to Lighty! Total submissions: " + userObj.submissions);
-            document.getElementById("projName").value = "";
-            document.getElementById("projLink").value = "";
-        }
-    }
-
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         if (u && p.length >= 6) {
-            if (users.find(user => user.username === u)) return alert("❌ Username already taken!");
-            
+            if (users.find(user => user.username === u)) return alert("❌ Username taken!");
             const now = new Date();
             const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            users.push({
-                username: u, 
-                password: p, 
-                submissions: 0,
-                joinedDate: dateStr
-            });
+            users.push({ username: u, password: p, submissions: 0, joinedDate: dateStr });
             localStorage.setItem("allUsers", JSON.stringify(users));
             loginUser(u, true);
-        } else { alert("❌ Invalid info."); }
+        } else { alert("❌ Password must be 6+ chars."); }
     }
 
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
         const p = document.getElementById("loginPass").value;
         const found = users.find(user => user.username === u && user.password === p);
-        if (found || u === ownerName) {
-            loginUser(u, true);
-        } else { alert("❌ Login failed."); }
+        if (found || u === ownerName) { loginUser(u, true); } 
+        else { alert("❌ Login failed."); }
     }
 
     function loginUser(username, showAlert) {
@@ -296,11 +273,7 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.getElementById("tab-profile").style.display = "inline-block";
-        
-        if (username === ownerName) {
-            document.getElementById("tab-admin").style.display = "inline-block";
-        }
-
+        if (username === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         if(showAlert) alert("✅ Logged in!");
         openTab(null, 'news');
     }
@@ -309,9 +282,7 @@
         const list = document.getElementById("userList");
         const countDisplay = document.getElementById("adminUserCount");
         list.innerHTML = "";
-        
-        // Show total count (including owner)
-        countDisplay.innerText = users.length + (localStorage.getItem("lightyUser") === ownerName && !users.find(u => u.username === ownerName) ? 1 : 0);
+        countDisplay.innerText = users.length;
 
         users.forEach((user, index) => {
             if(user.username === ownerName) return; 
@@ -321,7 +292,7 @@
                 <div style="flex-grow: 1;">
                     <strong>${user.username}</strong><br>
                     <small style="color: #aaa;">Joined: ${user.joinedDate || "Legacy"}</small><br>
-                    <small style="color: #aaa;">Subs: ${user.submissions || 0}</small>
+                    <small style="color: #00ffd5;">Subs: ${user.submissions || 0}</small>
                 </div>
                 <button class="delete-btn" onclick="deleteUser(${index})">Remove</button>`;
             list.appendChild(div);
@@ -339,14 +310,33 @@
         }
     }
 
-    function logout() {
-        localStorage.removeItem("lightyUser");
-        location.reload();
+    function changePassword() {
+        const currentU = localStorage.getItem("lightyUser");
+        const newP = document.getElementById("newPass").value;
+        if (newP.length < 6) return alert("❌ Password too short!");
+        let userObj = users.find(u => u.username === currentU);
+        if (userObj) {
+            userObj.password = newP;
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            alert("✅ Updated!");
+        }
     }
+
+    function submitProject() {
+        const currentU = localStorage.getItem("lightyUser");
+        let userObj = users.find(u => u.username === currentU);
+        if (userObj) {
+            userObj.submissions = (userObj.submissions || 0) + 1;
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            alert("🚀 Submission recorded! Total: " + userObj.submissions);
+        }
+    }
+
+    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
 
     function toggleBorder() {
         const body = document.body;
-        body.style.border = (body.style.border === "none" || body.style.border === "") ? "8px solid" : "none";
+        body.style.border = (body.style.border === "none") ? "8px solid" : "none";
         body.style.borderImage = "linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1";
     }
 </script>
