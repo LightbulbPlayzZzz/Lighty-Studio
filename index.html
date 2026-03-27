@@ -71,7 +71,7 @@
             border: 1px solid #444;
         }
         
-        #useEmail { width: auto; margin: 0; cursor: pointer; }
+        #useEmail, #showLoginPass, #showRegPass { width: auto; margin: 0; cursor: pointer; }
 
         .submit-btn {
             background: #ff00ff; color: white; border: none;
@@ -122,7 +122,13 @@
         <h2>Sign In</h2>
         <p>Login to your account</p>
         <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
+        <input type="password" id="loginPass" placeholder="Password">
+        
+        <div class="check-box-container" style="margin-top: -5px; margin-bottom: 15px;">
+            <input type="checkbox" id="showLoginPass" onchange="togglePass('loginPass', 'showLoginPass')">
+            <label for="showLoginPass" style="cursor: pointer; font-size: 14px;">Show Password</label>
+        </div>
+
         <button type="button" class="submit-btn" style="background: #00bcd4;" onclick="alert('Login Attempted!')">Login</button>
     </div>
 
@@ -138,7 +144,13 @@
         
         <input type="email" id="emailField" placeholder="Enter Gmail Address" style="display: none;">
         
-        <input type="password" placeholder="Password">
+        <input type="password" id="regPass" placeholder="Password">
+        
+        <div class="check-box-container" style="margin-top: -5px; margin-bottom: 15px;">
+            <input type="checkbox" id="showRegPass" onchange="togglePass('regPass', 'showRegPass')">
+            <label for="showRegPass" style="cursor: pointer; font-size: 14px;">Show Password</label>
+        </div>
+
         <button type="button" class="submit-btn" style="background: #4caf50;" onclick="alert('Account Created!')">Register</button>
     </div>
 
@@ -159,7 +171,6 @@
         evt.currentTarget.className += " active";
     }
 
-    // TOGGLE GMAIL FIELD FUNCTION
     function toggleEmail() {
         var checkBox = document.getElementById("useEmail");
         var emailInput = document.getElementById("emailField");
@@ -167,6 +178,17 @@
             emailInput.style.display = "block";
         } else {
             emailInput.style.display = "none";
+        }
+    }
+
+    // NEW SHOW PASSWORD FUNCTION
+    function togglePass(fieldId, checkId) {
+        var passInput = document.getElementById(fieldId);
+        var checkBox = document.getElementById(checkId);
+        if (checkBox.checked) {
+            passInput.type = "text";
+        } else {
+            passInput.type = "password";
         }
     }
 </script>
