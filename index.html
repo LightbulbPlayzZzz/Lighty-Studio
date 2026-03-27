@@ -151,7 +151,7 @@
             <label for="showRegPass" style="cursor: pointer; font-size: 14px;">Show Password</label>
         </div>
 
-        <button type="button" class="submit-btn" style="background: #4caf50;" onclick="alert('Account Created!')">Register</button>
+        <button type="button" class="submit-btn" style="background: #4caf50;" onclick="checkRegister()">Register</button>
     </div>
 
     <div id="support" class="content-section">
@@ -181,7 +181,6 @@
         }
     }
 
-    // NEW SHOW PASSWORD FUNCTION
     function togglePass(fieldId, checkId) {
         var passInput = document.getElementById(fieldId);
         var checkBox = document.getElementById(checkId);
@@ -189,6 +188,16 @@
             passInput.type = "text";
         } else {
             passInput.type = "password";
+        }
+    }
+
+    // PASSWORD LENGTH CHECK FUNCTION
+    function checkRegister() {
+        var passInput = document.getElementById("regPass").value;
+        if (passInput.length < 6) {
+            alert("❌ Error: Password must be at least 6 characters long!");
+        } else {
+            alert("✅ Account Created! Welcome to Lighty Studio.");
         }
     }
 </script>
