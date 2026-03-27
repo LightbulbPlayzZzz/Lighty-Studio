@@ -104,6 +104,7 @@
         <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
         <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
+        <button class="tab-btn" onclick="openTab(event, 'settings')">⚙️ Settings</button>
         <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
@@ -166,6 +167,24 @@
         <button type="button" class="submit-btn" style="background: #4caf50;" onclick="checkRegister()">Create Account</button>
     </div>
 
+    <div id="settings" class="content-section">
+        <h2>Settings</h2>
+        <div class="game-card">
+            <div>
+                <h3>Rainbow Border</h3>
+                <p>Toggle the colorful website border.</p>
+            </div>
+            <button class="submit-btn" style="width: 100px; background: #555;" onclick="toggleBorder()">Toggle</button>
+        </div>
+        <div class="game-card">
+            <div>
+                <h3>Account Data</h3>
+                <p>Clear saved login and reset site.</p>
+            </div>
+            <button class="submit-btn" style="width: 100px; background: #ff4444;" onclick="logout()">Reset</button>
+        </div>
+    </div>
+
     <div id="support" class="content-section">
         <h2>Support</h2>
         <p>Follow the developer:</p>
@@ -174,41 +193,44 @@
 </div>
 
 <script>
-    // Check if user was already logged in from a previous session
     window.onload = function() {
         const savedUser = localStorage.getItem("lightyUser");
         if (savedUser) {
-            loginUser(savedUser, false); // Login without showing alert
+            loginUser(savedUser, false);
         }
     };
 
     function openTab(evt, tabName) {
-        // Hide all sections
         const sections = document.querySelectorAll(".content-section");
         sections.forEach(s => s.classList.remove("active"));
 
-        // Remove active class from all buttons
         const buttons = document.querySelectorAll(".tab-btn");
         buttons.forEach(b => b.classList.remove("active"));
 
-        // Show target section
         document.getElementById(tabName).classList.add("active");
 
-        // Set active button
         if (evt) {
             evt.currentTarget.classList.add("active");
         } else {
-            // Find button by text if triggered via script
             buttons.forEach(b => {
                 if(b.innerText.toLowerCase().includes(tabName.toLowerCase())) b.classList.add("active");
             });
         }
 
-        // Logic for Upload lock
         if (tabName === 'upload') {
             const loggedIn = localStorage.getItem("lightyUser");
             document.getElementById("uploadLocked").style.display = loggedIn ? "none" : "block";
             document.getElementById("uploadContent").style.display = loggedIn ? "block" : "none";
+        }
+    }
+
+    function toggleBorder() {
+        const body = document.body;
+        if (body.style.border === "none") {
+            body.style.border = "8px solid";
+            body.style.borderImage = "linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1";
+        } else {
+            body.style.border = "none";
         }
     }
 
@@ -245,23 +267,16 @@
         localStorage.setItem("lightyUser", username);
         document.getElementById("welcomeUser").innerText = "Welcome, " + username + "!";
         document.getElementById("logoutBtn").style.display = "inline-block";
-        
-        // Hide signin/signup tabs
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
-
         if(showAlert) alert("✅ Success! Logged in as " + username);
         openTab(null, 'news');
     }
 
     function logout() {
         localStorage.removeItem("lightyUser");
-        document.getElementById("welcomeUser").innerText = "";
-        document.getElementById("logoutBtn").style.display = "none";
-        document.getElementById("tab-signin").style.display = "inline-block";
-        document.getElementById("tab-signup").style.display = "inline-block";
-        alert("🔒 Logged out.");
-        location.reload(); // Refresh to reset UI state
+        alert("🔒 Data cleared and logged out.");
+        location.reload();
     }
 </script>
 
