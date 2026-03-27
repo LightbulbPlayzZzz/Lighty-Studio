@@ -5,86 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lighty Studio</title>
     <style>
-        body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            border: 8px solid;
-            border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1;
-            box-sizing: border-box;
-        }
-
+        body { background-color: #121212; color: #e0e0e0; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; }
         .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
-
-        /* Logo & Spin Animation */
         .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .main-logo { 
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; 
-            background: white; transition: transform 0.8s ease-in-out; 
-            object-fit: cover;
-        }
+        .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; transition: transform 0.8s; object-fit: cover; }
         .main-logo:hover { transform: rotate(360deg); }
-
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        
-        .tab-btn {
-            background: #252525; color: white; border: 1px solid #444;
-            padding: 12px 20px; cursor: pointer; border-radius: 8px; transition: 0.3s;
-        }
-
-        .tab-btn:hover { background: #333; border-color: #ff00ff; }
-        .tab-btn.active { background: white; color: black; font-weight: bold; transform: scale(1.05); }
-
-        .content-section { 
-            display: none; background: #1e1e1e; padding: 35px; 
-            border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-btn { background: #252525; color: white; border: 1px solid #444; padding: 12px 20px; cursor: pointer; border-radius: 8px; }
+        .tab-btn.active { background: white; color: black; font-weight: bold; }
+        .content-section { display: none; background: #1e1e1e; padding: 35px; border-radius: 15px; }
         .content-section.active { display: block; }
-
-        .game-card {
-            background: #2a2a2a; border: 1px solid #333; padding: 20px;
-            margin-bottom: 15px; border-radius: 10px; display: flex;
-            justify-content: space-between; align-items: center; text-align: left;
-        }
-
-        .profile-img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid #ff00ff; background: white; object-fit: cover; }
-
-        .submit-btn {
-            background: #ff00ff; color: white; border: none;
-            padding: 12px; cursor: pointer; border-radius: 5px;
-            font-weight: bold; width: 100%; transition: 0.2s;
-        }
-
-        #welcomeUser { color: #00ffd5; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px; display: block; }
-
-        .danger-zone {
-            margin-top: 30px; border: 2px dashed #ff4444; padding: 20px;
-            border-radius: 10px; background: rgba(255, 68, 68, 0.05);
-        }
-
-        .delete-btn {
-            background: #ff4444; color: white; border: none;
-            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-
-        .check-box-container {
-            display: flex; align-items: center; gap: 10px; justify-content: center;
-            background: #252525; padding: 5px; border-radius: 5px; margin: 10px 0; border: 1px solid #444;
-        }
-        .check-box-container input { width: auto; margin: 0; }
-
-        input {
-            width: 100%; padding: 12px; margin: 10px 0;
-            background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box;
-        }
+        .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; }
+        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -97,7 +31,7 @@
 
     <div id="userArea">
         <span id="welcomeUser"></span>
-        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="logout()">Logout</button>
+        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px;" onclick="logout()">Logout</button>
     </div>
 
     <div class="tabs">
@@ -106,37 +40,20 @@
         <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
         <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
-        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 My Profile</button>
-        <button id="tab-admin" class="tab-btn" style="display:none; border-color: gold;" onclick="openTab(event, 'admin')">👑 Admin</button>
+        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 Profile</button>
         <button class="tab-btn" onclick="openTab(event, 'settings')">⚙️ Settings</button>
-        <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <p style="color: #ffd700;">⚠️ Website is currently under construction!</p>
-        <p>Stay tuned for more updates from Lighty Studio.</p>
+        <p style="color: #ffd700;">⚠️ Website is under construction!</p>
     </div>
 
     <div id="games" class="content-section">
         <h2>Offline Games</h2>
         <div class="game-card">
             <div><h3>Paint V1</h3><p>Version 1.0 (Windows)</p></div>
-            <a href="#" class="submit-btn" style="width:auto; background:#00c853; text-decoration:none; padding: 10px 20px;">Download</a>
-        </div>
-    </div>
-
-    <div id="upload" class="content-section">
-        <div id="uploadLocked">
-            <h2 style="color: #ff4444;">🔒 Access Denied</h2>
-            <p>You must be logged in to submit your projects!</p>
-            <button class="submit-btn" style="background: #00bcd4; width: 200px;" onclick="openTab(null, 'signin')">Sign In Now</button>
-        </div>
-        <div id="uploadContent" style="display: none;">
-            <h2>Submit Your Game</h2>
-            <input type="text" id="projName" placeholder="Project Name">
-            <input type="url" id="projLink" placeholder="Download Link">
-            <button class="submit-btn" onclick="submitProject()">Submit</button>
+            <a href="#" class="submit-btn" style="width:auto; background:#00c853; text-decoration:none;">Download</a>
         </div>
     </div>
 
@@ -144,56 +61,13 @@
         <h2>Sign In</h2>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
-        <div class="check-box-container">
-            <input type="checkbox" id="showLoginPass" onchange="togglePass('loginPass', 'showLoginPass')">
-            <label for="showLoginPass">Show Password</label>
-        </div>
         <button class="submit-btn" onclick="checkLogin()">Login</button>
-    </div>
-
-    <div id="signup" class="content-section">
-        <h2>Sign Up</h2>
-        <input type="text" id="regUser" placeholder="Username">
-        <input type="password" id="regPass" placeholder="Password (6+ chars)">
-        <div class="check-box-container">
-            <input type="checkbox" id="showRegPass" onchange="togglePass('regPass', 'showRegPass')">
-            <label for="showRegPass">Show Password</label>
-        </div>
-        <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Register</button>
     </div>
 
     <div id="profile" class="content-section">
         <img src="Lighty studio.png" class="profile-img" alt="User Logo">
         <h2>Account Profile</h2>
-        <div class="game-card" style="display: block;">
-            <p><strong>Username:</strong> <span id="profName"></span></p>
-            <p><strong>Member Since:</strong> <span id="profAge"></span></p>
-            <p><strong>Submissions:</strong> <span id="profCount">0</span></p>
-        </div>
-        <div class="game-card" style="display: block;">
-            <h3>Update Password</h3>
-            <input type="password" id="newPass" placeholder="New Password">
-            <button class="submit-btn" style="background: #ff9800;" onclick="changePassword()">Change Password</button>
-        </div>
-    </div>
-
-    <div id="admin" class="content-section">
-        <h2 style="color:gold;">Owner Dashboard</h2>
-        <p>Total Registered Users: <strong id="adminUserCount" style="color: #00ffd5;">0</strong></p>
-        <div class="danger-zone">
-            <h3 style="color:#ff4444;">⚠️ DANGER ZONE</h3>
-            <div id="userList"></div>
-        </div>
-    </div>
-
-    <div id="settings" class="content-section">
-        <h2>Settings</h2>
-        <button class="submit-btn" style="background:#555;" onclick="toggleBorder()">Toggle Border</button>
-    </div>
-
-    <div id="support" class="content-section">
-        <h2>Support</h2>
-        <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" style="color: #ff0000; text-decoration: none; font-weight: bold;">YouTube: LightbulbPlayzZzz</a>
+        <p>Username: <span id="profName"></span></p>
     </div>
 </div>
 
@@ -201,144 +75,30 @@
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
 
-    window.onload = function() {
-        const savedUser = localStorage.getItem("lightyUser");
-        if (savedUser) loginUser(savedUser, false);
-    };
-
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
-        
-        if (evt) {
-            evt.currentTarget.classList.add("active");
-        } else {
-            const btns = document.querySelectorAll(".tab-btn");
-            btns.forEach(b => { if(b.innerText.toLowerCase().includes(tabName.toLowerCase())) b.classList.add("active"); });
-        }
-
-        if (tabName === 'upload') {
-            const loggedIn = localStorage.getItem("lightyUser");
-            document.getElementById("uploadLocked").style.display = loggedIn ? "none" : "block";
-            document.getElementById("uploadContent").style.display = loggedIn ? "block" : "none";
-        }
-
-        if (tabName === 'profile') {
-            const currentU = localStorage.getItem("lightyUser");
-            const userData = users.find(u => u.username === currentU);
-            document.getElementById("profName").innerText = currentU;
-            document.getElementById("profCount").innerText = userData ? (userData.submissions || 0) : 0;
-            if (currentU === ownerName) {
-                document.getElementById("profAge").innerText = "Tue, Mar 24, 11:18 PM";
-            } else {
-                document.getElementById("profAge").innerText = (userData && userData.joinedDate) ? userData.joinedDate : "Legacy Member";
-            }
-        }
-
-        if (tabName === 'admin') updateAdminList();
-    }
-
-    function togglePass(fieldId, checkId) {
-        const field = document.getElementById(fieldId);
-        const checkbox = document.getElementById(checkId);
-        field.type = checkbox.checked ? "text" : "password";
-    }
-
-    function checkRegister() {
-        const u = document.getElementById("regUser").value.trim();
-        const p = document.getElementById("regPass").value;
-        if (u && p.length >= 6) {
-            if (users.find(user => user.username === u)) return alert("❌ Username taken!");
-            const now = new Date();
-            const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            users.push({ username: u, password: p, submissions: 0, joinedDate: dateStr });
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            loginUser(u, true);
-        } else { alert("❌ Password must be 6+ chars."); }
+        if (evt) evt.currentTarget.classList.add("active");
     }
 
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        const found = users.find(user => user.username === u && user.password === p);
-        if (found || u === ownerName) { loginUser(u, true); } 
-        else { alert("❌ Login failed."); }
+        localStorage.setItem("lightyUser", u);
+        location.reload();
     }
 
-    function loginUser(username, showAlert) {
-        localStorage.setItem("lightyUser", username);
-        document.getElementById("welcomeUser").innerHTML = "Welcome, " + username + (username === ownerName ? " <span style='color:gold;'>(Owner)</span>" : "");
-        document.getElementById("logoutBtn").style.display = "inline-block";
-        document.getElementById("tab-signin").style.display = "none";
-        document.getElementById("tab-signup").style.display = "none";
-        document.getElementById("tab-profile").style.display = "inline-block";
-        if (username === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
-        if(showAlert) alert("✅ Logged in!");
-        openTab(null, 'news');
-    }
-
-    function updateAdminList() {
-        const list = document.getElementById("userList");
-        const countDisplay = document.getElementById("adminUserCount");
-        list.innerHTML = "";
-        countDisplay.innerText = users.length;
-
-        users.forEach((user, index) => {
-            if(user.username === ownerName) return; 
-            const div = document.createElement("div");
-            div.className = "game-card";
-            div.innerHTML = `
-                <div style="flex-grow: 1;">
-                    <strong>${user.username}</strong><br>
-                    <small style="color: #aaa;">Joined: ${user.joinedDate || "Legacy"}</small><br>
-                    <small style="color: #00ffd5;">Subs: ${user.submissions || 0}</small>
-                </div>
-                <button class="delete-btn" onclick="deleteUser(${index})">Remove</button>`;
-            list.appendChild(div);
-        });
-    }
-
-    function deleteUser(index) {
-        let u1 = prompt("DANGER! Enter OWNER Username:");
-        let p1 = prompt("Enter OWNER Password:");
-        if (u1 === ownerName && p1) {
-            users.splice(index, 1);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            updateAdminList();
-            alert("🗑️ Deleted.");
+    window.onload = function() {
+        const user = localStorage.getItem("lightyUser");
+        if (user) {
+            document.getElementById("welcomeUser").innerText = "Welcome, " + user;
+            document.getElementById("tab-signin").style.display = "none";
+            document.getElementById("tab-profile").style.display = "inline-block";
+            document.getElementById("profName").innerText = user;
         }
-    }
-
-    function changePassword() {
-        const currentU = localStorage.getItem("lightyUser");
-        const newP = document.getElementById("newPass").value;
-        if (newP.length < 6) return alert("❌ Password too short!");
-        let userObj = users.find(u => u.username === currentU);
-        if (userObj) {
-            userObj.password = newP;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("✅ Updated!");
-        }
-    }
-
-    function submitProject() {
-        const currentU = localStorage.getItem("lightyUser");
-        let userObj = users.find(u => u.username === currentU);
-        if (userObj) {
-            userObj.submissions = (userObj.submissions || 0) + 1;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("🚀 Submission recorded! Total: " + userObj.submissions);
-        }
-    }
+    };
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
-
-    function toggleBorder() {
-        const body = document.body;
-        body.style.border = (body.style.border === "none") ? "8px solid" : "none";
-        body.style.borderImage = "linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1";
-    }
 </script>
 
 </body>
