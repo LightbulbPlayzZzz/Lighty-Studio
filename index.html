@@ -68,6 +68,12 @@
             padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
         }
 
+        .check-box-container {
+            display: flex; align-items: center; gap: 10px;
+            background: #252525; padding: 10px; border-radius: 5px;
+            margin: 10px 0; border: 1px solid #444;
+        }
+
         input {
             width: 100%; padding: 12px; margin: 10px 0;
             background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px;
@@ -111,6 +117,10 @@
         <h2>Sign In</h2>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
+        <div class="check-box-container">
+            <input type="checkbox" id="showLoginPass" onchange="togglePass('loginPass', 'showLoginPass')">
+            <label for="showLoginPass">Show Password</label>
+        </div>
         <button class="submit-btn" onclick="checkLogin()">Login</button>
     </div>
 
@@ -118,6 +128,10 @@
         <h2>Sign Up</h2>
         <input type="text" id="regUser" placeholder="Username">
         <input type="password" id="regPass" placeholder="Password (6+ chars)">
+        <div class="check-box-container">
+            <input type="checkbox" id="showRegPass" onchange="togglePass('regPass', 'showRegPass')">
+            <label for="showRegPass">Show Password</label>
+        </div>
         <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Register</button>
     </div>
 
@@ -142,7 +156,6 @@
 </div>
 
 <script>
-    // Load users from local memory
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
 
@@ -157,6 +170,13 @@
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
         if (tabName === 'admin') updateAdminList();
+    }
+
+    // --- PASSWORD TOGGLE LOGIC ---
+    function togglePass(fieldId, checkId) {
+        const field = document.getElementById(fieldId);
+        const checkbox = document.getElementById(checkId);
+        field.type = checkbox.checked ? "text" : "password";
     }
 
     function checkRegister() {
@@ -180,7 +200,7 @@
 
     function loginUser(username, showAlert) {
         localStorage.setItem("lightyUser", username);
-        document.getElementById("welcomeUser").innerHTML = "Welcome, " + username + (username === ownerName ? " (Owner)" : "");
+        document.getElementById("welcomeUser").innerHTML = "Welcome, " + username + (username === ownerName ? " <span style='color:gold;'>(Owner)</span>" : "");
         document.getElementById("logoutBtn").style.display = "inline-block";
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
@@ -208,12 +228,10 @@
     function deleteUser(index) {
         const target = users[index].username;
         
-        // VERIFICATION 1
         let u1 = prompt("DANGER! [Verification 1/2]\nEnter OWNER Username to delete " + target + ":");
         let p1 = prompt("Enter OWNER Password:");
 
         if (u1 === ownerName && p1) {
-            // VERIFICATION 2
             let u2 = prompt("FINAL WARNING! [Verification 2/2]\nEnter OWNER Username AGAIN:");
             let p2 = prompt("Enter OWNER Password AGAIN:");
 
@@ -232,7 +250,13 @@
     }
 
     function toggleBorder() {
-        document.body.style.border = document.body.style.border === "none" ? "8px solid" : "none";
+        const body = document.body;
+        if (body.style.border === "none" || body.style.border === "") {
+            body.style.border = "8px solid";
+            body.style.borderImage = "linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1";
+        } else {
+            body.style.border = "none";
+        }
     }
 </script>
 
