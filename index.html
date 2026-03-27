@@ -50,7 +50,7 @@
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <p>Settings tab restored! Profile and Admin controls are fully active.</p>
+        <p>Security Update: Admin deletions now require Owner re-authentication.</p>
     </div>
 
     <div id="games" class="content-section">
@@ -87,22 +87,21 @@
     <div id="profile" class="content-section">
         <img id="displayPfp" src="Lighty studio.png" class="profile-img" alt="User PFP">
         <h2><span id="profName"></span></h2>
-        <p>Member of Lighty Studio</p>
+        <p>Official Member</p>
     </div>
 
     <div id="settings" class="content-section">
         <h2>⚙️ Settings</h2>
         <div class="game-card" style="text-align:center;">
-            <h4>Change Your Personal Photo</h4>
-            <p style="font-size: 0.8rem; color: #888;">(Does not affect the main Studio Logo)</p>
+            <h4>Update Personal Photo</h4>
             <input type="file" id="pfpInput" accept="image/*">
-            <button class="submit-btn" style="background:#00bcd4;" onclick="savePfp()">Update My Photo</button>
+            <button class="submit-btn" style="background:#00bcd4;" onclick="savePfp()">Update Photo</button>
         </div>
     </div>
 
     <div id="admin" class="content-section">
-        <h2 style="color:gold;">Owner Controls</h2>
-        <p>Total Registered Users: <strong id="adminCount">0</strong></p>
+        <h2 style="color:gold;">Owner Dashboard</h2>
+        <p>Total Users: <strong id="adminCount">0</strong></p>
         <div id="userList"></div>
     </div>
 </div>
@@ -130,21 +129,22 @@
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         if (u && p.length >= 6) {
-            if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Owner name is reserved!");
+            if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Username reserved.");
             users.push({username: u, password: p});
             localStorage.setItem("allUsers", JSON.stringify(users));
             localStorage.setItem("lightyUser", u);
             loginSetup(u);
             openTab(null, 'news');
-        } else { alert("Error: User required / Pass 6+ chars"); }
+        } else { alert("User required & Pass 6+ chars."); }
     }
 
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
         const p = document.getElementById("loginPass").value;
         const found = users.find(user => user.username === u && user.password === p);
-        if (found || u === ownerName) {
+        if (found || (u === ownerName && p === "123456")) { // Replace "123456" with your actual pass
             localStorage.setItem("lightyUser", u);
+            localStorage.setItem("ownerAuth", p); // Temp store for deletion verification
             loginSetup(u);
             openTab(null, 'news');
         } else { alert("Login Failed"); }
@@ -181,11 +181,20 @@
 
     function delU(index) {
         const targetUser = users[index];
-        if (targetUser.username === ownerName) return alert("Cannot delete Owner!");
-        if(confirm(`Delete user ${targetUser.username}?`)) {
-            users.splice(index, 1);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            updateAdmin();
+        const verifyUser = prompt("Enter OWNER username to confirm:");
+        const verifyPass = prompt("Enter OWNER password to confirm:");
+
+        const storedPass = localStorage.getItem("ownerAuth");
+
+        if (verifyUser === ownerName && verifyPass === storedPass) {
+            if(confirm(`Are you sure you want to delete ${targetUser.username}?`)) {
+                users.splice(index, 1);
+                localStorage.setItem("allUsers", JSON.stringify(users));
+                updateAdmin();
+                alert("User removed.");
+            }
+        } else {
+            alert("SECURITY ALERT: Verification failed. Deletion cancelled.");
         }
     }
 
@@ -197,12 +206,16 @@
         reader.onloadend = function() {
             localStorage.setItem("pfp_" + user, reader.result);
             document.getElementById("displayPfp").src = reader.result;
-            alert("✅ Personal PFP updated! Go to Profile to see it.");
+            alert("✅ Personal PFP updated!");
         };
         reader.readAsDataURL(file);
     }
 
-    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
+    function logout() { 
+        localStorage.removeItem("lightyUser"); 
+        localStorage.removeItem("ownerAuth");
+        location.reload(); 
+    }
 </script>
 
 </body>
