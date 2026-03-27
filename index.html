@@ -135,7 +135,7 @@
     <div id="signup" class="content-section">
         <h2>Sign Up</h2>
         <p>Create a new account</p>
-        <input type="text" placeholder="Choose Username">
+        <input type="text" id="regUser" placeholder="Choose Username">
         
         <div class="check-box-container">
             <input type="checkbox" id="useEmail" onchange="toggleEmail()">
@@ -144,7 +144,7 @@
         
         <input type="email" id="emailField" placeholder="Enter Gmail Address" style="display: none;">
         
-        <input type="password" id="regPass" placeholder="Password">
+        <input type="password" id="regPass" placeholder="Password (Min 6 chars)">
         
         <div class="check-box-container" style="margin-top: -5px; margin-bottom: 15px;">
             <input type="checkbox" id="showRegPass" onchange="togglePass('regPass', 'showRegPass')">
@@ -191,13 +191,22 @@
         }
     }
 
-    // PASSWORD LENGTH CHECK FUNCTION
+    // UPDATED REGISTER FUNCTION
     function checkRegister() {
+        var userInput = document.getElementById("regUser").value;
         var passInput = document.getElementById("regPass").value;
+
+        // Check for Username
+        if (userInput.trim() === "") {
+            alert("❌ Error: Please enter a username!");
+            return;
+        }
+
+        // Check for Password Length
         if (passInput.length < 6) {
             alert("❌ Error: Password must be at least 6 characters long!");
         } else {
-            alert("✅ Account Created! Welcome to Lighty Studio.");
+            alert("✅ Account '" + userInput + "' Created! Welcome to Lighty Studio.");
         }
     }
 </script>
