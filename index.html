@@ -154,6 +154,7 @@
         <h2>Account Profile</h2>
         <div class="game-card" style="display: block;">
             <p><strong>Username:</strong> <span id="profName"></span></p>
+            <p><strong>Member Since:</strong> <span id="profAge"></span></p>
             <p><strong>Submissions:</strong> <span id="profCount">0</span></p>
         </div>
         <div class="game-card" style="display: block;">
@@ -165,6 +166,7 @@
 
     <div id="admin" class="content-section">
         <h2 style="color:gold;">Owner Dashboard</h2>
+        <p>Total Registered Users: <strong id="adminUserCount" style="color: #00ffd5;">0</strong></p>
         <div class="danger-zone">
             <h3 style="color:#ff4444;">⚠️ DANGER ZONE</h3>
             <div id="userList"></div>
@@ -215,6 +217,12 @@
             const userData = users.find(u => u.username === currentU);
             document.getElementById("profName").innerText = currentU;
             document.getElementById("profCount").innerText = userData ? (userData.submissions || 0) : 0;
+            
+            if (currentU === ownerName) {
+                document.getElementById("profAge").innerText = "Tue, Mar 24, 11:18 PM";
+            } else {
+                document.getElementById("profAge").innerText = (userData && userData.joinedDate) ? userData.joinedDate : "Legacy Member";
+            }
         }
 
         if (tabName === 'admin') updateAdminList();
@@ -256,7 +264,17 @@
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         if (u && p.length >= 6) {
-            users.push({username: u, password: p, submissions: 0});
+            if (users.find(user => user.username === u)) return alert("❌ Username already taken!");
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            users.push({
+                username: u, 
+                password: p, 
+                submissions: 0,
+                joinedDate: dateStr
+            });
             localStorage.setItem("allUsers", JSON.stringify(users));
             loginUser(u, true);
         } else { alert("❌ Invalid info."); }
@@ -289,12 +307,23 @@
 
     function updateAdminList() {
         const list = document.getElementById("userList");
+        const countDisplay = document.getElementById("adminUserCount");
         list.innerHTML = "";
+        
+        // Show total count (including owner)
+        countDisplay.innerText = users.length + (localStorage.getItem("lightyUser") === ownerName && !users.find(u => u.username === ownerName) ? 1 : 0);
+
         users.forEach((user, index) => {
             if(user.username === ownerName) return; 
             const div = document.createElement("div");
             div.className = "game-card";
-            div.innerHTML = `<span>${user.username} (Subs: ${user.submissions || 0})</span><button class="delete-btn" onclick="deleteUser(${index})">Remove</button>`;
+            div.innerHTML = `
+                <div style="flex-grow: 1;">
+                    <strong>${user.username}</strong><br>
+                    <small style="color: #aaa;">Joined: ${user.joinedDate || "Legacy"}</small><br>
+                    <small style="color: #aaa;">Subs: ${user.submissions || 0}</small>
+                </div>
+                <button class="delete-btn" onclick="deleteUser(${index})">Remove</button>`;
             list.appendChild(div);
         });
     }
