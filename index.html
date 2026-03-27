@@ -5,28 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lighty Studio</title>
     <style>
-        body { background-color: #121212; color: #e0e0e0; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; }
+        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; }
         .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
         .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; transition: transform 0.8s; object-fit: cover; cursor: pointer; }
+        
+        /* Studio Logo Style - FIXED */
+        .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; transition: transform 0.8s; object-fit: cover; }
         .main-logo:hover { transform: rotate(360deg); }
+        
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { background: #252525; color: white; border: 1px solid #444; padding: 12px 20px; cursor: pointer; border-radius: 8px; }
-        .tab-btn.active { background: white; color: black; font-weight: bold; }
-        .content-section { display: none; background: #1e1e1e; padding: 35px; border-radius: 15px; }
+        .tab-btn { background: #252525; color: white; border: 1px solid #444; padding: 12px 20px; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .tab-btn.active { background: white; color: black; font-weight: bold; transform: scale(1.05); }
+        .content-section { display: none; background: #1e1e1e; padding: 35px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .content-section.active { display: block; }
-        .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; margin-bottom: 10px; }
-        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        .upload-hint { font-size: 0.8rem; color: #888; margin-top: 5px; }
+        .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; }
+        
+        /* Personal PFP Style */
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; margin-bottom: 15px; }
+        
+        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; transition: 0.2s; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-box">
-        <img id="headerLogo" src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
+        <img src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
         <h1>Lighty Studio</h1>
     </div>
 
@@ -38,21 +43,34 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
         <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
+        <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
         <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 My Profile</button>
-        <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <p style="color: #ffd700;">⚠️ New Feature: You can now change your Profile Picture!</p>
+        <p>Welcome to the new Lighty Studio! Post your games and customize your profile below.</p>
     </div>
 
     <div id="games" class="content-section">
         <h2>Games</h2>
         <div class="game-card">
-            <div><h3>Paint V1</h3><p>Version 1.0</p></div>
-            <button class="submit-btn" style="width:auto; background:#00c853;">Download</button>
+            <h3>Paint V1</h3>
+            <p>Version 1.0</p>
+            <button class="submit-btn" style="background:#00c853;">Download</button>
+        </div>
+    </div>
+
+    <div id="upload" class="content-section">
+        <h2>Submit Your Game</h2>
+        <div id="uploadLocked">
+            <p style="color:#ff4444;">🔒 Sign in to upload projects.</p>
+        </div>
+        <div id="uploadForm" style="display:none;">
+            <input type="text" id="gameName" placeholder="Project Title">
+            <input type="text" id="gameLink" placeholder="Link to Game">
+            <button class="submit-btn" onclick="alert('Sent to Lighty Studio for review!')">Submit Project</button>
         </div>
     </div>
 
@@ -64,32 +82,22 @@
     </div>
 
     <div id="profile" class="content-section">
-        <img id="displayPfp" src="Lighty studio.png" class="profile-img" alt="Profile Picture">
+        <img id="displayPfp" src="Lighty studio.png" class="profile-img" alt="User PFP">
         <h2><span id="profName"></span></h2>
-        
-        <div class="game-card" style="flex-direction: column; gap: 10px;">
-            <h4>Change Profile Picture</h4>
-            <input type="file" id="pfpInput" accept="image/*" style="color: #aaa;">
-            <button class="submit-btn" style="background: #00bcd4;" onclick="savePfp()">Update Photo</button>
-            <p class="upload-hint">Upload any image to change your look!</p>
+        <div class="game-card">
+            <h4>Update Personal Photo</h4>
+            <input type="file" id="pfpInput" accept="image/*">
+            <button class="submit-btn" style="background:#00bcd4;" onclick="savePfp()">Save Photo</button>
         </div>
-    </div>
-
-    <div id="support" class="content-section">
-        <h2>Support</h2>
-        <p>Contact the owner on YouTube: <strong>LightbulbPlayzZzz</strong></p>
     </div>
 </div>
 
 <script>
     const ownerName = "LightbulbPlayzZzz";
-    const defaultImg = "Lighty studio.png";
 
     window.onload = function() {
         const user = localStorage.getItem("lightyUser");
-        if (user) {
-            loginSetup(user);
-        }
+        if (user) loginSetup(user);
     };
 
     function openTab(evt, tabName) {
@@ -114,11 +122,12 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-profile").style.display = "inline-block";
         document.getElementById("profName").innerText = username;
+        
+        document.getElementById("uploadLocked").style.display = "none";
+        document.getElementById("uploadForm").style.display = "block";
 
-        // Load saved profile picture if it exists
         const savedPfp = localStorage.getItem("pfp_" + username);
         if (savedPfp) {
-            document.getElementById("headerLogo").src = savedPfp;
             document.getElementById("displayPfp").src = savedPfp;
         }
     }
@@ -126,19 +135,13 @@
     function savePfp() {
         const user = localStorage.getItem("lightyUser");
         const file = document.getElementById("pfpInput").files[0];
-        
-        if (!file) return alert("Please select a file first!");
+        if (!file) return alert("Pick a file first!");
 
         const reader = new FileReader();
         reader.onloadend = function() {
-            const base64String = reader.result;
-            // Save to localStorage using the username as the key
-            localStorage.setItem("pfp_" + user, base64String);
-            
-            // Update images immediately
-            document.getElementById("headerLogo").src = base64String;
-            document.getElementById("displayPfp").src = base64String;
-            alert("✅ Profile picture updated!");
+            localStorage.setItem("pfp_" + user, reader.result);
+            document.getElementById("displayPfp").src = reader.result;
+            alert("✅ Personal PFP updated!");
         };
         reader.readAsDataURL(file);
     }
