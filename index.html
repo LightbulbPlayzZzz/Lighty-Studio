@@ -59,6 +59,20 @@
             border-radius: 5px; box-sizing: border-box;
         }
 
+        /* CHECKBOX SPECIFIC OVERRIDE */
+        .check-box-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #252525;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #444;
+        }
+        
+        #useEmail { width: auto; margin: 0; cursor: pointer; }
+
         .submit-btn {
             background: #ff00ff; color: white; border: none;
             padding: 12px; cursor: pointer; border-radius: 5px;
@@ -116,7 +130,14 @@
         <h2>Sign Up</h2>
         <p>Create a new account</p>
         <input type="text" placeholder="Choose Username">
-        <input type="email" placeholder="Email">
+        
+        <div class="check-box-container">
+            <input type="checkbox" id="useEmail" onchange="toggleEmail()">
+            <label for="useEmail" style="cursor: pointer;">Include Gmail? (Optional)</label>
+        </div>
+        
+        <input type="email" id="emailField" placeholder="Enter Gmail Address" style="display: none;">
+        
         <input type="password" placeholder="Password">
         <button type="button" class="submit-btn" style="background: #4caf50;" onclick="alert('Account Created!')">Register</button>
     </div>
@@ -136,6 +157,17 @@
         for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
+    }
+
+    // TOGGLE GMAIL FIELD FUNCTION
+    function toggleEmail() {
+        var checkBox = document.getElementById("useEmail");
+        var emailInput = document.getElementById("emailField");
+        if (checkBox.checked == true){
+            emailInput.style.display = "block";
+        } else {
+            emailInput.style.display = "none";
+        }
     }
 </script>
 
