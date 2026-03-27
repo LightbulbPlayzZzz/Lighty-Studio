@@ -15,12 +15,13 @@
         .tab-btn.active { background: white; color: black; font-weight: bold; transform: scale(1.05); }
         .content-section { display: none; background: #1e1e1e; padding: 35px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .content-section.active { display: block; }
-        .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; }
+        .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; text-align: left; }
         .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; margin-bottom: 15px; }
-        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; transition: 0.2s; }
+        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; }
         input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        .show-pass-container { display: flex; align-items: center; gap: 10px; justify-content: center; background: #252525; padding: 5px; border-radius: 5px; margin: 5px 0; font-size: 0.9rem; }
+        .show-pass-container { display: flex; align-items: center; gap: 10px; justify-content: center; background: #252525; padding: 5px; border-radius: 5px; margin: 5px 0; }
         .show-pass-container input { width: auto; margin: 0; }
+        .delete-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; float: right; }
     </style>
 </head>
 <body>
@@ -42,20 +43,18 @@
         <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
         <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
-        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 My Profile</button>
+        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 Profile</button>
+        <button id="tab-admin" class="tab-btn" style="display:none; border-color: gold;" onclick="openTab(event, 'admin')">👑 Admin</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <p>Restored Sign In, Sign Up, and Show Password buttons!</p>
+        <p>Owner Dashboard restored. Studio Logo is protected.</p>
     </div>
 
     <div id="games" class="content-section">
         <h2>Games</h2>
-        <div class="game-card">
-            <h3>Paint V1</h3>
-            <button class="submit-btn" style="background:#00c853; width:auto;">Download</button>
-        </div>
+        <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="width:auto; background:#00c853;">Download</button></div>
     </div>
 
     <div id="upload" class="content-section">
@@ -64,7 +63,7 @@
         <div id="uploadForm" style="display:none;">
             <input type="text" id="gameName" placeholder="Project Title">
             <input type="text" id="gameLink" placeholder="Link to Game">
-            <button class="submit-btn" onclick="alert('Submitted!')">Post Game</button>
+            <button class="submit-btn" onclick="alert('Sent to Review!')">Post Game</button>
         </div>
     </div>
 
@@ -72,10 +71,7 @@
         <h2>Sign In</h2>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
-        <div class="show-pass-container">
-            <input type="checkbox" id="showLogin" onchange="togglePass('loginPass', 'showLogin')">
-            <label for="showLogin">Show Password</label>
-        </div>
+        <div class="show-pass-container"><input type="checkbox" id="shL" onchange="tP('loginPass','shL')"><label for="shL">Show Password</label></div>
         <button class="submit-btn" onclick="checkLogin()">Login</button>
     </div>
 
@@ -83,21 +79,23 @@
         <h2>Sign Up</h2>
         <input type="text" id="regUser" placeholder="Username">
         <input type="password" id="regPass" placeholder="Password (6+ chars)">
-        <div class="show-pass-container">
-            <input type="checkbox" id="showReg" onchange="togglePass('regPass', 'showReg')">
-            <label for="showReg">Show Password</label>
-        </div>
+        <div class="show-pass-container"><input type="checkbox" id="shR" onchange="tP('regPass','shR')"><label for="shR">Show Password</label></div>
         <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Register</button>
     </div>
 
     <div id="profile" class="content-section">
         <img id="displayPfp" src="Lighty studio.png" class="profile-img" alt="User PFP">
         <h2><span id="profName"></span></h2>
-        <div class="game-card">
+        <div class="game-card" style="text-align:center;">
             <h4>Update Personal Photo</h4>
             <input type="file" id="pfpInput" accept="image/*">
             <button class="submit-btn" style="background:#00bcd4;" onclick="savePfp()">Save Photo</button>
         </div>
+    </div>
+
+    <div id="admin" class="content-section">
+        <h2 style="color:gold;">Owner Controls</h2>
+        <div id="userList"></div>
     </div>
 </div>
 
@@ -115,12 +113,10 @@
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
+        if (tabName === 'admin') updateAdmin();
     }
 
-    function togglePass(fieldId, checkId) {
-        const f = document.getElementById(fieldId);
-        f.type = document.getElementById(checkId).checked ? "text" : "password";
-    }
+    function tP(fId, cId) { document.getElementById(fId).type = document.getElementById(cId).checked ? "text" : "password"; }
 
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
@@ -131,7 +127,7 @@
             localStorage.setItem("lightyUser", u);
             loginSetup(u);
             openTab(null, 'news');
-        } else { alert("User required and Password 6+ chars."); }
+        } else { alert("Error: User required / Pass 6+ chars"); }
     }
 
     function checkLogin() {
@@ -151,23 +147,42 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.getElementById("tab-profile").style.display = "inline-block";
+        if (username === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = username;
         document.getElementById("uploadLocked").style.display = "none";
         document.getElementById("uploadForm").style.display = "block";
-
         const savedPfp = localStorage.getItem("pfp_" + username);
         if (savedPfp) document.getElementById("displayPfp").src = savedPfp;
+    }
+
+    function updateAdmin() {
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+        users.forEach((user, index) => {
+            const div = document.createElement("div");
+            div.className = "game-card";
+            div.innerHTML = `<strong>${user.username}</strong> <button class="delete-btn" onclick="delU(${index})">Remove</button>`;
+            list.appendChild(div);
+        });
+    }
+
+    function delU(index) {
+        if(confirm("Delete this user?")) {
+            users.splice(index, 1);
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            updateAdmin();
+        }
     }
 
     function savePfp() {
         const user = localStorage.getItem("lightyUser");
         const file = document.getElementById("pfpInput").files[0];
-        if (!file) return alert("Pick a file!");
+        if (!file) return alert("Select file!");
         const reader = new FileReader();
         reader.onloadend = function() {
             localStorage.setItem("pfp_" + user, reader.result);
             document.getElementById("displayPfp").src = reader.result;
-            alert("✅ Personal PFP updated!");
+            alert("PFP Updated!");
         };
         reader.readAsDataURL(file);
     }
