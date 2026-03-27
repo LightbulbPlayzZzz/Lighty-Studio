@@ -5,38 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lighty Studio</title>
     <style>
-        /* THE RAINBOW BORDER */
         body {
             background-color: #121212;
             color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            border: 10px solid;
-            border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet) 1;
+            /* Animated Rainbow Border */
+            border: 8px solid;
+            border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1;
             box-sizing: border-box;
         }
 
-        .container { width: 95%; max-width: 800px; text-align: center; }
+        .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
 
         /* NAVIGATION TABS */
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         
         .tab-btn {
             background: #252525; color: white; border: 1px solid #444;
-            padding: 12px 20px; cursor: pointer; border-radius: 8px; transition: 0.2s;
+            padding: 12px 20px; cursor: pointer; border-radius: 8px; transition: 0.3s;
         }
 
-        .tab-btn.active { background: white; color: black; font-weight: bold; }
+        .tab-btn:hover { background: #333; border-color: #ff00ff; }
+        .tab-btn.active { background: white; color: black; font-weight: bold; transform: scale(1.05); }
 
         /* CONTENT SECTIONS */
         .content-section { 
             display: none; background: #1e1e1e; padding: 35px; 
-            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+            border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+            animation: fadeIn 0.4s ease;
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .content-section.active { display: block; }
 
@@ -49,10 +53,11 @@
 
         .download-btn {
             background: #00c853; color: white; text-decoration: none;
-            padding: 10px 18px; border-radius: 5px; font-weight: bold;
+            padding: 10px 18px; border-radius: 5px; font-weight: bold; transition: 0.2s;
         }
+        .download-btn:hover { background: #00e676; box-shadow: 0 0 10px #00c853; }
 
-        /* INPUT FIELDS */
+        /* INPUTS & BUTTONS */
         input {
             width: 100%; padding: 12px; margin: 10px 0;
             background: #2a2a2a; border: 1px solid #444; color: white;
@@ -60,41 +65,27 @@
         }
 
         .check-box-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #252525;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border: 1px solid #444;
+            display: flex; align-items: center; gap: 10px;
+            background: #252525; padding: 10px; border-radius: 5px;
+            margin: 10px 0; border: 1px solid #444;
         }
         
         .submit-btn {
             background: #ff00ff; color: white; border: none;
             padding: 12px; cursor: pointer; border-radius: 5px;
-            font-weight: bold; width: 100%;
+            font-weight: bold; width: 100%; transition: 0.2s;
         }
+        .submit-btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
         #welcomeUser {
-            color: #00c853;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: -10px;
-            margin-bottom: 20px;
-            min-height: 1.5rem;
+            color: #00ffd5; font-weight: bold; font-size: 1.2rem;
+            margin-bottom: 20px; display: block; min-height: 1.5rem;
         }
 
         .logout-btn {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-left: 10px;
-            display: none;
+            background: #ff4444; color: white; border: none;
+            padding: 6px 12px; border-radius: 5px; cursor: pointer;
+            font-size: 12px; margin-top: 5px; display: none;
         }
     </style>
 </head>
@@ -111,14 +102,15 @@
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
         <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
         <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
-        <button class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
-        <button class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
+        <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
+        <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
         <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
         <p style="color: #ffd700;">⚠️ Website is currently under construction!</p>
+        <p>Stay tuned for more games and community features.</p>
     </div>
 
     <div id="games" class="content-section">
@@ -128,149 +120,148 @@
                 <h3>Paint V1</h3>
                 <p>Version 1.0 (Windows)</p>
             </div>
-            <a href="https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing" class="download-btn">Download .ZIP</a>
+            <a href="https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing" target="_blank" class="download-btn">Download .ZIP</a>
         </div>
     </div>
 
     <div id="upload" class="content-section">
         <div id="uploadLocked">
             <h2>Access Denied</h2>
-            <p>You must be logged in to submit your projects to Lighty Studio!</p>
-            <button class="submit-btn" style="background: #00bcd4; width: 200px;" onclick="openTab(null, 'signin')">Sign In</button>
+            <p>You must be logged in to submit your projects!</p>
+            <button class="submit-btn" style="background: #00bcd4; width: 200px;" onclick="openTab(null, 'signin')">Sign In Now</button>
         </div>
         <div id="uploadContent" style="display: none;">
             <h2>Submit Your Game</h2>
             <input type="text" placeholder="Your Name">
             <input type="text" placeholder="Game Name">
-            <input type="url" placeholder="Paste Link Here">
-            <button type="button" class="submit-btn" onclick="alert('Sent!')">Submit</button>
+            <input type="url" placeholder="Paste Link (Drive/GitHub/Itch)">
+            <button type="button" class="submit-btn" onclick="alert('Submission Received!')">Submit for Review</button>
         </div>
     </div>
 
     <div id="signin" class="content-section">
         <h2>Sign In</h2>
-        <p>Login to your account</p>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
-        
-        <div class="check-box-container" style="margin-top: -5px; margin-bottom: 15px;">
+        <div class="check-box-container">
             <input type="checkbox" id="showLoginPass" onchange="togglePass('loginPass', 'showLoginPass')">
-            <label for="showLoginPass" style="cursor: pointer; font-size: 14px;">Show Password</label>
+            <label for="showLoginPass">Show Password</label>
         </div>
-
         <button type="button" class="submit-btn" style="background: #00bcd4;" onclick="checkLogin()">Login</button>
     </div>
 
     <div id="signup" class="content-section">
         <h2>Sign Up</h2>
-        <p>Create a new account</p>
         <input type="text" id="regUser" placeholder="Choose Username">
-        
         <div class="check-box-container">
             <input type="checkbox" id="useEmail" onchange="toggleEmail()">
-            <label for="useEmail" style="cursor: pointer;">Include Gmail? (Optional)</label>
+            <label for="useEmail">Include Gmail? (Optional)</label>
         </div>
-        
         <input type="email" id="emailField" placeholder="Enter Gmail Address" style="display: none;">
-        
         <input type="password" id="regPass" placeholder="Password (Min 6 chars)">
-        
-        <div class="check-box-container" style="margin-top: -5px; margin-bottom: 15px;">
+        <div class="check-box-container">
             <input type="checkbox" id="showRegPass" onchange="togglePass('regPass', 'showRegPass')">
-            <label for="showRegPass" style="cursor: pointer; font-size: 14px;">Show Password</label>
+            <label for="showRegPass">Show Password</label>
         </div>
-
-        <button type="button" class="submit-btn" style="background: #4caf50;" onclick="checkRegister()">Register</button>
+        <button type="button" class="submit-btn" style="background: #4caf50;" onclick="checkRegister()">Create Account</button>
     </div>
 
     <div id="support" class="content-section">
         <h2>Support</h2>
-        <p>Contact LightbulbPlayzZzz at <a href="https://www.youtube.com/@LightbulbPlayzZzz" style="color: #00c853;">https://www.youtube.com/@LightbulbPlayzZzz</a></p>
+        <p>Follow the developer:</p>
+        <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" style="color: #ff0000; font-weight: bold; text-decoration: none;">YouTube: LightbulbPlayzZzz</a>
     </div>
 </div>
 
 <script>
-    let isLoggedIn = false;
+    // Check if user was already logged in from a previous session
+    window.onload = function() {
+        const savedUser = localStorage.getItem("lightyUser");
+        if (savedUser) {
+            loginUser(savedUser, false); // Login without showing alert
+        }
+    };
 
     function openTab(evt, tabName) {
-        var i, content, tablinks;
-        content = document.getElementsByClassName("content-section");
-        for (i = 0; i < content.length; i++) { content[i].style.display = "none"; }
-        tablinks = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-        document.getElementById(tabName).style.display = "block";
-        
+        // Hide all sections
+        const sections = document.querySelectorAll(".content-section");
+        sections.forEach(s => s.classList.remove("active"));
+
+        // Remove active class from all buttons
+        const buttons = document.querySelectorAll(".tab-btn");
+        buttons.forEach(b => b.classList.remove("active"));
+
+        // Show target section
+        document.getElementById(tabName).classList.add("active");
+
+        // Set active button
         if (evt) {
-            evt.currentTarget.className += " active";
+            evt.currentTarget.classList.add("active");
         } else {
-            let btns = document.getElementsByClassName("tab-btn");
-            for(let b of btns) { if(b.innerText.toLowerCase() === tabName.toLowerCase()) b.className += " active"; }
+            // Find button by text if triggered via script
+            buttons.forEach(b => {
+                if(b.innerText.toLowerCase().includes(tabName.toLowerCase())) b.classList.add("active");
+            });
         }
 
-        // PERMISSION CHECK FOR UPLOAD (Updated logic)
+        // Logic for Upload lock
         if (tabName === 'upload') {
-            if (isLoggedIn) {
-                document.getElementById("uploadLocked").style.display = "none";
-                document.getElementById("uploadContent").style.display = "block";
-            } else {
-                document.getElementById("uploadLocked").style.display = "block";
-                document.getElementById("uploadContent").style.display = "none";
-            }
+            const loggedIn = localStorage.getItem("lightyUser");
+            document.getElementById("uploadLocked").style.display = loggedIn ? "none" : "block";
+            document.getElementById("uploadContent").style.display = loggedIn ? "block" : "none";
         }
     }
 
     function toggleEmail() {
-        var checkBox = document.getElementById("useEmail");
-        var emailInput = document.getElementById("emailField");
-        emailInput.style.display = checkBox.checked ? "block" : "none";
+        const emailInput = document.getElementById("emailField");
+        emailInput.style.display = document.getElementById("useEmail").checked ? "block" : "none";
     }
 
     function togglePass(fieldId, checkId) {
-        var passInput = document.getElementById(fieldId);
-        var checkBox = document.getElementById(checkId);
-        passInput.type = checkBox.checked ? "text" : "password";
+        document.getElementById(fieldId).type = document.getElementById(checkId).checked ? "text" : "password";
     }
 
     function checkLogin() {
-        var u = document.getElementById("loginUser").value;
-        var p = document.getElementById("loginPass").value;
-        if (u.trim() === "" || p.trim() === "") {
-            alert("❌ Error: Enter Username and Password!");
-        } else if (p.length < 6) {
-            alert("❌ Error: Password must be 6+ characters!");
-        } else {
-            loginUser(u);
+        const u = document.getElementById("loginUser").value;
+        const p = document.getElementById("loginPass").value;
+        if (!u || p.length < 6) {
+            alert("❌ Invalid credentials. (Password must be 6+ chars)");
+            return;
         }
+        loginUser(u, true);
     }
 
     function checkRegister() {
-        var u = document.getElementById("regUser").value;
-        var p = document.getElementById("regPass").value;
-        if (u.trim() === "") {
-            alert("❌ Error: Please enter a username!");
+        const u = document.getElementById("regUser").value;
+        const p = document.getElementById("regPass").value;
+        if (!u || p.length < 6) {
+            alert("❌ Please fill out all fields correctly.");
             return;
         }
-        if (p.length < 6) {
-            alert("❌ Error: Password must be at least 6 characters long!");
-        } else {
-            loginUser(u);
-        }
+        loginUser(u, true);
     }
 
-    function loginUser(username) {
-        isLoggedIn = true;
+    function loginUser(username, showAlert) {
+        localStorage.setItem("lightyUser", username);
         document.getElementById("welcomeUser").innerText = "Welcome, " + username + "!";
         document.getElementById("logoutBtn").style.display = "inline-block";
-        alert("✅ Success! You can now upload projects.");
+        
+        // Hide signin/signup tabs
+        document.getElementById("tab-signin").style.display = "none";
+        document.getElementById("tab-signup").style.display = "none";
+
+        if(showAlert) alert("✅ Success! Logged in as " + username);
         openTab(null, 'news');
     }
 
     function logout() {
-        isLoggedIn = false;
+        localStorage.removeItem("lightyUser");
         document.getElementById("welcomeUser").innerText = "";
         document.getElementById("logoutBtn").style.display = "none";
+        document.getElementById("tab-signin").style.display = "inline-block";
+        document.getElementById("tab-signup").style.display = "inline-block";
         alert("🔒 Logged out.");
-        openTab(null, 'news');
+        location.reload(); // Refresh to reset UI state
     }
 </script>
 
