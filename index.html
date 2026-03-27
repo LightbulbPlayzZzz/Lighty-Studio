@@ -78,12 +78,23 @@
             padding: 12px; cursor: pointer; border-radius: 5px;
             font-weight: bold; width: 100%;
         }
+
+        /* WELCOME TEXT STYLE */
+        #welcomeUser {
+            color: #00c853;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            min-height: 1.5rem; /* Keeps space open even when empty */
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Lighty Studio</h1>
+    <p id="welcomeUser"></p>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
@@ -168,45 +179,40 @@
         tablinks = document.getElementsByClassName("tab-btn");
         for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
         document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
+        if (evt) evt.currentTarget.className += " active";
     }
 
     function toggleEmail() {
         var checkBox = document.getElementById("useEmail");
         var emailInput = document.getElementById("emailField");
-        if (checkBox.checked == true){
-            emailInput.style.display = "block";
-        } else {
-            emailInput.style.display = "none";
-        }
+        emailInput.style.display = checkBox.checked ? "block" : "none";
     }
 
     function togglePass(fieldId, checkId) {
         var passInput = document.getElementById(fieldId);
         var checkBox = document.getElementById(checkId);
-        if (checkBox.checked) {
-            passInput.type = "text";
-        } else {
-            passInput.type = "password";
-        }
+        passInput.type = checkBox.checked ? "text" : "password";
     }
 
-    // UPDATED REGISTER FUNCTION
     function checkRegister() {
         var userInput = document.getElementById("regUser").value;
         var passInput = document.getElementById("regPass").value;
 
-        // Check for Username
         if (userInput.trim() === "") {
             alert("❌ Error: Please enter a username!");
             return;
         }
 
-        // Check for Password Length
         if (passInput.length < 6) {
             alert("❌ Error: Password must be at least 6 characters long!");
         } else {
-            alert("✅ Account '" + userInput + "' Created! Welcome to Lighty Studio.");
+            alert("✅ Account '" + userInput + "' Created!");
+            
+            // UPDATE THE WELCOME TEXT
+            document.getElementById("welcomeUser").innerText = "Welcome, " + userInput + "!";
+            
+            // GO TO NEWS TAB AUTOMATICALLY
+            openTab(null, 'news');
         }
     }
 </script>
