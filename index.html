@@ -8,7 +8,7 @@
         body { background-color: #121212; color: #e0e0e0; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; }
         .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
         .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; transition: transform 0.8s; object-fit: cover; }
+        .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; transition: transform 0.8s; object-fit: cover; cursor: pointer; }
         .main-logo:hover { transform: rotate(360deg); }
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { background: #252525; color: white; border: 1px solid #444; padding: 12px 20px; cursor: pointer; border-radius: 8px; }
@@ -16,44 +16,43 @@
         .content-section { display: none; background: #1e1e1e; padding: 35px; border-radius: 15px; }
         .content-section.active { display: block; }
         .game-card { background: #2a2a2a; padding: 20px; margin-bottom: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; }
-        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ff00ff; background: white; object-fit: cover; margin-bottom: 10px; }
+        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        .upload-hint { font-size: 0.8rem; color: #888; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-box">
-        <img src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
+        <img id="headerLogo" src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
         <h1>Lighty Studio</h1>
     </div>
 
-    <div id="userArea">
+    <div id="userArea" style="margin-bottom: 15px;">
         <span id="welcomeUser"></span>
-        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px;" onclick="logout()">Logout</button>
+        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left: 10px;" onclick="logout()">Logout</button>
     </div>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
         <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
-        <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
-        <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
-        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 Profile</button>
-        <button class="tab-btn" onclick="openTab(event, 'settings')">⚙️ Settings</button>
+        <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 My Profile</button>
+        <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
     <div id="news" class="content-section active">
         <h2>Latest Updates</h2>
-        <p style="color: #ffd700;">⚠️ Website is under construction!</p>
+        <p style="color: #ffd700;">⚠️ New Feature: You can now change your Profile Picture!</p>
     </div>
 
     <div id="games" class="content-section">
-        <h2>Offline Games</h2>
+        <h2>Games</h2>
         <div class="game-card">
-            <div><h3>Paint V1</h3><p>Version 1.0 (Windows)</p></div>
-            <a href="#" class="submit-btn" style="width:auto; background:#00c853; text-decoration:none;">Download</a>
+            <div><h3>Paint V1</h3><p>Version 1.0</p></div>
+            <button class="submit-btn" style="width:auto; background:#00c853;">Download</button>
         </div>
     </div>
 
@@ -65,15 +64,33 @@
     </div>
 
     <div id="profile" class="content-section">
-        <img src="Lighty studio.png" class="profile-img" alt="User Logo">
-        <h2>Account Profile</h2>
-        <p>Username: <span id="profName"></span></p>
+        <img id="displayPfp" src="Lighty studio.png" class="profile-img" alt="Profile Picture">
+        <h2><span id="profName"></span></h2>
+        
+        <div class="game-card" style="flex-direction: column; gap: 10px;">
+            <h4>Change Profile Picture</h4>
+            <input type="file" id="pfpInput" accept="image/*" style="color: #aaa;">
+            <button class="submit-btn" style="background: #00bcd4;" onclick="savePfp()">Update Photo</button>
+            <p class="upload-hint">Upload any image to change your look!</p>
+        </div>
+    </div>
+
+    <div id="support" class="content-section">
+        <h2>Support</h2>
+        <p>Contact the owner on YouTube: <strong>LightbulbPlayzZzz</strong></p>
     </div>
 </div>
 
 <script>
-    let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
+    const defaultImg = "Lighty studio.png";
+
+    window.onload = function() {
+        const user = localStorage.getItem("lightyUser");
+        if (user) {
+            loginSetup(user);
+        }
+    };
 
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
@@ -84,21 +101,52 @@
 
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
-        localStorage.setItem("lightyUser", u);
-        location.reload();
+        if (u) {
+            localStorage.setItem("lightyUser", u);
+            loginSetup(u);
+            openTab(null, 'news');
+        }
     }
 
-    window.onload = function() {
-        const user = localStorage.getItem("lightyUser");
-        if (user) {
-            document.getElementById("welcomeUser").innerText = "Welcome, " + user;
-            document.getElementById("tab-signin").style.display = "none";
-            document.getElementById("tab-profile").style.display = "inline-block";
-            document.getElementById("profName").innerText = user;
-        }
-    };
+    function loginSetup(username) {
+        document.getElementById("welcomeUser").innerHTML = "Welcome, " + username + (username === ownerName ? " <span style='color:gold;'>(Owner)</span>" : "");
+        document.getElementById("logoutBtn").style.display = "inline-block";
+        document.getElementById("tab-signin").style.display = "none";
+        document.getElementById("tab-profile").style.display = "inline-block";
+        document.getElementById("profName").innerText = username;
 
-    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
+        // Load saved profile picture if it exists
+        const savedPfp = localStorage.getItem("pfp_" + username);
+        if (savedPfp) {
+            document.getElementById("headerLogo").src = savedPfp;
+            document.getElementById("displayPfp").src = savedPfp;
+        }
+    }
+
+    function savePfp() {
+        const user = localStorage.getItem("lightyUser");
+        const file = document.getElementById("pfpInput").files[0];
+        
+        if (!file) return alert("Please select a file first!");
+
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const base64String = reader.result;
+            // Save to localStorage using the username as the key
+            localStorage.setItem("pfp_" + user, base64String);
+            
+            // Update images immediately
+            document.getElementById("headerLogo").src = base64String;
+            document.getElementById("displayPfp").src = base64String;
+            alert("✅ Profile picture updated!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function logout() {
+        localStorage.removeItem("lightyUser");
+        location.reload();
+    }
 </script>
 
 </body>
