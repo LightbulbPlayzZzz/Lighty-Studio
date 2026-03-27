@@ -75,6 +75,8 @@
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
         <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
         <button class="tab-btn" onclick="openTab(event, 'upload')">Upload</button>
+        <button class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
+        <button class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
         <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
     </div>
 
@@ -102,9 +104,26 @@
         <button type="button" class="submit-btn" onclick="alert('Sent!')">Submit</button>
     </div>
 
+    <div id="signin" class="content-section">
+        <h2>Sign In</h2>
+        <p>Login to your account</p>
+        <input type="text" placeholder="Username">
+        <input type="password" placeholder="Password">
+        <button type="button" class="submit-btn" style="background: #00bcd4;" onclick="alert('Login Attempted!')">Login</button>
+    </div>
+
+    <div id="signup" class="content-section">
+        <h2>Sign Up</h2>
+        <p>Create a new account</p>
+        <input type="text" placeholder="Choose Username">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Password">
+        <button type="button" class="submit-btn" style="background: #4caf50;" onclick="alert('Account Created!')">Register</button>
+    </div>
+
     <div id="support" class="content-section">
         <h2>Support</h2>
-        <p>Contact LightbulbPlayzZzz at https://www.youtube.com/@LightbulbPlayzZzz</p>
+        <p>Contact LightbulbPlayzZzz at <a href="https://www.youtube.com/@LightbulbPlayzZzz" style="color: #00c853;">https://www.youtube.com/@LightbulbPlayzZzz</a></p>
     </div>
 </div>
 
