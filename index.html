@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lighty Studio - Professional Build</title>
+    <title>Lighty Studio</title>
     <style>
         :root { --bg: #0a0a0a; --text: #f0f0f0; --card: #161616; --border: #333; --accent: #ff00ff; }
         .light-mode { --bg: #ffffff; --text: #1a1a1a; --card: #f0f0f0; --border: #ccc; --accent: #d400d4; }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
         .container { width: 95%; max-width: 850px; text-align: center; padding: 25px; }
 
         /* HEADER & LOGO ANIMATION */
         .header-box { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
+        
         .main-logo { 
             width: 80px; height: 80px; 
             border-radius: 50%; 
             background: white; 
             object-fit: cover;
-            /* Rotation Animation */
-            animation: spin-around 6s linear infinite;
-        }
-        @keyframes spin-around {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            /* Initial spin on page load */
+            animation: fast-spin-return 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* NAVIGATION TABS ON TOP */
+        /* The Animation: Spin fast mid then back to position */
+        @keyframes fast-spin-return {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); scale: 1.2; } /* Fast mid-point */
+            100% { transform: rotate(360deg); scale: 1; } /* Back to position */
+        }
+
+        /* Class to trigger animation via JS */
+        .animate-logo { animation: none; }
+        .trigger-spin { animation: fast-spin-return 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* NAVIGATION TABS */
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { background: #222; color: white; border: 1px solid var(--border); padding: 12px 20px; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.2s; }
-        
-        /* ACTIVE TAB: LIGHT GREY */
-        .tab-btn.active { 
-            background: #d3d3d3 !important; 
-            color: #222 !important; 
-            border-color: #bbb;
-            transform: translateY(-2px);
-        }
+        .tab-btn { background: #222; color: white; border: 1px solid var(--border); padding: 12px 20px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .tab-btn.active { background: #d3d3d3 !important; color: #222 !important; border-color: #bbb; }
 
-        .content-section { display: none; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .content-section { display: none; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); }
         .content-section.active { display: block; }
         
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 20px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
@@ -46,7 +47,6 @@
         input { width: 100%; padding: 14px; margin: 10px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box;}
         
         .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.9rem; justify-content: flex-start; }
-        .check-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
         .pfp-display { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; margin-bottom: 15px; }
     </style>
 </head>
@@ -54,8 +54,8 @@
 
 <div class="container">
     <div class="header-box">
-        <img src="Lighty studio.png" class="main-logo" alt="Lighty Studio Logo">
-        <h1 style="margin: 0; letter-spacing: 1px;">LIGHTY STUDIO</h1>
+        <img id="mainLogo" src="Lighty studio.png" class="main-logo" alt="Logo">
+        <h1 style="margin: 0; letter-spacing: 1px; font-weight: 800;">Lighty Studio</h1>
     </div>
 
     <div class="tabs">
@@ -70,26 +70,25 @@
     </div>
 
     <div id="userArea" style="margin-bottom: 20px;">
-        <span id="welcomeUser" style="color: grey;">Status: Guest</span>
-        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:10px;" onclick="logout()">Logout</button>
+        <span id="welcomeUser" style="color: grey;">Guest</span>
+        <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="logout()">Logout</button>
     </div>
 
     <div id="news" class="content-section active">
-        <h2>Studio News</h2>
-        <p>✔ Logo rotation restored.</p>
-        <p>✔ Active tabs set to Light Grey.</p>
+        <h2>News Feed</h2>
+        <p>The Logo now spins on every tab change.</p>
     </div>
 
     <div id="games" class="content-section">
-        <h2>Game Library</h2>
-        <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853; width:auto;">Launch Game</button></div>
+        <h2>Games</h2>
+        <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853;">Play</button></div>
     </div>
 
     <div id="upload" class="content-section">
-        <h2>Post Content</h2>
-        <input type="text" placeholder="Project Name">
+        <h2>Post Game</h2>
+        <input type="text" placeholder="Title">
         <input type="text" placeholder="URL">
-        <button class="submit-btn">Publish to Feed</button>
+        <button class="submit-btn">Post</button>
     </div>
 
     <div id="signin" class="content-section">
@@ -101,40 +100,28 @@
     </div>
 
     <div id="signup" class="content-section">
-        <h2>Register</h2>
-        <input type="text" id="regUser" placeholder="Choose Username">
-        <input type="password" id="regPass" placeholder="Choose Password">
+        <h2>Sign Up</h2>
+        <input type="text" id="regUser" placeholder="Username">
+        <input type="password" id="regPass" placeholder="Password">
         <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-        <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmail').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
-        <input type="email" id="regEmail" placeholder="Enter Gmail" style="display:none;">
-        <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
+        <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmail').style.display = this.checked ? 'block' : 'none'"> Enable Gmail?</label>
+        <input type="email" id="regEmail" placeholder="Gmail" style="display:none;">
+        <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create</button>
     </div>
 
     <div id="profile" class="content-section">
         <img id="profilePfp" src="Lighty studio.png" class="pfp-display">
         <h2 id="profName"></h2>
-        <p id="profEmailDisplay" style="color: #bbb;"></p>
     </div>
 
     <div id="settings" class="content-section">
-        <h2>⚙️ Settings</h2>
-        <div class="game-card">
-            <h4>Profile Photo</h4>
-            <input type="file" id="pfpUpload" accept="image/*">
-            <button class="submit-btn" onclick="savePfp()">Update PFP</button>
-        </div>
-        <div class="game-card">
-            <h4>Visuals</h4>
-            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Toggle Mode</button>
-        </div>
-        <div class="game-card">
-            <h4>Security</h4>
-            <input type="password" id="setVerifyPass" placeholder="Confirm Password">
-            <button class="submit-btn" style="background:#ff4444;" onclick="removeGmail()">Remove Gmail</button>
-        </div>
+        <h2>Settings</h2>
+        <div class="game-card"><input type="file" id="pfpUpload" accept="image/*"><button class="submit-btn" onclick="savePfp()">Update PFP</button></div>
+        <div class="game-card"><button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Dark/Light</button></div>
+        <div class="game-card"><input type="password" id="setVerifyPass" placeholder="Verify"><button class="submit-btn" style="background:#ff4444;" onclick="removeGmail()">Remove Gmail</button></div>
     </div>
 
-    <div id="admin" class="content-section"><h2>👑 Admin Dashboard</h2><div id="userList"></div></div>
+    <div id="admin" class="content-section"><h2>👑 Admin</h2><div id="userList"></div></div>
 </div>
 
 <script>
@@ -142,7 +129,16 @@
     const ownerName = "LightbulbPlayzZzz";
     const masterPass = "LightyOwner2026";
 
+    // FUNCTION TO RESET AND SPIN LOGO
+    function spinLogo() {
+        const logo = document.getElementById("mainLogo");
+        logo.classList.remove("trigger-spin");
+        void logo.offsetWidth; // Force reflow to allow re-trigger
+        logo.classList.add("trigger-spin");
+    }
+
     function openTab(evt, tabName) {
+        spinLogo(); // SPIN ON TAB CHANGE
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
@@ -158,15 +154,14 @@
         const p = document.getElementById("loginPass").value;
         if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
         const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Error: Account not found"); }
+        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Fail"); }
     }
 
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
-        const e = document.getElementById("regEmail").value;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Name Restricted");
-        users.push({username: u, password: p, email: document.getElementById("gmailTick").checked ? e : null});
+        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Owner reserved");
+        users.push({username: u, password: p, email: document.getElementById("gmailTick").checked ? document.getElementById("regEmail").value : null});
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u);
         openTab(null, 'news');
@@ -174,41 +169,31 @@
 
     function loginSetup(user) {
         localStorage.setItem("lightyUser", user);
-        document.getElementById("welcomeUser").innerText = "User: " + user;
+        document.getElementById("welcomeUser").innerText = user;
         document.getElementById("logoutBtn").style.display = "inline-block";
         document.querySelectorAll("#tab-signin, #tab-signup").forEach(b => b.style.display = "none");
         document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead").forEach(b => b.style.display = "inline-block");
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
-        
         document.getElementById("profName").innerText = user;
-        const uObj = users.find(u => u.username === user);
-        document.getElementById("profEmailDisplay").innerText = (uObj && uObj.email) ? "Gmail: " + uObj.email : "No Gmail Linked";
         document.getElementById("profilePfp").src = localStorage.getItem("pfp_" + user) || "Lighty studio.png";
     }
 
     function savePfp() {
         const user = localStorage.getItem("lightyUser");
-        const file = document.getElementById("pfpUpload").files[0];
-        if (!file) return;
         const reader = new FileReader();
         reader.onloadend = () => {
             localStorage.setItem("pfp_" + user, reader.result);
             document.getElementById("profilePfp").src = reader.result;
-            alert("Success!");
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(document.getElementById("pfpUpload").files[0]);
     }
 
     function removeGmail() {
         const user = localStorage.getItem("lightyUser");
-        const pass = document.getElementById("setVerifyPass").value;
         const idx = users.findIndex(u => u.username === user);
-        if ((users[idx] && users[idx].password === pass) || (user === ownerName && pass === masterPass)) {
-            if (idx > -1) users[idx].email = null;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("Gmail Removed.");
-            loginSetup(user);
-        }
+        if (idx > -1) users[idx].email = null;
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        loginSetup(user);
     }
 
     function updateAdmin() {
@@ -224,8 +209,8 @@
     }
 
     function delU(target) {
-        if (target === ownerName) return alert("System Overruled: Owner cannot be deleted.");
-        if (prompt("Admin Master Key:") === masterPass) {
+        if (target === ownerName) return alert("Blocked");
+        if (prompt("Admin Password:") === masterPass) {
             users = users.filter(u => u.username !== target);
             localStorage.setItem("allUsers", JSON.stringify(users));
             updateAdmin();
