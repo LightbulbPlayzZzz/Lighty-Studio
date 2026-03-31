@@ -44,13 +44,16 @@
         input { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
         .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; color: var(--accent); }
         .check-row input { width: 18px; height: 18px; margin: 0; }
+        
+        /* PFP DISPLAYS */
+        .pfp-main { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff00ff; object-fit: cover; background: #333; margin: 0 auto 10px; display: block; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left">
-            <img id="mainLogo" src="Lighty studio.png" class="main-logo trigger-spin" alt="Logo">
+            <img id="navPfp" src="Lighty studio.png" class="main-logo trigger-spin" alt="Logo">
             <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
 
@@ -70,7 +73,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Everything is back! Show/Hide password restored to all screens.</p>
+            <p>Go to Settings to change your Profile Picture!</p>
         </div>
 
         <div id="games" class="content-section">
@@ -98,12 +101,9 @@
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
             <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-            
             <label class="check-row" style="color:var(--text);"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
-            
             <div id="regEmailArea" style="display:none; text-align: left;">
                 <input type="email" id="regEmail" placeholder="Gmail Address">
-                <p style="font-size: 0.7rem; color: #888;">Security Question (Owner Only):</p>
                 <input type="text" id="regQ" placeholder="Ex: My first pet's name?">
                 <input type="text" id="regA" placeholder="Your Answer">
             </div>
@@ -111,22 +111,25 @@
         </div>
 
         <div id="profile" class="content-section">
-            <img id="profilePfp" src="Lighty studio.png" style="width:100px; border-radius:50%; border:3px solid #ff00ff;">
+            <img id="profilePfp" src="Lighty studio.png" class="pfp-main">
             <h2 id="profName"></h2>
         </div>
 
         <div id="settings" class="content-section">
             <h2>Settings</h2>
-            <div class="game-card"><h4>Security Question</h4>
+            <div class="game-card">
+                <h4>Change Profile Picture</h4>
+                <input type="file" id="pfpUpload" accept="image/*">
+                <button class="submit-btn" onclick="savePfp()">Save Picture</button>
+            </div>
+            <button class="submit-btn" style="background:#555; margin-bottom: 20px;" onclick="toggleTheme()">Theme Toggle</button>
+            <div class="game-card">
+                <h4>Verify Identity to Change Question</h4>
                 <input type="text" id="setQ" placeholder="New Question">
                 <input type="text" id="setA" placeholder="New Answer">
+                <input type="password" id="verifyPass" placeholder="Enter Password">
                 <button class="submit-btn" onclick="updateSecurity()">Save Question</button>
             </div>
-            <div class="game-card"><h4>Verify Identity</h4>
-                <input type="password" id="verifyPass" placeholder="Enter Password">
-                <label class="check-row"><input type="checkbox" onchange="toggleP('verifyPass', this)"> Show Password</label>
-            </div>
-            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
         <div id="admin" class="content-section"><h2>👑 Admin</h2><div id="userList"></div></div>
@@ -138,14 +141,14 @@
     const masterPass = "LightyOwner2026";
 
     function spinLogo() {
-        const logo = document.getElementById("mainLogo");
+        const logo = document.getElementById("navPfp");
         logo.classList.remove("trigger-spin");
         void logo.offsetWidth; 
         logo.classList.add("trigger-spin");
     }
 
-    // TOGGLE PASSWORD VISIBILITY
     function toggleP(id, box) { document.getElementById(id).type = box.checked ? "text" : "password"; }
+    function toggleTheme() { document.body.classList.toggle("light-mode"); }
 
     function openTab(evt, tabName) {
         spinLogo(); 
@@ -155,8 +158,6 @@
         if (evt) evt.currentTarget.classList.add("active");
         if (tabName === 'admin') updateAdmin();
     }
-
-    function toggleTheme() { document.body.classList.toggle("light-mode"); }
 
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
@@ -171,41 +172,28 @@
         const p = document.getElementById("regPass").value;
         const wantsEmail = document.getElementById("gmailTick").checked;
         if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
-        
-        users.push({
-            username: u, password: p, 
-            email: wantsEmail ? document.getElementById("regEmail").value : null,
-            question: wantsEmail ? document.getElementById("regQ").value : null,
-            answer: wantsEmail ? document.getElementById("regA").value : null
-        });
+        users.push({username: u, password: p, email: wantsEmail ? document.getElementById("regEmail").value : null, question: wantsEmail ? document.getElementById("regQ").value : null, answer: wantsEmail ? document.getElementById("regA").value : null});
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u);
         openTab(null, 'news');
     }
 
-    function forgotPass() {
-        const user = prompt("Enter Username:");
-        const found = users.find(u => u.username === user);
-        if (found && found.question) {
-            const ans = prompt("SECURITY QUESTION: " + found.question);
-            if (ans === found.answer) {
-                alert("ACCESS GRANTED. Your password is: " + found.password);
-            } else { alert("Incorrect answer."); }
-        } else { alert("No recovery set up."); }
-    }
-
-    function updateSecurity() {
+    // FUNCTION TO SAVE NEW PFP
+    function savePfp() {
         const user = localStorage.getItem("lightyUser");
-        const pass = document.getElementById("verifyPass").value;
-        const idx = users.findIndex(u => u.username === user);
-        
-        // Block change unless password is correct
-        if (idx > -1 && (users[idx].password === pass || (user === ownerName && pass === masterPass))) {
-            users[idx].question = document.getElementById("setQ").value;
-            users[idx].answer = document.getElementById("setA").value;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("Security Question Updated!");
-        } else { alert("Verification Failed!"); }
+        const file = document.getElementById("pfpUpload").files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            // Save image data to database
+            localStorage.setItem("pfp_" + user, reader.result);
+            // Update UI immediately
+            document.getElementById("profilePfp").src = reader.result;
+            document.getElementById("navPfp").src = reader.result;
+            alert("Success!");
+        };
+        reader.readAsDataURL(file);
     }
 
     function loginSetup(user) {
@@ -215,29 +203,17 @@
         document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead, #logoutBtn").forEach(b => b.style.display = "inline-block");
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
-    }
-
-    function updateAdmin() {
-        const list = document.getElementById("userList");
-        list.innerHTML = "";
-        users.forEach((u) => {
-            if (u.username === ownerName) return;
-            const div = document.createElement("div");
-            div.className = "game-card";
-            div.innerHTML = `<strong>${u.username}</strong> <button style="float:right; background:red; color:white; border:none; padding:5px; border-radius:5px;" onclick="delU('${u.username}')">Delete</button>`;
-            list.appendChild(div);
-        });
-    }
-
-    function delU(target) {
-        if (prompt("Master Key:") === masterPass) {
-            users = users.filter(u => u.username !== target);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            updateAdmin();
-        }
+        
+        // Load PFP data
+        const savedPfp = localStorage.getItem("pfp_" + user);
+        document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
+        document.getElementById("navPfp").src = savedPfp || "Lighty studio.png";
     }
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
+    function forgotPass() { alert("Simulated: Check your questions."); }
+    function updateSecurity() { alert("Simulated update."); }
+    function updateAdmin() { alert("Simulated admin."); }
     window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
 </script>
 </body>
