@@ -8,13 +8,11 @@
         :root { --bg: #0a0a0a; --nav: #1e1e1e; --text: #f0f0f0; --card: #161616; --border: #333; --accent: #ff00ff; }
         .light-mode { --bg: #ffffff; --nav: #e0e0e0; --text: #1a1a1a; --card: #f0f0f0; --border: #ccc; --accent: #d400d4; }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; overflow-x: hidden; }
 
-        /* NAV BAR */
+        /* NAV BAR - ALL IN ONE LINE */
         .navbar { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: var(--nav); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border); }
-        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; }
-        
-        /* OFFICIAL STUDIO LOGO (FIXED) */
+        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; flex-shrink: 0; }
         .studio-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
         
         @keyframes fast-spin {
@@ -24,23 +22,20 @@
         }
         .trigger-spin { animation: fast-spin 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-grow: 1; }
+        .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-grow: 1; align-items: center; }
         .tab-btn { background: transparent; color: var(--text); border: none; padding: 10px 14px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 0.9rem; }
         .tab-btn.active { background: #d3d3d3 !important; color: #222 !important; }
 
-        /* USER AREA IN NAV */
-        .nav-user-icon { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; margin-left: 10px; display: none; }
+        .nav-user-icon { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; margin-left: 10px; display: none; flex-shrink: 0; }
 
         .container { width: 95%; max-width: 800px; text-align: center; }
-        .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 50px; }
         .content-section.active { display: block; }
         
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
-        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; }
-        
-        /* PERSONAL PFP */
+        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; color: var(--accent); }
         .pfp-profile-view { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent); object-fit: cover; margin: 0 auto 15px; display: block; background: #333; }
     </style>
 </head>
@@ -69,7 +64,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Fixed! The Studio Logo is now separate from your Profile Picture.</p>
+            <p>Gmail recovery questions are now 100% active. Go to Sign Up to test!</p>
         </div>
 
         <div id="games" class="content-section">
@@ -89,7 +84,7 @@
             <input type="password" id="loginPass" placeholder="Password">
             <label class="check-row"><input type="checkbox" onchange="toggleP('loginPass', this)"> Show Password</label>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
-            <p style="cursor:pointer; color:cyan; font-size:0.8rem; margin-top:10px;" onclick="forgotPass()">Forgot Password?</p>
+            <p style="cursor:pointer; color:cyan; font-size:0.8rem; margin-top:15px; text-decoration: underline;" onclick="forgotPass()">Forgot Password?</p>
         </div>
 
         <div id="signup" class="content-section">
@@ -97,13 +92,16 @@
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
             <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-            <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
-            <div id="regEmailArea" style="display:none; text-align: left;">
+            
+            <label class="check-row" style="color:var(--text);"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
+            
+            <div id="regEmailArea" style="display:none; text-align: left; padding: 10px; border: 1px dashed var(--accent); border-radius: 8px;">
                 <input type="email" id="regEmail" placeholder="Gmail Address">
-                <input type="text" id="regQ" placeholder="Secret Question">
-                <input type="text" id="regA" placeholder="Secret Answer">
+                <p style="font-size: 0.75rem; margin: 5px 0; color: #aaa;">Recovery Question:</p>
+                <input type="text" id="regQ" placeholder="Ex: My first pet's name?">
+                <input type="text" id="regA" placeholder="Your Answer">
             </div>
-            <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create</button>
+            <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
 
         <div id="profile" class="content-section">
@@ -114,9 +112,16 @@
         <div id="settings" class="content-section">
             <h2>Settings</h2>
             <div class="game-card">
-                <h4>Change Profile Picture</h4>
+                <h4>Profile Picture</h4>
                 <input type="file" id="pfpUpload" accept="image/*">
                 <button class="submit-btn" onclick="savePfp()">Update PFP</button>
+            </div>
+            <div class="game-card">
+                <h4>Security Recovery</h4>
+                <input type="text" id="setQ" placeholder="New Secret Question">
+                <input type="text" id="setA" placeholder="New Secret Answer">
+                <input type="password" id="verifySetPass" placeholder="Confirm Password to Save">
+                <button class="submit-btn" onclick="updateSecurity()">Save New Question</button>
             </div>
             <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
@@ -157,9 +162,58 @@
             localStorage.setItem("pfp_" + user, reader.result);
             document.getElementById("profilePfp").src = reader.result;
             document.getElementById("navUserPfp").src = reader.result;
-            alert("PFP Saved!");
+            alert("PFP Updated!");
         };
         reader.readAsDataURL(file);
+    }
+
+    // --- THE FIX: REAL FORGOT PASSWORD LOGIC ---
+    function forgotPass() {
+        const target = prompt("Enter Username to recover:");
+        if (!target) return;
+        const userObj = users.find(u => u.username.toLowerCase() === target.toLowerCase());
+        
+        if (userObj) {
+            if (userObj.question && userObj.answer) {
+                const answer = prompt("SECURITY QUESTION: " + userObj.question);
+                if (answer && answer.toLowerCase() === userObj.answer.toLowerCase()) {
+                    alert("✅ Success! Your password is: " + userObj.password);
+                } else {
+                    alert("❌ Incorrect answer. Only the real owner knows this.");
+                }
+            } else {
+                alert("⚠️ This account doesn't have a recovery question set up.");
+            }
+        } else {
+            alert("❓ User not found.");
+        }
+    }
+
+    function checkLogin() {
+        const u = document.getElementById("loginUser").value.trim();
+        const p = document.getElementById("loginPass").value;
+        if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
+        const found = users.find(user => user.username === u && user.password === p);
+        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Login Failed"); }
+    }
+
+    function checkRegister() {
+        const u = document.getElementById("regUser").value.trim();
+        const p = document.getElementById("regPass").value;
+        const wantsEmail = document.getElementById("gmailTick").checked;
+        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
+        
+        const newUser = {
+            username: u, 
+            password: p, 
+            email: wantsEmail ? document.getElementById("regEmail").value : null, 
+            question: wantsEmail ? document.getElementById("regQ").value : null, 
+            answer: wantsEmail ? document.getElementById("regA").value : null
+        };
+        
+        users.push(newUser);
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        loginSetup(u); openTab(null, 'news');
     }
 
     function loginSetup(user) {
@@ -168,7 +222,6 @@
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead, #logoutBtn").forEach(b => b.style.display = "inline-block");
         
-        // Load PFP
         const savedPfp = localStorage.getItem("pfp_" + user);
         document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
         const navIcon = document.getElementById("navUserPfp");
@@ -179,25 +232,38 @@
         document.getElementById("profName").innerText = user;
     }
 
+    function updateSecurity() {
+        const user = localStorage.getItem("lightyUser");
+        const pass = document.getElementById("verifySetPass").value;
+        const idx = users.findIndex(u => u.username === user);
+        if (idx > -1 && (users[idx].password === pass || (user === ownerName && pass === masterPass))) {
+            users[idx].question = document.getElementById("setQ").value;
+            users[idx].answer = document.getElementById("setA").value;
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            alert("Security Question Saved!");
+        } else { alert("Wrong Password!"); }
+    }
+
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
-    function checkLogin() {
-        const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
-        const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Failed"); }
+    function updateAdmin() {
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+        users.forEach((u) => {
+            if (u.username === ownerName) return;
+            const div = document.createElement("div");
+            div.className = "game-card";
+            div.innerHTML = `<strong>${u.username}</strong> <button style="float:right; background:red; color:white; border:none; padding:5px; border-radius:5px;" onclick="delU('${u.username}')">Delete</button>`;
+            list.appendChild(div);
+        });
     }
-    function checkRegister() {
-        const u = document.getElementById("regUser").value.trim();
-        const p = document.getElementById("regPass").value;
-        const wantsEmail = document.getElementById("gmailTick").checked;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
-        users.push({username: u, password: p, email: wantsEmail ? document.getElementById("regEmail").value : null, question: wantsEmail ? document.getElementById("regQ").value : null, answer: wantsEmail ? document.getElementById("regA").value : null});
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        loginSetup(u); openTab(null, 'news');
+
+    function delU(target) {
+        if (prompt("Master Password:") === masterPass) {
+            users = users.filter(u => u.username !== target);
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            updateAdmin();
+        }
     }
-    function forgotPass() { alert("Use security questions."); }
-    function updateAdmin() { /* admin logic */ }
 
     window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
 </script>
