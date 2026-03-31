@@ -8,143 +8,125 @@
         :root { --bg: #0a0a0a; --nav: #1e1e1e; --text: #f0f0f0; --card: #161616; --border: #333; --accent: #ff00ff; }
         .light-mode { --bg: #ffffff; --nav: #e0e0e0; --text: #1a1a1a; --card: #f0f0f0; --border: #ccc; --accent: #d400d4; }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 70px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; }
 
-        /* SCRATCH-STYLE TOP NAV BAR */
+        /* SCRATCH-STYLE HEADER (ALL IN ONE LINE) */
         .navbar { 
-            position: fixed; top: 0; left: 0; right: 0; height: 60px; 
+            position: fixed; top: 0; left: 0; right: 0; height: 65px; 
             background: var(--nav); display: flex; align-items: center; 
-            padding: 0 20px; z-index: 1000; border-bottom: 2px solid var(--border);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border);
         }
-        .nav-logo-box { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .main-logo { width: 40px; height: 40px; border-radius: 50%; background: white; object-fit: cover; }
+        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; }
+        .main-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
         
-        /* PULSE SPIN ANIMATION */
-        @keyframes fast-spin-return {
+        @keyframes fast-spin {
             0% { transform: rotate(0deg); }
             40% { transform: rotate(180deg); scale: 1.3; }
             100% { transform: rotate(360deg); scale: 1; }
         }
-        .trigger-spin { animation: fast-spin-return 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .trigger-spin { animation: fast-spin 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .brand-name { font-weight: 800; font-size: 1.2rem; color: var(--text); margin-right: 20px; }
-
-        .tabs { display: flex; gap: 5px; flex-grow: 1; }
+        .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; }
         .tab-btn { 
             background: transparent; color: var(--text); border: none; 
-            padding: 8px 15px; cursor: pointer; border-radius: 5px; 
-            font-weight: bold; font-size: 0.9rem; transition: 0.2s;
+            padding: 10px 14px; cursor: pointer; border-radius: 5px; 
+            font-weight: bold; font-size: 0.9rem;
         }
-        .tab-btn:hover { background: rgba(255,255,255,0.1); }
-        
-        /* ACTIVE TAB: LIGHT GREY (SCRATCH STYLE) */
         .tab-btn.active { background: #d3d3d3 !important; color: #222 !important; }
 
-        .user-nav-area { display: flex; align-items: center; gap: 15px; font-size: 0.85rem; }
-
-        /* CONTENT CONTAINER */
-        .container { width: 95%; max-width: 800px; text-align: center; margin-top: 40px; }
-        .content-section { display: none; background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-        .content-section.active { display: block; animation: slideUp 0.3s ease; }
+        /* MAIN CONTENT */
+        .container { width: 95%; max-width: 800px; text-align: center; }
+        .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .content-section.active { display: block; }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .game-card { background: rgba(128, 128, 128, 0.05); padding: 20px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
+        .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
-        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; text-align: left; }
-        .pfp-display { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; margin-bottom: 15px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-logo-box" onclick="openTab(null, 'news')">
+        <div class="nav-left">
             <img id="mainLogo" src="Lighty studio.png" class="main-logo trigger-spin" alt="Logo">
-            <span class="brand-name">Lighty Studio</span>
+            <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
 
-        <div class="tabs">
+        <div class="tabs-container" id="allTabs">
             <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
             <button class="tab-btn" id="postTabHead" onclick="openTab(event, 'upload')" style="display:none;">Post</button>
-            <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button>
-        </div>
-
-        <div class="user-nav-area">
-            <span id="welcomeUser" style="color: #888;">Guest</span>
-            <button id="tab-signin" class="tab-btn" style="background: var(--accent); color:white;" onclick="openTab(event, 'signin')">Sign In</button>
+            <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
             <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
             <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button>
             <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button>
-            <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="logout()">Logout</button>
+            <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button>
+            <button id="logoutBtn" class="tab-btn" style="display:none; color: #ff4444;" onclick="logout()">Logout</button>
         </div>
     </nav>
 
     <div class="container">
         <div id="news" class="content-section active">
-            <h2>Welcome to the Studio</h2>
-            <p>The navigation bar is now fixed at the top, just like Scratch!</p>
+            <h2>Activity</h2>
+            <p>Welcome back! Check out the new Security Question system in Settings.</p>
         </div>
 
         <div id="games" class="content-section">
-            <h2>Featured Games</h2>
-            <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853;">Play</button></div>
+            <h2>Games</h2>
+            <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853;">Launch</button></div>
         </div>
 
         <div id="upload" class="content-section">
-            <h2>Upload Project</h2>
-            <input type="text" placeholder="Title">
-            <input type="text" placeholder="URL">
-            <button class="submit-btn">Share</button>
+            <h2>Post Content</h2>
+            <input type="text" placeholder="Title"><input type="text" placeholder="URL">
+            <button class="submit-btn">Post</button>
         </div>
 
         <div id="signin" class="content-section">
             <h2>Sign In</h2>
             <input type="text" id="loginUser" placeholder="Username">
             <input type="password" id="loginPass" placeholder="Password">
-            <label class="check-row"><input type="checkbox" onchange="toggleP('loginPass', this)"> Show Password</label>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
+            <p style="cursor:pointer; color:cyan; font-size:0.8rem;" onclick="forgotPass()">Forgot Password?</p>
         </div>
 
         <div id="signup" class="content-section">
-            <h2>Join Lighty Studio</h2>
+            <h2>Join</h2>
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
-            <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-            <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmail').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
-            <input type="email" id="regEmail" placeholder="Your Gmail" style="display:none;">
-            <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
+            <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
+            <div id="regEmailArea" style="display:none; text-align: left;">
+                <input type="email" id="regEmail" placeholder="Gmail Address">
+                <p style="font-size: 0.7rem; color: #888;">Security Question (Owner Only):</p>
+                <input type="text" id="regQ" placeholder="Ex: My first pet's name?">
+                <input type="text" id="regA" placeholder="Your Answer">
+            </div>
+            <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create</button>
         </div>
 
         <div id="profile" class="content-section">
-            <img id="profilePfp" src="Lighty studio.png" class="pfp-display">
+            <img id="profilePfp" src="Lighty studio.png" style="width:100px; border-radius:50%; border:3px solid #ff00ff;">
             <h2 id="profName"></h2>
-            <p id="profEmailDisplay" style="color:cyan;"></p>
         </div>
 
         <div id="settings" class="content-section">
             <h2>Settings</h2>
-            <div class="game-card">
-                <h4>Change Profile Picture</h4>
-                <input type="file" id="pfpUpload" accept="image/*">
-                <button class="submit-btn" onclick="savePfp()">Save</button>
+            <div class="game-card"><h4>Security Question</h4>
+                <input type="text" id="setQ" placeholder="New Question">
+                <input type="text" id="setA" placeholder="New Answer">
+                <button class="submit-btn" onclick="updateSecurity()">Save Question</button>
             </div>
-            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Toggle Mode</button>
-            <div class="game-card" style="margin-top:20px;">
-                <input type="password" id="setVerifyPass" placeholder="Verify Password">
-                <button class="submit-btn" style="background:#ff4444;" onclick="removeGmail()">Remove Gmail</button>
-            </div>
+            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
-        <div id="admin" class="content-section"><h2>👑 Admin Panel</h2><div id="userList"></div></div>
+        <div id="admin" class="content-section"><h2>👑 Admin</h2><div id="userList"></div></div>
     </div>
 
 <script>
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
-    const masterPass = "LightyOwner2026";
+    const masterPass = "POLKA08642OZX/";
 
     function spinLogo() {
         const logo = document.getElementById("mainLogo");
@@ -162,7 +144,6 @@
         if (tabName === 'admin') updateAdmin();
     }
 
-    function toggleP(id, box) { document.getElementById(id).type = box.checked ? "text" : "password"; }
     function toggleTheme() { document.body.classList.toggle("light-mode"); }
 
     function checkLogin() {
@@ -177,50 +158,48 @@
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         const wantsEmail = document.getElementById("gmailTick").checked;
-        const e = document.getElementById("regEmail").value;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Owner name reserved!");
-        users.push({username: u, password: p, email: wantsEmail ? e : null});
+        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
+        
+        users.push({
+            username: u, password: p, 
+            email: wantsEmail ? document.getElementById("regEmail").value : null,
+            question: wantsEmail ? document.getElementById("regQ").value : null,
+            answer: wantsEmail ? document.getElementById("regA").value : null
+        });
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u);
         openTab(null, 'news');
     }
 
+    function forgotPass() {
+        const user = prompt("Enter Username:");
+        const found = users.find(u => u.username === user);
+        if (found && found.question) {
+            const ans = prompt("SECURITY QUESTION: " + found.question);
+            if (ans === found.answer) {
+                alert("ACCESS GRANTED. Your password is: " + found.password);
+            } else { alert("Incorrect answer. Only the owner knows this."); }
+        } else { alert("This account has no recovery set up."); }
+    }
+
+    function updateSecurity() {
+        const user = localStorage.getItem("lightyUser");
+        const idx = users.findIndex(u => u.username === user);
+        if (idx > -1) {
+            users[idx].question = document.getElementById("setQ").value;
+            users[idx].answer = document.getElementById("setA").value;
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            alert("Security Question Updated!");
+        }
+    }
+
     function loginSetup(user) {
         localStorage.setItem("lightyUser", user);
-        document.getElementById("welcomeUser").innerText = user;
-        document.getElementById("logoutBtn").style.display = "inline-block";
-        document.querySelectorAll("#tab-signin, #tab-signup").forEach(b => b.style.display = "none");
-        document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead").forEach(b => b.style.display = "inline-block");
+        document.getElementById("tab-signin").style.display = "none";
+        document.getElementById("tab-signup").style.display = "none";
+        document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead, #logoutBtn").forEach(b => b.style.display = "inline-block");
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
-        const uObj = users.find(u => u.username === user);
-        document.getElementById("profEmailDisplay").innerText = (uObj && uObj.email) ? "Recovery: " + uObj.email : "No Gmail";
-        document.getElementById("profilePfp").src = localStorage.getItem("pfp_" + user) || "Lighty studio.png";
-    }
-
-    function savePfp() {
-        const user = localStorage.getItem("lightyUser");
-        const file = document.getElementById("pfpUpload").files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            localStorage.setItem("pfp_" + user, reader.result);
-            document.getElementById("profilePfp").src = reader.result;
-            alert("PFP Updated!");
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function removeGmail() {
-        const user = localStorage.getItem("lightyUser");
-        const pass = document.getElementById("setVerifyPass").value;
-        const idx = users.findIndex(u => u.username === user);
-        if ((users[idx] && users[idx].password === pass) || (user === ownerName && pass === masterPass)) {
-            if (idx > -1) users[idx].email = null;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("Gmail Removed.");
-            loginSetup(user);
-        }
     }
 
     function updateAdmin() {
@@ -236,8 +215,7 @@
     }
 
     function delU(target) {
-        if (target === ownerName) return;
-        if (prompt("Master Password:") === masterPass) {
+        if (prompt("Master Key:") === masterPass) {
             users = users.filter(u => u.username !== target);
             localStorage.setItem("allUsers", JSON.stringify(users));
             updateAdmin();
