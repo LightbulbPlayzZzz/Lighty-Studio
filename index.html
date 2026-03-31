@@ -10,14 +10,12 @@
         
         body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; }
 
-        /* SCRATCH-STYLE HEADER */
-        .navbar { 
-            position: fixed; top: 0; left: 0; right: 0; height: 65px; 
-            background: var(--nav); display: flex; align-items: center; 
-            padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border);
-        }
-        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; }
-        .main-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
+        /* NAV BAR */
+        .navbar { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: var(--nav); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border); }
+        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; }
+        
+        /* OFFICIAL STUDIO LOGO (FIXED) */
+        .studio-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
         
         @keyframes fast-spin {
             0% { transform: rotate(0deg); }
@@ -27,14 +25,12 @@
         .trigger-spin { animation: fast-spin 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-grow: 1; }
-        .tab-btn { 
-            background: transparent; color: var(--text); border: none; 
-            padding: 10px 14px; cursor: pointer; border-radius: 5px; 
-            font-weight: bold; font-size: 0.9rem;
-        }
+        .tab-btn { background: transparent; color: var(--text); border: none; padding: 10px 14px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 0.9rem; }
         .tab-btn.active { background: #d3d3d3 !important; color: #222 !important; }
 
-        /* MAIN CONTENT */
+        /* USER AREA IN NAV */
+        .nav-user-icon { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; margin-left: 10px; display: none; }
+
         .container { width: 95%; max-width: 800px; text-align: center; }
         .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
         .content-section.active { display: block; }
@@ -42,18 +38,17 @@
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
-        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; color: var(--accent); }
-        .check-row input { width: 18px; height: 18px; margin: 0; }
+        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; }
         
-        /* PFP DISPLAYS */
-        .pfp-main { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff00ff; object-fit: cover; background: #333; margin: 0 auto 10px; display: block; }
+        /* PERSONAL PFP */
+        .pfp-profile-view { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent); object-fit: cover; margin: 0 auto 15px; display: block; background: #333; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">
-            <img id="navPfp" src="Lighty studio.png" class="main-logo trigger-spin" alt="Logo">
+        <div class="nav-left" onclick="openTab(null, 'news')">
+            <img id="studioLogo" src="Lighty studio.png" class="studio-logo trigger-spin" alt="Studio Logo">
             <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
 
@@ -67,13 +62,14 @@
             <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button>
             <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button>
             <button id="logoutBtn" class="tab-btn" style="display:none; color: #ff4444;" onclick="logout()">Logout</button>
+            <img id="navUserPfp" class="nav-user-icon">
         </div>
     </nav>
 
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Go to Settings to change your Profile Picture!</p>
+            <p>Fixed! The Studio Logo is now separate from your Profile Picture.</p>
         </div>
 
         <div id="games" class="content-section">
@@ -101,17 +97,17 @@
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
             <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-            <label class="check-row" style="color:var(--text);"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
+            <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
             <div id="regEmailArea" style="display:none; text-align: left;">
                 <input type="email" id="regEmail" placeholder="Gmail Address">
-                <input type="text" id="regQ" placeholder="Ex: My first pet's name?">
-                <input type="text" id="regA" placeholder="Your Answer">
+                <input type="text" id="regQ" placeholder="Secret Question">
+                <input type="text" id="regA" placeholder="Secret Answer">
             </div>
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create</button>
         </div>
 
         <div id="profile" class="content-section">
-            <img id="profilePfp" src="Lighty studio.png" class="pfp-main">
+            <img id="profilePfp" src="Lighty studio.png" class="pfp-profile-view">
             <h2 id="profName"></h2>
         </div>
 
@@ -120,16 +116,9 @@
             <div class="game-card">
                 <h4>Change Profile Picture</h4>
                 <input type="file" id="pfpUpload" accept="image/*">
-                <button class="submit-btn" onclick="savePfp()">Save Picture</button>
+                <button class="submit-btn" onclick="savePfp()">Update PFP</button>
             </div>
-            <button class="submit-btn" style="background:#555; margin-bottom: 20px;" onclick="toggleTheme()">Theme Toggle</button>
-            <div class="game-card">
-                <h4>Verify Identity to Change Question</h4>
-                <input type="text" id="setQ" placeholder="New Question">
-                <input type="text" id="setA" placeholder="New Answer">
-                <input type="password" id="verifyPass" placeholder="Enter Password">
-                <button class="submit-btn" onclick="updateSecurity()">Save Question</button>
-            </div>
+            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
         <div id="admin" class="content-section"><h2>👑 Admin</h2><div id="userList"></div></div>
@@ -141,7 +130,7 @@
     const masterPass = "LightyOwner2026";
 
     function spinLogo() {
-        const logo = document.getElementById("navPfp");
+        const logo = document.getElementById("studioLogo");
         logo.classList.remove("trigger-spin");
         void logo.offsetWidth; 
         logo.classList.add("trigger-spin");
@@ -159,39 +148,16 @@
         if (tabName === 'admin') updateAdmin();
     }
 
-    function checkLogin() {
-        const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
-        const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Login Failed"); }
-    }
-
-    function checkRegister() {
-        const u = document.getElementById("regUser").value.trim();
-        const p = document.getElementById("regPass").value;
-        const wantsEmail = document.getElementById("gmailTick").checked;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
-        users.push({username: u, password: p, email: wantsEmail ? document.getElementById("regEmail").value : null, question: wantsEmail ? document.getElementById("regQ").value : null, answer: wantsEmail ? document.getElementById("regA").value : null});
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        loginSetup(u);
-        openTab(null, 'news');
-    }
-
-    // FUNCTION TO SAVE NEW PFP
     function savePfp() {
         const user = localStorage.getItem("lightyUser");
         const file = document.getElementById("pfpUpload").files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onloadend = () => {
-            // Save image data to database
             localStorage.setItem("pfp_" + user, reader.result);
-            // Update UI immediately
             document.getElementById("profilePfp").src = reader.result;
-            document.getElementById("navPfp").src = reader.result;
-            alert("Success!");
+            document.getElementById("navUserPfp").src = reader.result;
+            alert("PFP Saved!");
         };
         reader.readAsDataURL(file);
     }
@@ -201,19 +167,38 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead, #logoutBtn").forEach(b => b.style.display = "inline-block");
-        if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
-        document.getElementById("profName").innerText = user;
         
-        // Load PFP data
+        // Load PFP
         const savedPfp = localStorage.getItem("pfp_" + user);
         document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
-        document.getElementById("navPfp").src = savedPfp || "Lighty studio.png";
+        const navIcon = document.getElementById("navUserPfp");
+        navIcon.src = savedPfp || "Lighty studio.png";
+        navIcon.style.display = "block";
+        
+        if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
+        document.getElementById("profName").innerText = user;
     }
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
-    function forgotPass() { alert("Simulated: Check your questions."); }
-    function updateSecurity() { alert("Simulated update."); }
-    function updateAdmin() { alert("Simulated admin."); }
+    function checkLogin() {
+        const u = document.getElementById("loginUser").value.trim();
+        const p = document.getElementById("loginPass").value;
+        if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
+        const found = users.find(user => user.username === u && user.password === p);
+        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Failed"); }
+    }
+    function checkRegister() {
+        const u = document.getElementById("regUser").value.trim();
+        const p = document.getElementById("regPass").value;
+        const wantsEmail = document.getElementById("gmailTick").checked;
+        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
+        users.push({username: u, password: p, email: wantsEmail ? document.getElementById("regEmail").value : null, question: wantsEmail ? document.getElementById("regQ").value : null, answer: wantsEmail ? document.getElementById("regA").value : null});
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        loginSetup(u); openTab(null, 'news');
+    }
+    function forgotPass() { alert("Use security questions."); }
+    function updateAdmin() { /* admin logic */ }
+
     window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
 </script>
 </body>
