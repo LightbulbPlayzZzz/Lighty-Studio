@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lighty Studio - Fixed</title>
+    <title>Lighty Studio</title>
     <style>
-        body { background-color: #121212; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; }
+        :root { --bg: #121212; --text: #e0e0e0; --card: #1e1e1e; --border: #444; }
+        .light-mode { --bg: #f0f0f0; --text: #121212; --card: #ffffff; --border: #ccc; }
+        
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; border: 8px solid; border-image: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000) 1; box-sizing: border-box; transition: 0.3s; }
         .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
         .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .main-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; background: white; object-fit: cover; }
         .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { background: #252525; color: white; border: 1px solid #444; padding: 10px 15px; cursor: pointer; border-radius: 8px; }
-        .tab-btn.active { background: white; color: black; font-weight: bold; }
-        .content-section { display: none; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .tab-btn { background: #252525; color: white; border: 1px solid var(--border); padding: 10px 15px; cursor: pointer; border-radius: 8px; }
+        .tab-btn.active { background: #ff00ff; color: white; font-weight: bold; }
+        .content-section { display: none; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
         .content-section.active { display: block; }
-        .game-card { background: #2a2a2a; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #444; }
-        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        .show-pass { font-size: 0.8rem; color: #888; display: flex; align-items: center; gap: 5px; justify-content: center; }
+        .game-card { background: rgba(0,0,0,0.05); padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--border); text-align: left; }
+        .submit-btn { background: #ff00ff; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; width: 100%; font-weight: bold; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 5px; box-sizing: border-box; }
+        
+        .pfp-display { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #ff00ff; object-fit: cover; background: #333; margin: 0 auto 15px auto; display: block; }
+        .show-pass { font-size: 0.8rem; display: flex; align-items: center; gap: 5px; justify-content: center; margin-bottom: 10px; }
+        .show-pass input { width: auto; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-box">
-        <img src="Lighty studio.png" class="main-logo" alt="Lighty Logo">
+        <img src="Lighty studio.png" class="main-logo">
         <h1>Lighty Studio</h1>
     </div>
 
     <div id="userArea" style="margin-bottom: 15px;">
-        <span id="welcomeUser"></span>
+        <span id="welcomeUser">Not Logged In</span>
         <button id="logoutBtn" style="display:none; background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="logout()">Logout</button>
     </div>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
         <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
-        <button class="tab-btn" onclick="openTab(event, 'upload')">Post Game</button>
+        <button class="tab-btn" id="postTabHead" onclick="openTab(event, 'upload')" style="display:none;">Post Game</button>
         <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
         <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Sign Up</button>
         <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">👤 Profile</button>
@@ -44,13 +50,28 @@
         <button id="tab-admin" class="tab-btn" style="display:none; border-color: gold;" onclick="openTab(event, 'admin')">👑 Admin</button>
     </div>
 
-    <div id="news" class="content-section active"><h2>News</h2><p>Owner Login Fixed. Use the Master Password to regain access.</p></div>
-    
+    <div id="news" class="content-section active">
+        <h2>News</h2>
+        <p>Profile Pictures are now LIVE for everyone!</p>
+    </div>
+
+    <div id="games" class="content-section">
+        <h2>Games</h2>
+        <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853; width:auto;">Download</button></div>
+    </div>
+
+    <div id="upload" class="content-section">
+        <h2>Post Your Game</h2>
+        <input type="text" placeholder="Game Name">
+        <input type="text" placeholder="Game Link">
+        <button class="submit-btn" onclick="alert('Posted!')">Submit</button>
+    </div>
+
     <div id="signin" class="content-section">
         <h2>Sign In</h2>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
-        <div class="show-pass"><input type="checkbox" onchange="document.getElementById('loginPass').type=this.checked?'text':'password'"> Show Password</div>
+        <div class="show-pass"><input type="checkbox" onchange="document.getElementById('loginPass').type=this.checked?'text':'password'"> Show Pass</div>
         <button class="submit-btn" onclick="checkLogin()">Login</button>
     </div>
 
@@ -58,31 +79,45 @@
         <h2>Sign Up</h2>
         <input type="text" id="regUser" placeholder="Username">
         <input type="password" id="regPass" placeholder="Password">
+        <p>Add Recovery Gmail?</p>
+        <input type="email" id="regEmail" placeholder="Gmail (Optional)">
         <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Register</button>
     </div>
 
-    <div id="upload" class="content-section">
-        <h2>Post Game</h2>
-        <div id="uploadForm"><input type="text" placeholder="Game Title"><button class="submit-btn">Post</button></div>
-    </div>
-
     <div id="profile" class="content-section">
-        <img id="displayPfp" src="Lighty studio.png" style="width:100px; border-radius:50%; border:2px solid cyan;">
+        <img id="profilePfp" src="placeholder.png" class="pfp-display" alt="PFP">
         <h2 id="profName"></h2>
+        <p id="profEmailDisplay" style="color:cyan;"></p>
     </div>
 
     <div id="settings" class="content-section">
-        <h2>Settings</h2>
-        <p>Manage your account here.</p>
+        <h2>⚙️ Settings</h2>
+        <div class="game-card">
+            <h4>Update Profile Picture</h4>
+            <input type="file" id="pfpUpload" accept="image/*">
+            <button class="submit-btn" onclick="savePfp()">Save New PFP</button>
+        </div>
+        <div class="game-card">
+            <h4>Appearance</h4>
+            <button class="submit-btn" style="background:#444;" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
+        </div>
+        <div class="game-card">
+            <h4>Security</h4>
+            <input type="password" id="setVerifyPass" placeholder="Verify Password">
+            <button class="submit-btn" style="background:#ff4444;" onclick="removeGmail()">Remove Gmail Recovery</button>
+        </div>
     </div>
 
-    <div id="admin" class="content-section"><h2>Admin</h2><div id="userList"></div></div>
+    <div id="admin" class="content-section">
+        <h2>Admin Control</h2>
+        <div id="userList"></div>
+    </div>
 </div>
 
 <script>
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
-    const masterPass = "POLKA08642OZX/"; // THE MASTER KEY
+    const masterPass = "LightyOwner2026";
 
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
@@ -92,46 +127,75 @@
         if (tabName === 'admin') updateAdmin();
     }
 
+    function toggleTheme() { document.body.classList.toggle("light-mode"); }
+
     function checkLogin() {
         const u = document.getElementById("loginUser").value.trim();
         const p = document.getElementById("loginPass").value;
-        
-        // Check Master Key First
         if (u === ownerName && p === masterPass) {
-            localStorage.setItem("lightyUser", u);
             loginSetup(u);
             openTab(null, 'news');
             return;
         }
-
         const found = users.find(user => user.username === u && user.password === p);
-        if (found) {
-            localStorage.setItem("lightyUser", u);
-            loginSetup(u);
-            openTab(null, 'news');
-        } else { alert("Login Failed - Incorrect User or Password"); }
+        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Login Failed"); }
     }
 
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("That name belongs to the Owner!");
-        users.push({username: u, password: p});
+        const e = document.getElementById("regEmail").value;
+        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Owner name reserved!");
+        users.push({username: u, password: p, email: e || null});
         localStorage.setItem("allUsers", JSON.stringify(users));
-        localStorage.setItem("lightyUser", u);
         loginSetup(u);
         openTab(null, 'news');
     }
 
     function loginSetup(username) {
+        localStorage.setItem("lightyUser", username);
         document.getElementById("welcomeUser").innerText = "Welcome, " + username;
         document.getElementById("logoutBtn").style.display = "inline-block";
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.getElementById("tab-profile").style.display = "inline-block";
         document.getElementById("tab-settings").style.display = "inline-block";
+        document.getElementById("postTabHead").style.display = "inline-block";
         if (username === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
+        
         document.getElementById("profName").innerText = username;
+        const uObj = users.find(u => u.username === username);
+        document.getElementById("profEmailDisplay").innerText = (uObj && uObj.email) ? "Gmail: " + uObj.email : "No Gmail Linked";
+        
+        // Load PFP
+        const savedPfp = localStorage.getItem("pfp_" + username);
+        document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
+    }
+
+    function savePfp() {
+        const user = localStorage.getItem("lightyUser");
+        const file = document.getElementById("pfpUpload").files[0];
+        if (!file) return alert("Select an image first!");
+
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            localStorage.setItem("pfp_" + user, reader.result);
+            document.getElementById("profilePfp").src = reader.result;
+            alert("Profile Picture Updated!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeGmail() {
+        const user = localStorage.getItem("lightyUser");
+        const pass = document.getElementById("setVerifyPass").value;
+        const idx = users.findIndex(u => u.username === user);
+        if ((users[idx] && users[idx].password === pass) || (user === ownerName && pass === masterPass)) {
+            if (idx > -1) users[idx].email = null;
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            alert("Gmail Removed!");
+            loginSetup(user);
+        } else { alert("Wrong password!"); }
     }
 
     function updateAdmin() {
@@ -140,13 +204,16 @@
         users.forEach((u, i) => {
             const div = document.createElement("div");
             div.className = "game-card";
-            div.innerHTML = `${u.username} <button style="float:right; background:red; color:white; border:none; padding:5px;" onclick="delU(${i})">Delete</button>`;
+            div.innerHTML = `<strong>${u.username}</strong> 
+            <button style="float:right; background:red; color:white; border:none; padding:5px; border-radius:5px;" 
+            onclick="delU(${i}, '${u.username}')">Remove</button>`;
             list.appendChild(div);
         });
     }
 
-    function delU(i) {
-        if (prompt("Admin Pass:") === masterPass) {
+    function delU(i, targetName) {
+        if (targetName === ownerName) return alert("System cannot delete the Owner!");
+        if (prompt("Admin Password:") === masterPass) {
             users.splice(i, 1);
             localStorage.setItem("allUsers", JSON.stringify(users));
             updateAdmin();
@@ -154,9 +221,7 @@
     }
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
-    
     window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
 </script>
-
 </body>
 </html>
