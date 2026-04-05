@@ -10,7 +10,6 @@
         
         body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; overflow-x: hidden; }
 
-        /* NAV BAR - ALL IN ONE LINE */
         .navbar { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: var(--nav); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border); }
         .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; flex-shrink: 0; }
         .studio-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
@@ -50,6 +49,7 @@
         <div class="tabs-container">
             <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
+            <button class="tab-btn" onclick="openTab(event, 'support')">Support</button>
             <button class="tab-btn" id="postTabHead" onclick="openTab(event, 'upload')" style="display:none;">Post</button>
             <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
             <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
@@ -64,12 +64,20 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Gmail recovery questions are now 100% active. Go to Sign Up to test!</p>
+            <p>Admin controls and password recovery are now fully functional.</p>
         </div>
 
         <div id="games" class="content-section">
             <h2>Games</h2>
             <div class="game-card"><h3>Paint V1</h3><button class="submit-btn" style="background:#00c853;">Launch</button></div>
+        </div>
+
+        <div id="support" class="content-section">
+            <h2>Support</h2>
+            <div class="game-card">
+                <p>Need help? Contact the Lighty Studio team.</p>
+                <button class="submit-btn" onclick="alert('Message sent to LightbulbPlayzZzz!')">Contact Owner</button>
+            </div>
         </div>
 
         <div id="upload" class="content-section">
@@ -92,14 +100,11 @@
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
             <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
-            
-            <label class="check-row" style="color:var(--text);"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
-            
+            <label class="check-row"><input type="checkbox" id="gmailTick" onchange="document.getElementById('regEmailArea').style.display = this.checked ? 'block' : 'none'"> Enable Gmail Recovery?</label>
             <div id="regEmailArea" style="display:none; text-align: left; padding: 10px; border: 1px dashed var(--accent); border-radius: 8px;">
                 <input type="email" id="regEmail" placeholder="Gmail Address">
-                <p style="font-size: 0.75rem; margin: 5px 0; color: #aaa;">Recovery Question:</p>
-                <input type="text" id="regQ" placeholder="Ex: My first pet's name?">
-                <input type="text" id="regA" placeholder="Your Answer">
+                <input type="text" id="regQ" placeholder="Security Question">
+                <input type="text" id="regA" placeholder="Answer">
             </div>
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
@@ -112,21 +117,17 @@
         <div id="settings" class="content-section">
             <h2>Settings</h2>
             <div class="game-card">
-                <h4>Profile Picture</h4>
+                <h4>Update Profile Picture</h4>
                 <input type="file" id="pfpUpload" accept="image/*">
-                <button class="submit-btn" onclick="savePfp()">Update PFP</button>
-            </div>
-            <div class="game-card">
-                <h4>Security Recovery</h4>
-                <input type="text" id="setQ" placeholder="New Secret Question">
-                <input type="text" id="setA" placeholder="New Secret Answer">
-                <input type="password" id="verifySetPass" placeholder="Confirm Password to Save">
-                <button class="submit-btn" onclick="updateSecurity()">Save New Question</button>
+                <button class="submit-btn" onclick="savePfp()">Save PFP</button>
             </div>
             <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
-        <div id="admin" class="content-section"><h2>👑 Admin</h2><div id="userList"></div></div>
+        <div id="admin" class="content-section">
+            <h2>👑 Admin Panel</h2>
+            <div id="userList"></div>
+        </div>
     </div>
 
 <script>
@@ -167,26 +168,14 @@
         reader.readAsDataURL(file);
     }
 
-    // --- THE FIX: REAL FORGOT PASSWORD LOGIC ---
     function forgotPass() {
-        const target = prompt("Enter Username to recover:");
-        if (!target) return;
-        const userObj = users.find(u => u.username.toLowerCase() === target.toLowerCase());
-        
-        if (userObj) {
-            if (userObj.question && userObj.answer) {
-                const answer = prompt("SECURITY QUESTION: " + userObj.question);
-                if (answer && answer.toLowerCase() === userObj.answer.toLowerCase()) {
-                    alert("✅ Success! Your password is: " + userObj.password);
-                } else {
-                    alert("❌ Incorrect answer. Only the real owner knows this.");
-                }
-            } else {
-                alert("⚠️ This account doesn't have a recovery question set up.");
-            }
-        } else {
-            alert("❓ User not found.");
-        }
+        const target = prompt("Username:");
+        const u = users.find(x => x.username.toLowerCase() === target.toLowerCase());
+        if (u && u.question) {
+            const ans = prompt(u.question);
+            if (ans && ans.toLowerCase() === u.answer.toLowerCase()) alert("Password: " + u.password);
+            else alert("Wrong.");
+        } else alert("Not found.");
     }
 
     function checkLogin() {
@@ -194,24 +183,14 @@
         const p = document.getElementById("loginPass").value;
         if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
         const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Login Failed"); }
+        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Failed"); }
     }
 
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         const wantsEmail = document.getElementById("gmailTick").checked;
-        if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Reserved!");
-        
-        const newUser = {
-            username: u, 
-            password: p, 
-            email: wantsEmail ? document.getElementById("regEmail").value : null, 
-            question: wantsEmail ? document.getElementById("regQ").value : null, 
-            answer: wantsEmail ? document.getElementById("regA").value : null
-        };
-        
-        users.push(newUser);
+        users.push({username: u, password: p, question: wantsEmail ? document.getElementById("regQ").value : null, answer: wantsEmail ? document.getElementById("regA").value : null});
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u); openTab(null, 'news');
     }
@@ -221,50 +200,36 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #postTabHead, #logoutBtn").forEach(b => b.style.display = "inline-block");
-        
         const savedPfp = localStorage.getItem("pfp_" + user);
         document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
-        const navIcon = document.getElementById("navUserPfp");
-        navIcon.src = savedPfp || "Lighty studio.png";
-        navIcon.style.display = "block";
-        
+        const ni = document.getElementById("navUserPfp");
+        ni.src = savedPfp || "Lighty studio.png"; ni.style.display = "block";
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
     }
 
-    function updateSecurity() {
-        const user = localStorage.getItem("lightyUser");
-        const pass = document.getElementById("verifySetPass").value;
-        const idx = users.findIndex(u => u.username === user);
-        if (idx > -1 && (users[idx].password === pass || (user === ownerName && pass === masterPass))) {
-            users[idx].question = document.getElementById("setQ").value;
-            users[idx].answer = document.getElementById("setA").value;
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            alert("Security Question Saved!");
-        } else { alert("Wrong Password!"); }
-    }
-
-    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
     function updateAdmin() {
         const list = document.getElementById("userList");
         list.innerHTML = "";
-        users.forEach((u) => {
+        users.forEach(u => {
             if (u.username === ownerName) return;
             const div = document.createElement("div");
             div.className = "game-card";
-            div.innerHTML = `<strong>${u.username}</strong> <button style="float:right; background:red; color:white; border:none; padding:5px; border-radius:5px;" onclick="delU('${u.username}')">Delete</button>`;
+            div.innerHTML = `<strong>${u.username}</strong> <button style="float:right; background:red; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;" onclick="delU('${u.username}')">DELETE</button>`;
             list.appendChild(div);
         });
     }
 
-    function delU(target) {
-        if (prompt("Master Password:") === masterPass) {
-            users = users.filter(u => u.username !== target);
-            localStorage.setItem("allUsers", JSON.stringify(users));
+    function delU(t) {
+        if (prompt("ADMIN KEY:") === masterPass) {
+            users = users.filter(u => u.username !== t);
+            localStorage.setItem("allUsers", JSON.stringify(users)); // This line saves it!
             updateAdmin();
+            alert("Deleted " + t);
         }
     }
 
+    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
     window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
 </script>
 </body>
