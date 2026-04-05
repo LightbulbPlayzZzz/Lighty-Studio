@@ -64,7 +64,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Setup your recovery question in Settings to use the Forgot Password button!</p>
+            <p>Profile pictures and account recovery are now working for all members.</p>
         </div>
 
         <div id="games" class="content-section">
@@ -104,8 +104,8 @@
             
             <div class="game-card" style="display:block; margin-top: 20px;">
                 <h4>Account Recovery</h4>
-                <p style="font-size: 0.8rem; color: #aaa;">Set a question only you can answer.</p>
-                <input type="text" id="setQ" placeholder="Secret Question (e.g. My first pet?)">
+                <p style="font-size: 0.8rem; color: #aaa;">Set a secret question to recover your password.</p>
+                <input type="text" id="setQ" placeholder="Secret Question">
                 <input type="text" id="setA" placeholder="Secret Answer">
                 <button class="submit-btn" style="background: #2196F3;" onclick="saveRecovery()">Save Recovery Info</button>
             </div>
@@ -146,54 +146,43 @@
         const currentUser = localStorage.getItem("lightyUser");
         const q = document.getElementById("setQ").value;
         const a = document.getElementById("setA").value;
-        
         if (!q || !a) return alert("Fill both fields!");
 
-        // Update the user in the array
         users = users.map(u => {
-            if (u.username === currentUser) {
-                return { ...u, question: q, answer: a };
-            }
+            if (u.username === currentUser) return { ...u, question: q, answer: a };
             return u;
         });
-
         localStorage.setItem("allUsers", JSON.stringify(users));
-        alert("Recovery question saved!");
+        alert("Recovery saved!");
     }
 
     function forgotPass() {
         const target = prompt("Enter Username:");
         if (!target) return;
-
-        // Check if it's the owner
-        if (target === ownerName) {
-            alert("Contact the developer directly for owner recovery.");
-            return;
-        }
-
         const u = users.find(x => x.username.toLowerCase() === target.toLowerCase());
         if (u && u.question) {
-            const ans = prompt("RECOVERY QUESTION: " + u.question);
-            if (ans && ans.toLowerCase() === u.answer.toLowerCase()) {
-                alert("ACCESS GRANTED. Your password is: " + u.password);
-            } else {
-                alert("Incorrect answer.");
-            }
-        } else {
-            alert("No recovery question found for this user. Did you set it in Settings?");
-        }
+            const ans = prompt("QUESTION: " + u.question);
+            if (ans && ans.toLowerCase() === u.answer.toLowerCase()) alert("Password: " + u.password);
+            else alert("Wrong answer.");
+        } else alert("No recovery info found.");
     }
 
+    // --- FIXED PFP SAVING FOR ALL USERS ---
     function savePfp() {
-        const user = localStorage.getItem("lightyUser");
+        const currentUser = localStorage.getItem("lightyUser");
         const file = document.getElementById("pfpUpload").files[0];
-        if (!file) return;
+        if (!file || !currentUser) return;
+
         const reader = new FileReader();
         reader.onloadend = () => {
-            localStorage.setItem("pfp_" + user, reader.result);
-            document.getElementById("profilePfp").src = reader.result;
-            document.getElementById("navUserPfp").src = reader.result;
-            alert("PFP Updated!");
+            const imgData = reader.result;
+            // Store specifically for THIS username
+            localStorage.setItem("pfp_" + currentUser, imgData);
+            
+            // Update UI
+            document.getElementById("profilePfp").src = imgData;
+            document.getElementById("navUserPfp").src = imgData;
+            alert("Profile Picture Updated!");
         };
         reader.readAsDataURL(file);
     }
@@ -209,6 +198,7 @@
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
+        if (!u || !p) return;
         if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Username taken!");
         
         users.push({ username: u, password: p, question: null, answer: null });
@@ -222,15 +212,17 @@
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #logoutBtn").forEach(b => b.style.display = "inline-block");
         
+        // Load PFP specifically for THIS user
         const savedPfp = localStorage.getItem("pfp_" + user);
-        document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
+        const finalImg = savedPfp || "Lighty studio.png";
+        
+        document.getElementById("profilePfp").src = finalImg;
         const ni = document.getElementById("navUserPfp");
-        ni.src = savedPfp || "Lighty studio.png"; ni.style.display = "block";
+        ni.src = finalImg; ni.style.display = "block";
         
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
 
-        // Load existing recovery info into settings inputs
         const uData = users.find(x => x.username === user);
         if (uData) {
             document.getElementById("setQ").value = uData.question || "";
@@ -256,9 +248,10 @@
 
     function delU(t) {
         if (prompt("ADMIN KEY:") === masterPass) {
-            let currentUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-            users = currentUsers.filter(u => u.username !== t);
+            users = users.filter(u => u.username !== t);
             localStorage.setItem("allUsers", JSON.stringify(users));
+            // Also clean up their specific PFP to save space
+            localStorage.removeItem("pfp_" + t);
             updateAdmin();
         }
     }
