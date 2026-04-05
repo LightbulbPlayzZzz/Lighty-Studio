@@ -22,18 +22,18 @@
         .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 50px; }
         .content-section.active { display: block; }
         
-        .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; position: relative; }
-        .creator-tag { font-size: 0.8rem; color: #aaa; margin-bottom: 5px; display: block; }
-        .os-tag { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+        /* Password Wrapper for Eye Icon */
+        .pass-wrapper { position: relative; width: 100%; margin: 8px 0; }
+        .toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: bold; }
 
-        .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+        .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         
-        .desc-text { font-size: 0.9rem; margin-top: 10px; display: none; color: #ccc; line-height: 1.4; border-top: 1px solid var(--border); padding-top: 10px; }
-        .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; padding: 0; margin-top: 5px; text-decoration: underline; }
-        
-        .admin-del-post { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
-        .forgot-link { font-size: 0.8rem; color: #888; cursor: pointer; display: block; margin-top: 10px; text-decoration: underline; }
+        .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; position: relative; }
+        .creator-tag { font-size: 0.8rem; color: #aaa; display: block; }
+        .os-tag { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+        .desc-text { font-size: 0.9rem; margin-top: 10px; display: none; color: #ccc; border-top: 1px solid var(--border); padding-top: 10px; }
+        .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -59,15 +59,14 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Community projects now support download links and account recovery!</p>
+            <p>Security updates: Password toggles added to all forms.</p>
         </div>
 
         <div id="games" class="content-section">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">Library</button>
                 <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">Post Game</button>
             </div>
-
             <div id="game-library">
                 <h2>Official Games</h2>
                 <div class="game-card">
@@ -77,23 +76,14 @@
                     <button class="submit-btn" style="background:#00c853;" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">Download</button>
                 </div>
             </div>
-
             <div id="game-posts" style="display: none;">
-                <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); margin-bottom: 20px; padding-bottom: 20px;">
-                    <h2>Publish Game</h2>
+                <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
                     <input type="text" id="postTitle" placeholder="Game Title">
-                    <input type="text" id="postLink" placeholder="Google Drive / Download Link">
-                    <textarea id="postDesc" placeholder="Game Description"></textarea>
-                    <select id="osSelect">
-                        <option value="Windows🪟">works for windows🪟</option>
-                        <option value="Mac🧀">works for mac🧀</option>
-                        <option value="Linux🐧">works for LINUX🐧</option>
-                    </select>
-                    <button class="submit-btn" onclick="addPost()">Publish Project</button>
+                    <input type="text" id="postLink" placeholder="Download Link">
+                    <textarea id="postDesc" placeholder="Description"></textarea>
+                    <select id="osSelect"><option value="Windows🪟">Windows🪟</option><option value="Mac🧀">Mac🧀</option></select>
+                    <button class="submit-btn" onclick="addPost()">Publish</button>
                 </div>
-                
-                <div id="no-auth-msg"><p style="color: #888;">You must be signed in to publish games.</p></div>
-                <h2>Community Projects</h2>
                 <div id="feed"></div>
             </div>
         </div>
@@ -101,43 +91,62 @@
         <div id="signin" class="content-section">
             <h2>Sign In</h2>
             <input type="text" id="loginUser" placeholder="Username">
-            <input type="password" id="loginPass" placeholder="Password">
+            <div class="pass-wrapper">
+                <input type="password" id="loginPass" placeholder="Password">
+                <button class="toggle-pass" onclick="togglePassVisibility('loginPass')">SHOW</button>
+            </div>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
-            <span class="forgot-link" onclick="openTab(null, 'recovery')">Forgot Password?</span>
-        </div>
-
-        <div id="recovery" class="content-section">
-            <h2>Account Recovery</h2>
-            <input type="text" id="recUser" placeholder="Enter Username">
-            <p id="recQuestionDisplay" style="color:var(--accent); font-weight:bold;"></p>
-            <input type="text" id="recAnswer" placeholder="Your Answer">
-            <button class="submit-btn" onclick="recoverPassword()">Recover Password</button>
-            <button class="tab-btn" style="margin-top:10px;" onclick="openTab(null, 'signin')">Back to Login</button>
+            <p style="cursor:pointer; color:#888; font-size:0.8rem;" onclick="openTab(null, 'recovery')">Forgot Password?</p>
         </div>
 
         <div id="signup" class="content-section">
             <h2>Join</h2>
             <input type="text" id="regUser" placeholder="Username">
-            <input type="password" id="regPass" placeholder="Password">
-            <label style="display:block; margin-top:10px; font-size:0.8rem; color:#888;">Security Question (For Recovery):</label>
-            <select id="regQuestion">
-                <option value="What is your pet's name?">What is your pet's name?</option>
-                <option value="What was your first car?">What was your first car?</option>
-                <option value="What is your favorite food?">What is your favorite food?</option>
-            </select>
-            <input type="text" id="regAnswer" placeholder="Security Answer">
+            <div class="pass-wrapper">
+                <input type="password" id="regPass" placeholder="Password">
+                <button class="toggle-pass" onclick="togglePassVisibility('regPass')">SHOW</button>
+            </div>
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
 
+        <div id="recovery" class="content-section">
+            <h2>Recovery</h2>
+            <input type="text" id="recUserSearch" placeholder="Username">
+            <button class="submit-btn" onclick="findUserQuestion()">Find Question</button>
+            <div id="recStep2" style="display:none; margin-top:20px;">
+                <p id="recQuestionDisplay" style="color:gold;"></p>
+                <input type="text" id="recAnswer" placeholder="Answer">
+                <button class="submit-btn" onclick="recoverPassword()">Get Password</button>
+            </div>
+        </div>
+
         <div id="profile" class="content-section"><h2 id="profName"></h2></div>
-        <div id="settings" class="content-section"><h2>Settings</h2><button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button></div>
-        <div id="admin" class="content-section"><h2>👑 Admin Panel</h2><div id="userList"></div></div>
+        <div id="settings" class="content-section">
+            <h2>Settings</h2>
+            <button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button>
+            <h3 style="margin-top:30px;">Security Question</h3>
+            <select id="setQuestion"><option>What is your pet's name?</option><option>Favorite Food?</option></select>
+            <input type="text" id="setAnswer" placeholder="Answer">
+            <button class="submit-btn" style="background:#2196F3;" onclick="saveRecoverySettings()">Save</button>
+        </div>
     </div>
 
 <script>
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
     const masterPass = "POLKA08642OZX/";
+
+    function togglePassVisibility(id) {
+        const input = document.getElementById(id);
+        const btn = input.nextElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            btn.innerText = "HIDE";
+        } else {
+            input.type = "password";
+            btn.innerText = "SHOW";
+        }
+    }
 
     function updateNavbar() {
         const user = localStorage.getItem("lightyUser");
@@ -150,9 +159,7 @@
         document.getElementById("tab-admin").style.display = (user === ownerName) ? "inline-block" : "none";
         if (isLoggedIn) document.getElementById("profName").innerText = user;
         const pubBox = document.getElementById("publish-box");
-        const noAuth = document.getElementById("no-auth-msg");
         if(pubBox) pubBox.style.display = isLoggedIn ? "block" : "none";
-        if(noAuth) noAuth.style.display = isLoggedIn ? "none" : "block";
     }
 
     function openTab(evt, tabName) {
@@ -160,92 +167,47 @@
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
-        updateNavbar(); 
+        updateNavbar();
     }
 
     function toggleGameSub(type) {
         document.getElementById('game-library').style.display = (type === 'lib') ? 'block' : 'none';
         document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
-        document.getElementById('subtab-lib').classList.toggle('active', type === 'lib');
-        document.getElementById('subtab-post').classList.toggle('active', type === 'post');
-        if(type === 'post') { loadPosts(); updateNavbar(); }
+        if(type === 'post') loadPosts();
     }
 
-    function addPost() {
+    function saveRecoverySettings() {
         const user = localStorage.getItem("lightyUser");
-        const title = document.getElementById("postTitle").value;
-        const link = document.getElementById("postLink").value;
-        const desc = document.getElementById("postDesc").value;
-        const os = document.getElementById("osSelect").value;
-        if (!title.trim() || !desc.trim() || !link.trim()) return alert("Fill out all fields including the link!");
-        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        posts.unshift({ id: Date.now(), user, title, link, desc, os });
-        localStorage.setItem("gamePosts", JSON.stringify(posts));
-        document.getElementById("postTitle").value = "";
-        document.getElementById("postLink").value = "";
-        document.getElementById("postDesc").value = "";
-        loadPosts();
+        const q = document.getElementById("setQuestion").value;
+        const a = document.getElementById("setAnswer").value.trim().toLowerCase();
+        users = users.map(u => u.username === user ? {...u, question: q, answer: a} : u);
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        alert("Saved!");
     }
 
-    function loadPosts() {
-        const feed = document.getElementById("feed");
-        feed.innerHTML = "";
-        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        const currentUser = localStorage.getItem("lightyUser");
-        posts.forEach(p => {
-            const div = document.createElement("div");
-            div.className = "game-card";
-            div.innerHTML = `
-                ${currentUser === ownerName ? `<button class="admin-del-post" onclick="deletePost(${p.id})">Admin Delete</button>` : ""}
-                <strong style="font-size: 1.2rem; color: white;">${p.title}</strong><br>
-                <span class="creator-tag">creator: ${p.user}</span>
-                <span class="os-tag">works for ${p.os}</span>
-                <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download Game</button>
-                <button class="see-more-btn" onclick="toggleDesc(this)">See Description</button>
-                <div class="desc-text">${p.desc}</div>
-            `;
-            feed.appendChild(div);
-        });
+    function findUserQuestion() {
+        const u = document.getElementById("recUserSearch").value.trim();
+        const found = users.find(user => user.username === u);
+        if(!found || !found.question) return alert("User/Question not found");
+        document.getElementById("recQuestionDisplay").innerText = found.question;
+        document.getElementById("recStep2").style.display = "block";
     }
 
-    function toggleDesc(btn) {
-        const desc = btn.nextElementSibling;
-        const isHidden = desc.style.display === "none" || desc.style.display === "";
-        desc.style.display = isHidden ? "block" : "none";
-        btn.innerText = isHidden ? "Hide Description" : "See Description";
-    }
-
-    function deletePost(postId) {
-        if (prompt("ADMIN PASSWORD:") === masterPass) {
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-            posts = posts.filter(p => p.id !== postId);
-            localStorage.setItem("gamePosts", JSON.stringify(posts));
-            loadPosts();
-        }
+    function recoverPassword() {
+        const u = document.getElementById("recUserSearch").value.trim();
+        const a = document.getElementById("recAnswer").value.trim().toLowerCase();
+        const found = users.find(user => user.username === u);
+        if(found.answer === a) alert("Password: " + found.password);
+        else alert("Wrong Answer");
     }
 
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
-        const q = document.getElementById("regQuestion").value;
-        const a = document.getElementById("regAnswer").value.trim();
-        if (!u || !p || !a) return alert("Fill everything out!");
-        users.push({ username: u, password: p, question: q, answer: a.toLowerCase() });
+        if (!u || !p) return alert("Fill all");
+        users.push({ username: u, password: p, question: "", answer: "" });
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u);
-    }
-
-    function recoverPassword() {
-        const u = document.getElementById("recUser").value.trim();
-        const a = document.getElementById("recAnswer").value.trim().toLowerCase();
-        const found = users.find(user => user.username === u);
-        if(!found) return alert("User not found");
-        if(found.answer === a) {
-            alert("Your password is: " + found.password);
-            openTab(null, 'signin');
-        } else {
-            alert("Wrong Answer");
-        }
     }
 
     function checkLogin() {
@@ -253,13 +215,43 @@
         const p = document.getElementById("loginPass").value;
         if (u === ownerName && p === masterPass) { loginSetup(u); return; }
         const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); } else { alert("Login Failed"); }
+        if (found) loginSetup(u); else alert("Failed");
     }
 
     function loginSetup(user) {
         localStorage.setItem("lightyUser", user);
         updateNavbar();
         openTab(null, 'news');
+    }
+
+    function addPost() {
+        const user = localStorage.getItem("lightyUser");
+        const title = document.getElementById("postTitle").value;
+        const link = document.getElementById("postLink").value;
+        const desc = document.getElementById("postDesc").value;
+        if (!title || !link) return alert("Missing data");
+        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        posts.unshift({ id: Date.now(), user, title, link, desc, os: document.getElementById("osSelect").value });
+        localStorage.setItem("gamePosts", JSON.stringify(posts));
+        loadPosts();
+    }
+
+    function loadPosts() {
+        const feed = document.getElementById("feed");
+        feed.innerHTML = "";
+        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        posts.forEach(p => {
+            const div = document.createElement("div");
+            div.className = "game-card";
+            div.innerHTML = `
+                <strong>${p.title}</strong><br>
+                <span class="creator-tag">creator: ${p.user}</span>
+                <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download</button>
+                <button class="see-more-btn" onclick="this.nextElementSibling.style.display='block'">See More</button>
+                <div class="desc-text">${p.desc}</div>
+            `;
+            feed.appendChild(div);
+        });
     }
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
