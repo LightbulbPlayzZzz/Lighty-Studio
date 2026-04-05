@@ -33,6 +33,7 @@
         .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; padding: 0; margin-top: 5px; text-decoration: underline; }
         
         .admin-del-post { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .forgot-link { font-size: 0.8rem; color: #888; cursor: pointer; display: block; margin-top: 10px; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -46,10 +47,8 @@
             <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
             <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" class="nav-link">Support</a>
-            
             <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
             <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
-            
             <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button>
             <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button>
             <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button>
@@ -60,7 +59,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Logged-in users can now publish games. Admin can delete posts.</p>
+            <p>Community projects now support download links and account recovery!</p>
         </div>
 
         <div id="games" class="content-section">
@@ -83,7 +82,8 @@
                 <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); margin-bottom: 20px; padding-bottom: 20px;">
                     <h2>Publish Game</h2>
                     <input type="text" id="postTitle" placeholder="Game Title">
-                    <textarea id="postDesc" placeholder="Game Description (What is it about?)"></textarea>
+                    <input type="text" id="postLink" placeholder="Google Drive / Download Link">
+                    <textarea id="postDesc" placeholder="Game Description"></textarea>
                     <select id="osSelect">
                         <option value="Windows🪟">works for windows🪟</option>
                         <option value="Mac🧀">works for mac🧀</option>
@@ -92,10 +92,7 @@
                     <button class="submit-btn" onclick="addPost()">Publish Project</button>
                 </div>
                 
-                <div id="no-auth-msg">
-                    <p style="color: #888;">You must be signed in to publish games.</p>
-                </div>
-
+                <div id="no-auth-msg"><p style="color: #888;">You must be signed in to publish games.</p></div>
                 <h2>Community Projects</h2>
                 <div id="feed"></div>
             </div>
@@ -106,13 +103,32 @@
             <input type="text" id="loginUser" placeholder="Username">
             <input type="password" id="loginPass" placeholder="Password">
             <button class="submit-btn" onclick="checkLogin()">Login</button>
+            <span class="forgot-link" onclick="openTab(null, 'recovery')">Forgot Password?</span>
         </div>
+
+        <div id="recovery" class="content-section">
+            <h2>Account Recovery</h2>
+            <input type="text" id="recUser" placeholder="Enter Username">
+            <p id="recQuestionDisplay" style="color:var(--accent); font-weight:bold;"></p>
+            <input type="text" id="recAnswer" placeholder="Your Answer">
+            <button class="submit-btn" onclick="recoverPassword()">Recover Password</button>
+            <button class="tab-btn" style="margin-top:10px;" onclick="openTab(null, 'signin')">Back to Login</button>
+        </div>
+
         <div id="signup" class="content-section">
             <h2>Join</h2>
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
+            <label style="display:block; margin-top:10px; font-size:0.8rem; color:#888;">Security Question (For Recovery):</label>
+            <select id="regQuestion">
+                <option value="What is your pet's name?">What is your pet's name?</option>
+                <option value="What was your first car?">What was your first car?</option>
+                <option value="What is your favorite food?">What is your favorite food?</option>
+            </select>
+            <input type="text" id="regAnswer" placeholder="Security Answer">
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
+
         <div id="profile" class="content-section"><h2 id="profName"></h2></div>
         <div id="settings" class="content-section"><h2>Settings</h2><button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button></div>
         <div id="admin" class="content-section"><h2>👑 Admin Panel</h2><div id="userList"></div></div>
@@ -123,12 +139,28 @@
     const ownerName = "LightbulbPlayzZzz";
     const masterPass = "POLKA08642OZX/";
 
+    function updateNavbar() {
+        const user = localStorage.getItem("lightyUser");
+        const isLoggedIn = !!user;
+        document.getElementById("tab-signin").style.display = isLoggedIn ? "none" : "inline-block";
+        document.getElementById("tab-signup").style.display = isLoggedIn ? "none" : "inline-block";
+        document.getElementById("tab-profile").style.display = isLoggedIn ? "inline-block" : "none";
+        document.getElementById("tab-settings").style.display = isLoggedIn ? "inline-block" : "none";
+        document.getElementById("logoutBtn").style.display = isLoggedIn ? "inline-block" : "none";
+        document.getElementById("tab-admin").style.display = (user === ownerName) ? "inline-block" : "none";
+        if (isLoggedIn) document.getElementById("profName").innerText = user;
+        const pubBox = document.getElementById("publish-box");
+        const noAuth = document.getElementById("no-auth-msg");
+        if(pubBox) pubBox.style.display = isLoggedIn ? "block" : "none";
+        if(noAuth) noAuth.style.display = isLoggedIn ? "none" : "block";
+    }
+
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
-        if (tabName === 'games') checkAuthForPosting();
+        updateNavbar(); 
     }
 
     function toggleGameSub(type) {
@@ -136,45 +168,21 @@
         document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
         document.getElementById('subtab-lib').classList.toggle('active', type === 'lib');
         document.getElementById('subtab-post').classList.toggle('active', type === 'post');
-        if(type === 'post') { loadPosts(); checkAuthForPosting(); }
-    }
-
-    function checkAuthForPosting() {
-        const user = localStorage.getItem("lightyUser");
-        document.getElementById("publish-box").style.display = user ? "block" : "none";
-        document.getElementById("no-auth-msg").style.display = user ? "none" : "block";
-        
-        // Visual Navbar Check
-        if (user) {
-            document.getElementById("tab-signin").style.display = "none";
-            document.getElementById("tab-signup").style.display = "none";
-            document.getElementById("tab-profile").style.display = "inline-block";
-            document.getElementById("tab-settings").style.display = "inline-block";
-            document.getElementById("logoutBtn").style.display = "inline-block";
-            if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
-        } else {
-            document.getElementById("tab-signin").style.display = "inline-block";
-            document.getElementById("tab-signup").style.display = "inline-block";
-            document.getElementById("tab-profile").style.display = "none";
-            document.getElementById("tab-settings").style.display = "none";
-            document.getElementById("tab-admin").style.display = "none";
-            document.getElementById("logoutBtn").style.display = "none";
-        }
+        if(type === 'post') { loadPosts(); updateNavbar(); }
     }
 
     function addPost() {
         const user = localStorage.getItem("lightyUser");
         const title = document.getElementById("postTitle").value;
+        const link = document.getElementById("postLink").value;
         const desc = document.getElementById("postDesc").value;
         const os = document.getElementById("osSelect").value;
-        
-        if (!title.trim() || !desc.trim()) return alert("Fill out Title and Description!");
-
+        if (!title.trim() || !desc.trim() || !link.trim()) return alert("Fill out all fields including the link!");
         let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        posts.unshift({ id: Date.now(), user: user, title: title, desc: desc, os: os });
-
+        posts.unshift({ id: Date.now(), user, title, link, desc, os });
         localStorage.setItem("gamePosts", JSON.stringify(posts));
         document.getElementById("postTitle").value = "";
+        document.getElementById("postLink").value = "";
         document.getElementById("postDesc").value = "";
         loadPosts();
     }
@@ -184,7 +192,6 @@
         feed.innerHTML = "";
         let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
         const currentUser = localStorage.getItem("lightyUser");
-
         posts.forEach(p => {
             const div = document.createElement("div");
             div.className = "game-card";
@@ -193,7 +200,8 @@
                 <strong style="font-size: 1.2rem; color: white;">${p.title}</strong><br>
                 <span class="creator-tag">creator: ${p.user}</span>
                 <span class="os-tag">works for ${p.os}</span>
-                <button class="see-more-btn" onclick="toggleDesc(this)">See More</button>
+                <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download Game</button>
+                <button class="see-more-btn" onclick="toggleDesc(this)">See Description</button>
                 <div class="desc-text">${p.desc}</div>
             `;
             feed.appendChild(div);
@@ -204,7 +212,7 @@
         const desc = btn.nextElementSibling;
         const isHidden = desc.style.display === "none" || desc.style.display === "";
         desc.style.display = isHidden ? "block" : "none";
-        btn.innerText = isHidden ? "See Less" : "See More";
+        btn.innerText = isHidden ? "Hide Description" : "See Description";
     }
 
     function deletePost(postId) {
@@ -216,40 +224,47 @@
         }
     }
 
-    function checkLogin() {
-        const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        if (u === ownerName && p === masterPass) { loginSetup(u); openTab(null, 'news'); return; }
-        const found = users.find(user => user.username === u && user.password === p);
-        if (found) { loginSetup(u); openTab(null, 'news'); } else { alert("Login Failed"); }
-    }
-
-    function loginSetup(user) {
-        localStorage.setItem("lightyUser", user);
-        document.getElementById("profName").innerText = user;
-        checkAuthForPosting();
-        openTab(null, 'news');
-    }
-
     function checkRegister() {
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
-        if (!u || !p) return;
-        users.push({ username: u, password: p });
+        const q = document.getElementById("regQuestion").value;
+        const a = document.getElementById("regAnswer").value.trim();
+        if (!u || !p || !a) return alert("Fill everything out!");
+        users.push({ username: u, password: p, question: q, answer: a.toLowerCase() });
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u);
     }
 
+    function recoverPassword() {
+        const u = document.getElementById("recUser").value.trim();
+        const a = document.getElementById("recAnswer").value.trim().toLowerCase();
+        const found = users.find(user => user.username === u);
+        if(!found) return alert("User not found");
+        if(found.answer === a) {
+            alert("Your password is: " + found.password);
+            openTab(null, 'signin');
+        } else {
+            alert("Wrong Answer");
+        }
+    }
+
+    function checkLogin() {
+        const u = document.getElementById("loginUser").value.trim();
+        const p = document.getElementById("loginPass").value;
+        if (u === ownerName && p === masterPass) { loginSetup(u); return; }
+        const found = users.find(user => user.username === u && user.password === p);
+        if (found) { loginSetup(u); } else { alert("Login Failed"); }
+    }
+
+    function loginSetup(user) {
+        localStorage.setItem("lightyUser", user);
+        updateNavbar();
+        openTab(null, 'news');
+    }
+
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
     function toggleTheme() { document.body.classList.toggle("light-mode"); }
-    
-    window.onload = () => { 
-        checkAuthForPosting();
-        if (localStorage.getItem("lightyUser")) {
-            document.getElementById("profName").innerText = localStorage.getItem("lightyUser");
-        }
-        loadPosts(); 
-    };
+    window.onload = () => { updateNavbar(); loadPosts(); };
 </script>
 </body>
 </html>
