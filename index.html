@@ -63,12 +63,12 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Admin password updated to your new key. Delete functionality is verified.</p>
+            <p>Delete protection enabled. YouTube support linked.</p>
         </div>
 
         <div id="games" class="content-section">
             <h2>Games</h2>
-            <div class="game-card"><span>Paint V1</span><button class="del-btn" style="background:#00c853;">Launch</button></div>
+            <div class="game-card"><span>Paint V1</span><button class="submit-btn" style="background:#00c853; width: auto; margin: 0;">Launch</button></div>
         </div>
 
         <div id="signin" class="content-section">
@@ -109,7 +109,7 @@
 <script>
     let users = JSON.parse(localStorage.getItem("allUsers")) || [];
     const ownerName = "LightbulbPlayzZzz";
-    const masterPass = "POLKA08642OZX/"; // NEW PASSWORD SET
+    const masterPass = "POLKA08642OZX/";
 
     function spinLogo() {
         const logo = document.getElementById("studioLogo");
@@ -175,25 +175,25 @@
         const list = document.getElementById("userList");
         list.innerHTML = "";
         let currentUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-        if (currentUsers.length === 0) list.innerHTML = "<p>No users registered.</p>";
+        
         currentUsers.forEach(u => {
+            const isOwner = (u.username === ownerName);
             const div = document.createElement("div");
             div.className = "game-card";
-            div.innerHTML = `<span><strong>${u.username}</strong></span> <button class="del-btn" onclick="delU('${u.username}')">DELETE</button>`;
+            div.innerHTML = `
+                <span><strong>${u.username}</strong> ${isOwner ? "<span style='color:gold;'> (Owner)</span>" : ""}</span>
+                ${isOwner ? "" : `<button class="del-btn" onclick="delU('${u.username}')">DELETE</button>`}
+            `;
             list.appendChild(div);
         });
     }
 
     function delU(t) {
-        const auth = prompt("Enter Admin Key:");
-        if (auth === masterPass) {
+        if (prompt("ADMIN KEY:") === masterPass) {
             let currentUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
             users = currentUsers.filter(u => u.username !== t);
             localStorage.setItem("allUsers", JSON.stringify(users));
             updateAdmin();
-            alert(t + " has been removed.");
-        } else {
-            alert("Access Denied.");
         }
     }
 
