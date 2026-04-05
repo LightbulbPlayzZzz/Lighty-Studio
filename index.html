@@ -32,11 +32,18 @@
         .content-section.active { display: block; }
         
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        .game-info { display: flex; flex-direction: column; gap: 4px; }
+        .creator-tag { font-size: 0.8rem; color: #aaa; }
+        .os-tag { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+        
         .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; color: var(--accent); }
         .pfp-profile-view { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent); object-fit: cover; margin: 0 auto 15px; display: block; background: #333; }
         .del-btn { background: red; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        #feed .game-card { display: flex; align-items: flex-start; gap: 15px; }
     </style>
 </head>
 <body>
@@ -64,12 +71,41 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Profile pictures and account recovery are now working for all members.</p>
+            <p>Paint V1 link fixed. Global profile pictures and publishing OS options added.</p>
         </div>
 
         <div id="games" class="content-section">
-            <h2>Games</h2>
-            <div class="game-card"><span>Paint V1</span><button class="submit-btn" style="background:#00c853; width: auto; margin: 0;">Launch</button></div>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">Library</button>
+                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">Post Game</button>
+            </div>
+
+            <div id="game-library">
+                <h2>Games</h2>
+                <div class="game-card">
+                    <div class="game-info">
+                        <strong>Paint V1</strong>
+                        <span class="creator-tag">creator: LightbulbPlayzZzz</span>
+                        <span class="os-tag">works for windows🪟</span>
+                    </div>
+                    <button class="submit-btn" style="background:#00c853; width: auto; margin: 0;" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">Download</button>
+                </div>
+            </div>
+
+            <div id="game-posts" style="display: none;">
+                <h2>Community Posts</h2>
+                <div class="game-card" style="display: block;">
+                    <textarea id="postText" placeholder="Publish a game or share an update..."></textarea>
+                    <select id="osSelect">
+                        <option value="">Select OS (Optional)</option>
+                        <option value="windows🪟">works for windows🪟</option>
+                        <option value="mac🧀">works for mac🧀</option>
+                        <option value="LINUX🐧">works for LINUX🐧</option>
+                    </select>
+                    <button class="submit-btn" onclick="addPost()">Publish/Share</button>
+                </div>
+                <div id="feed"></div>
+            </div>
         </div>
 
         <div id="signin" class="content-section">
@@ -104,12 +140,10 @@
             
             <div class="game-card" style="display:block; margin-top: 20px;">
                 <h4>Account Recovery</h4>
-                <p style="font-size: 0.8rem; color: #aaa;">Set a secret question to recover your password.</p>
                 <input type="text" id="setQ" placeholder="Secret Question">
                 <input type="text" id="setA" placeholder="Secret Answer">
                 <button class="submit-btn" style="background: #2196F3;" onclick="saveRecovery()">Save Recovery Info</button>
             </div>
-
             <button class="submit-btn" style="background:#555; margin-top: 20px;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
@@ -142,49 +176,70 @@
         if (tabName === 'admin') updateAdmin();
     }
 
-    function saveRecovery() {
-        const currentUser = localStorage.getItem("lightyUser");
-        const q = document.getElementById("setQ").value;
-        const a = document.getElementById("setA").value;
-        if (!q || !a) return alert("Fill both fields!");
-
-        users = users.map(u => {
-            if (u.username === currentUser) return { ...u, question: q, answer: a };
-            return u;
-        });
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        alert("Recovery saved!");
+    function toggleGameSub(type) {
+        document.getElementById('game-library').style.display = (type === 'lib') ? 'block' : 'none';
+        document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
+        document.getElementById('subtab-lib').classList.toggle('active', type === 'lib');
+        document.getElementById('subtab-post').classList.toggle('active', type === 'post');
+        if(type === 'post') loadPosts();
     }
 
-    function forgotPass() {
-        const target = prompt("Enter Username:");
-        if (!target) return;
-        const u = users.find(x => x.username.toLowerCase() === target.toLowerCase());
-        if (u && u.question) {
-            const ans = prompt("QUESTION: " + u.question);
-            if (ans && ans.toLowerCase() === u.answer.toLowerCase()) alert("Password: " + u.password);
-            else alert("Wrong answer.");
-        } else alert("No recovery info found.");
-    }
-
-    // --- FIXED PFP SAVING FOR ALL USERS ---
     function savePfp() {
         const currentUser = localStorage.getItem("lightyUser");
         const file = document.getElementById("pfpUpload").files[0];
         if (!file || !currentUser) return;
-
         const reader = new FileReader();
         reader.onloadend = () => {
             const imgData = reader.result;
-            // Store specifically for THIS username
             localStorage.setItem("pfp_" + currentUser, imgData);
-            
-            // Update UI
             document.getElementById("profilePfp").src = imgData;
             document.getElementById("navUserPfp").src = imgData;
-            alert("Profile Picture Updated!");
+            alert("PFP Updated!");
+            loadPosts(); 
         };
         reader.readAsDataURL(file);
+    }
+
+    function addPost() {
+        const user = localStorage.getItem("lightyUser");
+        if (!user) return alert("Sign in to post!");
+        const txt = document.getElementById("postText").value;
+        const os = document.getElementById("osSelect").value;
+        if (!txt.trim()) return;
+
+        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        posts.unshift({
+            user: user,
+            text: txt,
+            os: os,
+            date: new Date().toLocaleDateString()
+        });
+        localStorage.setItem("gamePosts", JSON.stringify(posts));
+        document.getElementById("postText").value = "";
+        loadPosts();
+    }
+
+    function loadPosts() {
+        const feed = document.getElementById("feed");
+        feed.innerHTML = "";
+        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        posts.forEach(p => {
+            const pfp = localStorage.getItem("pfp_" + p.user) || "Lighty studio.png";
+            const div = document.createElement("div");
+            div.className = "game-card";
+            div.innerHTML = `
+                <img src="${pfp}" style="width:40px; height:40px; border-radius:50%; border:1px solid var(--accent); object-fit:cover;">
+                <div style="flex-grow:1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="color:var(--accent);">${p.user}</strong>
+                        <span style="font-size:0.7rem; color:#888;">${p.date}</span>
+                    </div>
+                    <p style="margin: 5px 0; font-size:0.9rem;">${p.text}</p>
+                    ${p.os ? `<span class="os-tag">${p.os}</span>` : ""}
+                </div>
+            `;
+            feed.appendChild(div);
+        });
     }
 
     function checkLogin() {
@@ -200,7 +255,6 @@
         const p = document.getElementById("regPass").value;
         if (!u || !p) return;
         if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Username taken!");
-        
         users.push({ username: u, password: p, question: null, answer: null });
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u); openTab(null, 'news');
@@ -211,54 +265,29 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #logoutBtn").forEach(b => b.style.display = "inline-block");
-        
-        // Load PFP specifically for THIS user
-        const savedPfp = localStorage.getItem("pfp_" + user);
-        const finalImg = savedPfp || "Lighty studio.png";
-        
-        document.getElementById("profilePfp").src = finalImg;
+        const savedPfp = localStorage.getItem("pfp_" + user) || "Lighty studio.png";
+        document.getElementById("profilePfp").src = savedPfp;
         const ni = document.getElementById("navUserPfp");
-        ni.src = finalImg; ni.style.display = "block";
-        
+        ni.src = savedPfp; ni.style.display = "block";
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
-
-        const uData = users.find(x => x.username === user);
-        if (uData) {
-            document.getElementById("setQ").value = uData.question || "";
-            document.getElementById("setA").value = uData.answer || "";
-        }
     }
 
-    function updateAdmin() {
-        const list = document.getElementById("userList");
-        list.innerHTML = "";
-        let currentUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-        currentUsers.forEach(u => {
-            const isOwner = (u.username === ownerName);
-            const div = document.createElement("div");
-            div.className = "game-card";
-            div.innerHTML = `
-                <span><strong>${u.username}</strong> ${isOwner ? "<span style='color:gold;'> (Owner)</span>" : ""}</span>
-                ${isOwner ? "" : `<button class="del-btn" onclick="delU('${u.username}')">DELETE</button>`}
-            `;
-            list.appendChild(div);
-        });
-    }
-
-    function delU(t) {
-        if (prompt("ADMIN KEY:") === masterPass) {
-            users = users.filter(u => u.username !== t);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            // Also clean up their specific PFP to save space
-            localStorage.removeItem("pfp_" + t);
-            updateAdmin();
-        }
+    function saveRecovery() {
+        const currentUser = localStorage.getItem("lightyUser");
+        const q = document.getElementById("setQ").value;
+        const a = document.getElementById("setA").value;
+        users = users.map(u => u.username === currentUser ? { ...u, question: q, answer: a } : u);
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        alert("Recovery saved!");
     }
 
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
     function toggleTheme() { document.body.classList.toggle("light-mode"); }
-    window.onload = () => { if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); };
+    window.onload = () => { 
+        if (localStorage.getItem("lightyUser")) loginSetup(localStorage.getItem("lightyUser")); 
+        loadPosts();
+    };
 </script>
 </body>
 </html>
