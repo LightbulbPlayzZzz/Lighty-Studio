@@ -22,31 +22,29 @@
         .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 50px; }
         .content-section.active { display: block; }
         
-        /* Password Wrapper for Eye Icon */
         .pass-wrapper { position: relative; width: 100%; margin: 8px 0; }
-        .toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.7rem; font-weight: bold; }
 
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; position: relative; }
-        .creator-tag { font-size: 0.8rem; color: #aaa; display: block; }
-        .os-tag { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+        .admin-del-btn { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 0.7rem; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
         .desc-text { font-size: 0.9rem; margin-top: 10px; display: none; color: #ccc; border-top: 1px solid var(--border); padding-top: 10px; }
-        .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left" onclick="openTab(null, 'news')">
-            <img id="studioLogo" src="Lighty studio.png" class="studio-logo" alt="Logo">
+            <img src="Lighty studio.png" class="studio-logo" alt="Logo">
             <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
         <div class="tabs-container">
             <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
-            <a href="https://www.youtube.com/@LightbulbPlayzZzz" target="_blank" class="nav-link">Support</a>
             <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
             <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
             <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button>
@@ -59,7 +57,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Security updates: Password toggles added to all forms.</p>
+            <p>Admin tools updated. You can now manage users and projects.</p>
         </div>
 
         <div id="games" class="content-section">
@@ -71,8 +69,6 @@
                 <h2>Official Games</h2>
                 <div class="game-card">
                     <strong>Paint V1</strong><br>
-                    <span class="creator-tag">creator: LightbulbPlayzZzz</span>
-                    <span class="os-tag">works for windows🪟</span>
                     <button class="submit-btn" style="background:#00c853;" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">Download</button>
                 </div>
             </div>
@@ -81,7 +77,6 @@
                     <input type="text" id="postTitle" placeholder="Game Title">
                     <input type="text" id="postLink" placeholder="Download Link">
                     <textarea id="postDesc" placeholder="Description"></textarea>
-                    <select id="osSelect"><option value="Windows🪟">Windows🪟</option><option value="Mac🧀">Mac🧀</option></select>
                     <button class="submit-btn" onclick="addPost()">Publish</button>
                 </div>
                 <div id="feed"></div>
@@ -96,7 +91,6 @@
                 <button class="toggle-pass" onclick="togglePassVisibility('loginPass')">SHOW</button>
             </div>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
-            <p style="cursor:pointer; color:#888; font-size:0.8rem;" onclick="openTab(null, 'recovery')">Forgot Password?</p>
         </div>
 
         <div id="signup" class="content-section">
@@ -109,26 +103,14 @@
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
 
-        <div id="recovery" class="content-section">
-            <h2>Recovery</h2>
-            <input type="text" id="recUserSearch" placeholder="Username">
-            <button class="submit-btn" onclick="findUserQuestion()">Find Question</button>
-            <div id="recStep2" style="display:none; margin-top:20px;">
-                <p id="recQuestionDisplay" style="color:gold;"></p>
-                <input type="text" id="recAnswer" placeholder="Answer">
-                <button class="submit-btn" onclick="recoverPassword()">Get Password</button>
-            </div>
+        <div id="admin" class="content-section">
+            <h2>👑 Admin Control</h2>
+            <div id="admin-user-list" style="background:rgba(255,255,255,0.05); border-radius:10px; padding:10px; margin-top:20px;">
+                </div>
         </div>
 
         <div id="profile" class="content-section"><h2 id="profName"></h2></div>
-        <div id="settings" class="content-section">
-            <h2>Settings</h2>
-            <button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button>
-            <h3 style="margin-top:30px;">Security Question</h3>
-            <select id="setQuestion"><option>What is your pet's name?</option><option>Favorite Food?</option></select>
-            <input type="text" id="setAnswer" placeholder="Answer">
-            <button class="submit-btn" style="background:#2196F3;" onclick="saveRecoverySettings()">Save</button>
-        </div>
+        <div id="settings" class="content-section"><h2>Settings</h2><button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button></div>
     </div>
 
 <script>
@@ -138,14 +120,7 @@
 
     function togglePassVisibility(id) {
         const input = document.getElementById(id);
-        const btn = input.nextElementSibling;
-        if (input.type === "password") {
-            input.type = "text";
-            btn.innerText = "HIDE";
-        } else {
-            input.type = "password";
-            btn.innerText = "SHOW";
-        }
+        input.type = input.type === "password" ? "text" : "password";
     }
 
     function updateNavbar() {
@@ -157,71 +132,59 @@
         document.getElementById("tab-settings").style.display = isLoggedIn ? "inline-block" : "none";
         document.getElementById("logoutBtn").style.display = isLoggedIn ? "inline-block" : "none";
         document.getElementById("tab-admin").style.display = (user === ownerName) ? "inline-block" : "none";
-        if (isLoggedIn) document.getElementById("profName").innerText = user;
+        if (isLoggedIn) {
+            document.getElementById("profName").innerText = user;
+            if(user === ownerName) loadAdminPanel();
+        }
         const pubBox = document.getElementById("publish-box");
         if(pubBox) pubBox.style.display = isLoggedIn ? "block" : "none";
     }
 
     function openTab(evt, tabName) {
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
-        if (evt) evt.currentTarget.classList.add("active");
         updateNavbar();
     }
 
-    function toggleGameSub(type) {
-        document.getElementById('game-library').style.display = (type === 'lib') ? 'block' : 'none';
-        document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
-        if(type === 'post') loadPosts();
+    function loadAdminPanel() {
+        const listContainer = document.getElementById("admin-user-list");
+        listContainer.innerHTML = "<h3>Registered Users</h3>";
+        users.forEach((u, index) => {
+            const item = document.createElement("div");
+            item.className = "admin-user-item";
+            // Check if user is the Owner - hide delete button for owner
+            const isOwner = u.username === ownerName;
+            item.innerHTML = `
+                <div>
+                    <strong>${u.username}</strong> <br> 
+                    <span style="font-size:0.7rem; color:gray;">Pass: ${u.password}</span>
+                </div>
+                ${!isOwner ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">Delete</button>` : `<span style="color:gold; font-size:0.7rem;">OWNER</span>`}
+            `;
+            listContainer.appendChild(item);
+        });
     }
 
-    function saveRecoverySettings() {
-        const user = localStorage.getItem("lightyUser");
-        const q = document.getElementById("setQuestion").value;
-        const a = document.getElementById("setAnswer").value.trim().toLowerCase();
-        users = users.map(u => u.username === user ? {...u, question: q, answer: a} : u);
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        alert("Saved!");
+    function deleteAccount(targetUser) {
+        if (confirm(`Delete account "${targetUser}"?`)) {
+            const pass = prompt("Enter Master Password to confirm:");
+            if (pass === masterPass) {
+                users = users.filter(u => u.username !== targetUser);
+                localStorage.setItem("allUsers", JSON.stringify(users));
+                loadAdminPanel();
+            } else {
+                alert("Incorrect Password");
+            }
+        }
     }
 
-    function findUserQuestion() {
-        const u = document.getElementById("recUserSearch").value.trim();
-        const found = users.find(user => user.username === u);
-        if(!found || !found.question) return alert("User/Question not found");
-        document.getElementById("recQuestionDisplay").innerText = found.question;
-        document.getElementById("recStep2").style.display = "block";
-    }
-
-    function recoverPassword() {
-        const u = document.getElementById("recUserSearch").value.trim();
-        const a = document.getElementById("recAnswer").value.trim().toLowerCase();
-        const found = users.find(user => user.username === u);
-        if(found.answer === a) alert("Password: " + found.password);
-        else alert("Wrong Answer");
-    }
-
-    function checkRegister() {
-        const u = document.getElementById("regUser").value.trim();
-        const p = document.getElementById("regPass").value;
-        if (!u || !p) return alert("Fill all");
-        users.push({ username: u, password: p, question: "", answer: "" });
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        loginSetup(u);
-    }
-
-    function checkLogin() {
-        const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        if (u === ownerName && p === masterPass) { loginSetup(u); return; }
-        const found = users.find(user => user.username === u && user.password === p);
-        if (found) loginSetup(u); else alert("Failed");
-    }
-
-    function loginSetup(user) {
-        localStorage.setItem("lightyUser", user);
-        updateNavbar();
-        openTab(null, 'news');
+    function deletePost(id) {
+        const pass = prompt("Enter Master Password to delete post:");
+        if (pass === masterPass) {
+            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+            localStorage.setItem("gamePosts", JSON.stringify(posts.filter(p => p.id !== id)));
+            loadPosts();
+        }
     }
 
     function addPost() {
@@ -229,9 +192,9 @@
         const title = document.getElementById("postTitle").value;
         const link = document.getElementById("postLink").value;
         const desc = document.getElementById("postDesc").value;
-        if (!title || !link) return alert("Missing data");
+        if (!title || !link) return;
         let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        posts.unshift({ id: Date.now(), user, title, link, desc, os: document.getElementById("osSelect").value });
+        posts.unshift({ id: Date.now(), user, title, link, desc });
         localStorage.setItem("gamePosts", JSON.stringify(posts));
         loadPosts();
     }
@@ -240,22 +203,51 @@
         const feed = document.getElementById("feed");
         feed.innerHTML = "";
         let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        const currentUser = localStorage.getItem("lightyUser");
         posts.forEach(p => {
             const div = document.createElement("div");
             div.className = "game-card";
             div.innerHTML = `
+                ${currentUser === ownerName ? `<button class="admin-del-btn" onclick="deletePost(${p.id})">Delete Post</button>` : ""}
                 <strong>${p.title}</strong><br>
-                <span class="creator-tag">creator: ${p.user}</span>
                 <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download</button>
-                <button class="see-more-btn" onclick="this.nextElementSibling.style.display='block'">See More</button>
-                <div class="desc-text">${p.desc}</div>
             `;
             feed.appendChild(div);
         });
     }
 
+    function checkRegister() {
+        const u = document.getElementById("regUser").value.trim();
+        const p = document.getElementById("regPass").value;
+        if (users.find(user => user.username === u)) return alert("User exists");
+        users.push({ username: u, password: p });
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        loginSetup(u);
+    }
+
+    function checkLogin() {
+        const u = document.getElementById("loginUser").value.trim();
+        const p = document.getElementById("loginPass").value;
+        if (u === ownerName && p === masterPass) {
+            if(!users.find(x => x.username === ownerName)) {
+                users.push({username: ownerName, password: masterPass});
+                localStorage.setItem("allUsers", JSON.stringify(users));
+            }
+            loginSetup(u);
+            return;
+        }
+        const found = users.find(user => user.username === u && user.password === p);
+        if (found) loginSetup(u); else alert("Failed");
+    }
+
+    function loginSetup(user) { localStorage.setItem("lightyUser", user); updateNavbar(); openTab(null, 'news'); }
     function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
     function toggleTheme() { document.body.classList.toggle("light-mode"); }
+    function toggleGameSub(type) {
+        document.getElementById('game-library').style.display = (type === 'lib') ? 'block' : 'none';
+        document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
+        if(type === 'post') loadPosts();
+    }
     window.onload = () => { updateNavbar(); loadPosts(); };
 </script>
 </body>
