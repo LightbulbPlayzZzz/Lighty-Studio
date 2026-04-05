@@ -12,7 +12,10 @@
 
         .navbar { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: var(--nav); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border); }
         .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; flex-shrink: 0; }
-        .studio-logo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; }
+        
+        /* SPINNING LOGO ANIMATION */
+        #studioLogo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; animation: rotateLogo 4s linear infinite; }
+        @keyframes rotateLogo { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
         .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-grow: 1; align-items: center; }
         .tab-btn { background: transparent; color: var(--text); border: none; padding: 10px 14px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 0.9rem; }
@@ -22,12 +25,19 @@
         .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 50px; }
         .content-section.active { display: block; }
         
+        /* PASSWORD WRAPPER */
+        .pass-wrapper { position: relative; width: 100%; margin: 8px 0; }
+        .toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.7rem; font-weight: bold; }
+
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; position: relative; }
         .admin-del-btn { position: absolute; top: 10px; right: 10px; background: #ff4444; color: white; border: none; font-size: 0.7rem; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; z-index: 10; }
-        .admin-del-btn:hover { background: red; }
+        
+        /* SEE MORE STYLES */
+        .desc-text { font-size: 0.9rem; margin-top: 10px; display: none; color: #ccc; border-top: 1px solid var(--border); padding-top: 10px; }
+        .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 5px; }
 
         .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); text-align: left; background: rgba(255,255,255,0.02); margin-bottom: 5px; border-radius: 8px; }
     </style>
@@ -36,7 +46,7 @@
 
     <nav class="navbar">
         <div class="nav-left" onclick="openTab(null, 'news')">
-            <img src="Lighty studio.png" class="studio-logo" alt="Logo">
+            <img id="studioLogo" src="Lighty studio.png" class="studio-logo" alt="Logo">
             <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
         <div class="tabs-container">
@@ -54,7 +64,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Admin permissions fixed. Delete buttons now visible for the owner.</p>
+            <p>Logo animation and Admin tools are fully operational.</p>
         </div>
 
         <div id="games" class="content-section">
@@ -83,14 +93,20 @@
         <div id="signin" class="content-section">
             <h2>Sign In</h2>
             <input type="text" id="loginUser" placeholder="Username">
-            <input type="password" id="loginPass" placeholder="Password">
+            <div class="pass-wrapper">
+                <input type="password" id="loginPass" placeholder="Password">
+                <button class="toggle-pass" onclick="togglePass('loginPass')">SHOW</button>
+            </div>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
         </div>
 
         <div id="signup" class="content-section">
             <h2>Join</h2>
             <input type="text" id="regUser" placeholder="Username">
-            <input type="password" id="regPass" placeholder="Password">
+            <div class="pass-wrapper">
+                <input type="password" id="regPass" placeholder="Password">
+                <button class="toggle-pass" onclick="togglePass('regPass')">SHOW</button>
+            </div>
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
 
@@ -108,24 +124,26 @@
     const ownerName = "LightbulbPlayzZzz";
     const masterPass = "POLKA08642OZX/";
 
+    function togglePass(id) {
+        const input = document.getElementById(id);
+        const btn = input.nextElementSibling;
+        input.type = input.type === "password" ? "text" : "password";
+        btn.innerText = input.type === "password" ? "SHOW" : "HIDE";
+    }
+
     function updateNavbar() {
         const user = localStorage.getItem("lightyUser");
         const isAdmin = (user === ownerName);
-        
         document.getElementById("tab-signin").style.display = user ? "none" : "inline-block";
         document.getElementById("tab-signup").style.display = user ? "none" : "inline-block";
         document.getElementById("tab-profile").style.display = user ? "inline-block" : "none";
         document.getElementById("tab-settings").style.display = user ? "inline-block" : "none";
         document.getElementById("logoutBtn").style.display = user ? "inline-block" : "none";
-        
-        const adminTab = document.getElementById("tab-admin");
-        adminTab.style.display = isAdmin ? "inline-block" : "none";
-        
+        document.getElementById("tab-admin").style.display = isAdmin ? "inline-block" : "none";
         if (user) document.getElementById("profName").innerText = user;
+        if(isAdmin) loadAdminPanel();
         const pubBox = document.getElementById("publish-box");
         if(pubBox) pubBox.style.display = user ? "block" : "none";
-
-        if(isAdmin) loadAdminPanel();
     }
 
     function openTab(evt, tabName) {
@@ -133,7 +151,6 @@
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
-        
         if(tabName === 'games') loadPosts();
         updateNavbar();
     }
@@ -145,10 +162,8 @@
             const div = document.createElement("div");
             div.className = "admin-user-item";
             const isSelf = u.username === ownerName;
-            div.innerHTML = `
-                <span><strong>${u.username}</strong> (Pass: ${u.password})</span>
-                ${!isSelf ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">DELETE USER</button>` : `<span style="color:gold">OWNER</span>`}
-            `;
+            div.innerHTML = `<span><strong>${u.username}</strong> (Pass: ${u.password})</span>
+                ${!isSelf ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">DELETE USER</button>` : `<span style="color:gold">OWNER</span>`}`;
             container.appendChild(div);
         });
     }
@@ -159,26 +174,6 @@
             localStorage.setItem("allUsers", JSON.stringify(users));
             loadAdminPanel();
         }
-    }
-
-    function deletePost(id) {
-        if (confirm("Delete this game post?")) {
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem("gamePosts", JSON.stringify(posts));
-            loadPosts();
-        }
-    }
-
-    function addPost() {
-        const title = document.getElementById("postTitle").value;
-        const link = document.getElementById("postLink").value;
-        const desc = document.getElementById("postDesc").value;
-        if (!title || !link) return alert("Title and Link required!");
-        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        posts.unshift({ id: Date.now(), user: localStorage.getItem("lightyUser"), title, link, desc });
-        localStorage.setItem("gamePosts", JSON.stringify(posts));
-        loadPosts();
     }
 
     function loadPosts() {
@@ -193,9 +188,36 @@
                 ${user === ownerName ? `<button class="admin-del-btn" onclick="deletePost(${p.id})">DELETE POST</button>` : ""}
                 <strong>${p.title}</strong><br>
                 <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download</button>
-            `;
+                <button class="see-more-btn" onclick="toggleDesc(this)">See More</button>
+                <div class="desc-text">${p.desc}</div>`;
             feed.appendChild(div);
         });
+    }
+
+    function toggleDesc(btn) {
+        const desc = btn.nextElementSibling;
+        const isHidden = desc.style.display === "none" || desc.style.display === "";
+        desc.style.display = isHidden ? "block" : "none";
+        btn.innerText = isHidden ? "See Less" : "See More";
+    }
+
+    function deletePost(id) {
+        if (confirm("Delete this game post?")) {
+            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+            localStorage.setItem("gamePosts", JSON.stringify(posts.filter(p => p.id !== id)));
+            loadPosts();
+        }
+    }
+
+    function addPost() {
+        const title = document.getElementById("postTitle").value;
+        const link = document.getElementById("postLink").value;
+        const desc = document.getElementById("postDesc").value;
+        if (!title || !link) return alert("Title and Link required!");
+        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+        posts.unshift({ id: Date.now(), user: localStorage.getItem("lightyUser"), title, link, desc });
+        localStorage.setItem("gamePosts", JSON.stringify(posts));
+        loadPosts();
     }
 
     function checkLogin() {
