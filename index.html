@@ -34,6 +34,7 @@
         .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; display: flex; justify-content: space-between; align-items: center; }
         .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
+        .check-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.85rem; cursor: pointer; color: var(--accent); }
         .pfp-profile-view { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent); object-fit: cover; margin: 0 auto 15px; display: block; background: #333; }
         .del-btn { background: red; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
@@ -63,7 +64,7 @@
     <div class="container">
         <div id="news" class="content-section active">
             <h2>Activity</h2>
-            <p>Delete protection enabled. YouTube support linked.</p>
+            <p>Setup your recovery question in Settings to use the Forgot Password button!</p>
         </div>
 
         <div id="games" class="content-section">
@@ -75,13 +76,16 @@
             <h2>Sign In</h2>
             <input type="text" id="loginUser" placeholder="Username">
             <input type="password" id="loginPass" placeholder="Password">
+            <label class="check-row"><input type="checkbox" onchange="toggleP('loginPass', this)"> Show Password</label>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
+            <p style="cursor:pointer; color:cyan; font-size:0.8rem; margin-top:15px; text-decoration: underline;" onclick="forgotPass()">Forgot Password?</p>
         </div>
 
         <div id="signup" class="content-section">
             <h2>Join</h2>
             <input type="text" id="regUser" placeholder="Username">
             <input type="password" id="regPass" placeholder="Password">
+            <label class="check-row"><input type="checkbox" onchange="toggleP('regPass', this)"> Show Password</label>
             <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
         </div>
 
@@ -93,11 +97,20 @@
         <div id="settings" class="content-section">
             <h2>Settings</h2>
             <div class="game-card" style="display:block;">
-                <h4>Update PFP</h4>
+                <h4>Profile Picture</h4>
                 <input type="file" id="pfpUpload" accept="image/*">
-                <button class="submit-btn" onclick="savePfp()">Save</button>
+                <button class="submit-btn" onclick="savePfp()">Update PFP</button>
             </div>
-            <button class="submit-btn" style="background:#555;" onclick="toggleTheme()">Theme Toggle</button>
+            
+            <div class="game-card" style="display:block; margin-top: 20px;">
+                <h4>Account Recovery</h4>
+                <p style="font-size: 0.8rem; color: #aaa;">Set a question only you can answer.</p>
+                <input type="text" id="setQ" placeholder="Secret Question (e.g. My first pet?)">
+                <input type="text" id="setA" placeholder="Secret Answer">
+                <button class="submit-btn" style="background: #2196F3;" onclick="saveRecovery()">Save Recovery Info</button>
+            </div>
+
+            <button class="submit-btn" style="background:#555; margin-top: 20px;" onclick="toggleTheme()">Theme Toggle</button>
         </div>
 
         <div id="admin" class="content-section">
@@ -118,6 +131,8 @@
         logo.classList.add("trigger-spin");
     }
 
+    function toggleP(id, box) { document.getElementById(id).type = box.checked ? "text" : "password"; }
+
     function openTab(evt, tabName) {
         spinLogo(); 
         document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
@@ -125,6 +140,48 @@
         document.getElementById(tabName).classList.add("active");
         if (evt) evt.currentTarget.classList.add("active");
         if (tabName === 'admin') updateAdmin();
+    }
+
+    function saveRecovery() {
+        const currentUser = localStorage.getItem("lightyUser");
+        const q = document.getElementById("setQ").value;
+        const a = document.getElementById("setA").value;
+        
+        if (!q || !a) return alert("Fill both fields!");
+
+        // Update the user in the array
+        users = users.map(u => {
+            if (u.username === currentUser) {
+                return { ...u, question: q, answer: a };
+            }
+            return u;
+        });
+
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        alert("Recovery question saved!");
+    }
+
+    function forgotPass() {
+        const target = prompt("Enter Username:");
+        if (!target) return;
+
+        // Check if it's the owner
+        if (target === ownerName) {
+            alert("Contact the developer directly for owner recovery.");
+            return;
+        }
+
+        const u = users.find(x => x.username.toLowerCase() === target.toLowerCase());
+        if (u && u.question) {
+            const ans = prompt("RECOVERY QUESTION: " + u.question);
+            if (ans && ans.toLowerCase() === u.answer.toLowerCase()) {
+                alert("ACCESS GRANTED. Your password is: " + u.password);
+            } else {
+                alert("Incorrect answer.");
+            }
+        } else {
+            alert("No recovery question found for this user. Did you set it in Settings?");
+        }
     }
 
     function savePfp() {
@@ -153,7 +210,8 @@
         const u = document.getElementById("regUser").value.trim();
         const p = document.getElementById("regPass").value;
         if (u.toLowerCase() === ownerName.toLowerCase()) return alert("Username taken!");
-        users.push({username: u, password: p});
+        
+        users.push({ username: u, password: p, question: null, answer: null });
         localStorage.setItem("allUsers", JSON.stringify(users));
         loginSetup(u); openTab(null, 'news');
     }
@@ -163,19 +221,27 @@
         document.getElementById("tab-signin").style.display = "none";
         document.getElementById("tab-signup").style.display = "none";
         document.querySelectorAll("#tab-profile, #tab-settings, #logoutBtn").forEach(b => b.style.display = "inline-block");
+        
         const savedPfp = localStorage.getItem("pfp_" + user);
         document.getElementById("profilePfp").src = savedPfp || "Lighty studio.png";
         const ni = document.getElementById("navUserPfp");
         ni.src = savedPfp || "Lighty studio.png"; ni.style.display = "block";
+        
         if (user === ownerName) document.getElementById("tab-admin").style.display = "inline-block";
         document.getElementById("profName").innerText = user;
+
+        // Load existing recovery info into settings inputs
+        const uData = users.find(x => x.username === user);
+        if (uData) {
+            document.getElementById("setQ").value = uData.question || "";
+            document.getElementById("setA").value = uData.answer || "";
+        }
     }
 
     function updateAdmin() {
         const list = document.getElementById("userList");
         list.innerHTML = "";
         let currentUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-        
         currentUsers.forEach(u => {
             const isOwner = (u.username === ownerName);
             const div = document.createElement("div");
