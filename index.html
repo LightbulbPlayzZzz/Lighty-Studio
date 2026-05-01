@@ -226,6 +226,44 @@
             background: rgba(255, 0, 255, 0.05);
         }
 
+        /* USER CARD */
+        .user-card {
+            background: rgba(128, 128, 128, 0.05); 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            border-color: var(--accent);
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .user-info small {
+            color: #999;
+        }
+
+        .follow-btn {
+            padding: 8px 16px;
+            min-width: 100px;
+            font-size: 0.9rem;
+        }
+
         /* ADMIN BUTTONS */
         .admin-del-btn { 
             position: absolute; 
@@ -305,7 +343,7 @@
         .notification.warning { background: var(--warning); }
 
         /* SUB-TABS */
-        .subtab-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .subtab-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 
         /* EMPTY STATE */
         .empty-state { color: #999; padding: 40px 20px; }
@@ -322,6 +360,100 @@
         .link-validation.valid { color: var(--success); }
         .link-validation.invalid { color: var(--error); }
         .link-validation.pending { color: var(--warning); }
+
+        /* SEARCH BOX */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            flex: 1;
+            margin: 0;
+        }
+
+        .search-container button {
+            width: auto;
+            min-width: 100px;
+            padding: 12px;
+            margin: 0;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--card);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .modal-content p {
+            color: #ccc;
+            margin: 15px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            margin: 0;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-buttons .confirm-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .modal-pass {
+            margin: 15px 0;
+        }
+
+        .modal-pass input {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -334,6 +466,7 @@
         <div class="tabs-container">
             <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
+            <button id="tab-people" class="tab-btn" style="display:none;" onclick="openTab(event, 'people')">👥 People</button>
             <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
             <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
             <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button>
@@ -379,6 +512,16 @@
                 </div>
                 <div id="feed"></div>
             </div>
+        </div>
+
+        <!-- PEOPLE SECTION -->
+        <div id="people" class="content-section">
+            <h2>👥 Find People</h2>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search username..." maxlength="20">
+                <button class="submit-btn" onclick="searchPeople()">🔍 Search</button>
+            </div>
+            <div id="people-list"></div>
         </div>
 
         <!-- SIGN IN SECTION -->
@@ -428,16 +571,40 @@
         <!-- ADMIN SECTION -->
         <div id="admin" class="content-section">
             <h2>👑 Admin Control Panel</h2>
-            <div id="admin-user-list"></div>
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--accent); text-align: left;">👥 User Management</h3>
+                <div id="admin-user-list"></div>
+            </div>
+            <div style="border-top: 2px solid var(--border); padding-top: 20px;">
+                <h3 style="color: var(--accent); text-align: left;">🎮 Game Management</h3>
+                <div id="admin-game-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETION CONFIRMATION MODAL -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ Confirm Deletion</h3>
+            <p id="deleteMessage"></p>
+            <div class="modal-pass">
+                <input type="password" id="deletePassword" placeholder="Enter your admin password">
+            </div>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="confirmDelete()">🗑️ Confirm Delete</button>
+                <button class="cancel-btn" onclick="closeDeleteModal()">❌ Cancel</button>
+            </div>
         </div>
     </div>
 
     <script>
         // ============== SECURITY & DATA ==============
-        const APP_VERSION = "2.0";
+        const APP_VERSION = "3.0";
         const ownerName = "LightbulbPlayzZzz";
+        const ownerPassword = "POLKA08642OZX/";
         
         let currentUser = localStorage.getItem("lightyUser") || null;
+        let deleteAction = null;
 
         // ============== DEVICE MANAGEMENT ==============
         function getOrCreateDeviceId() {
@@ -644,6 +811,7 @@
 
             if (tabName === 'games') loadPosts();
             if (tabName === 'devices') loadDevices();
+            if (tabName === 'people') loadPeople();
             updateNavbar();
         }
 
@@ -674,6 +842,7 @@
 
             document.getElementById("tab-signin").style.display = user ? "none" : "inline-block";
             document.getElementById("tab-signup").style.display = user ? "none" : "inline-block";
+            document.getElementById("tab-people").style.display = user ? "inline-block" : "none";
             document.getElementById("tab-profile").style.display = user ? "inline-block" : "none";
             document.getElementById("tab-devices").style.display = user ? "inline-block" : "none";
             document.getElementById("tab-settings").style.display = user ? "inline-block" : "none";
@@ -688,7 +857,85 @@
             const pubBox = document.getElementById("publish-box");
             if (pubBox) pubBox.style.display = user ? "block" : "none";
 
-            if (isAdmin) loadAdminPanel();
+            if (isAdmin) {
+                loadAdminPanel();
+            }
+        }
+
+        // ============== PEOPLE SEARCH ==============
+        function searchPeople() {
+            const search = document.getElementById("searchInput").value.trim().toLowerCase();
+            
+            if (!search) {
+                showNotification('Please enter a username to search', 'warning');
+                return;
+            }
+
+            loadPeople(search);
+        }
+
+        function loadPeople(searchTerm = "") {
+            const peopleList = document.getElementById("people-list");
+            peopleList.innerHTML = "";
+
+            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+            let following = JSON.parse(localStorage.getItem("following_" + currentUser)) || [];
+
+            // Filter users
+            if (searchTerm) {
+                users = users.filter(u => u.username.toLowerCase().includes(searchTerm) && u.username !== currentUser);
+            } else {
+                users = users.filter(u => u.username !== currentUser);
+            }
+
+            if (users.length === 0) {
+                peopleList.innerHTML = '<div class="empty-state">No users found</div>';
+                return;
+            }
+
+            users.forEach(u => {
+                const userPostCount = posts.filter(p => p.user === u.username).length;
+                const isFollowing = following.includes(u.username);
+
+                const div = document.createElement("div");
+                div.className = "user-card";
+
+                const userInfoDiv = document.createElement("div");
+                userInfoDiv.className = "user-info";
+                userInfoDiv.innerHTML = `
+                    <strong>${sanitizeInput(u.username)}</strong>
+                    <small>📦 ${userPostCount} game${userPostCount !== 1 ? 's' : ''} posted</small>
+                `;
+
+                const followBtn = document.createElement("button");
+                followBtn.className = isFollowing ? "submit-btn success follow-btn" : "submit-btn follow-btn";
+                followBtn.innerHTML = isFollowing ? "✓ Following" : "+ Follow";
+                followBtn.onclick = () => toggleFollow(u.username, followBtn);
+
+                div.appendChild(userInfoDiv);
+                div.appendChild(followBtn);
+
+                peopleList.appendChild(div);
+            });
+        }
+
+        function toggleFollow(username, btn) {
+            let following = JSON.parse(localStorage.getItem("following_" + currentUser)) || [];
+            
+            if (following.includes(username)) {
+                following = following.filter(u => u !== username);
+                btn.classList.remove("success");
+                btn.innerHTML = "+ Follow";
+                showNotification(`Unfollowed ${username}`, 'success');
+            } else {
+                following.push(username);
+                btn.classList.add("success");
+                btn.innerHTML = "✓ Following";
+                showNotification(`Following ${username}! 🎉`, 'success');
+            }
+
+            localStorage.setItem("following_" + currentUser, JSON.stringify(following));
         }
 
         // ============== POSTS (GAMES) ==============
@@ -707,7 +954,7 @@
                 div.className = "game-card";
                 
                 const isAdmin = currentUser === ownerName;
-                const deleteBtn = isAdmin ? `<button class="admin-del-btn" onclick="deletePost(${p.id})">DELETE</button>` : "";
+                const deleteBtn = isAdmin ? `<button class="admin-del-btn" onclick="openDeletePostModal(${p.id})">DELETE</button>` : "";
                 
                 div.innerHTML = `
                     ${deleteBtn}
@@ -767,14 +1014,12 @@
             loadPosts();
         }
 
-        function deletePost(id) {
-            if (confirm("Delete this game post?")) {
-                let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-                posts = posts.filter(p => p.id !== id);
-                localStorage.setItem("gamePosts", JSON.stringify(posts));
-                showNotification('Post deleted', 'success');
-                loadPosts();
-            }
+        function openDeletePostModal(postId) {
+            deleteAction = { type: 'post', id: postId };
+            const modal = document.getElementById('deleteModal');
+            document.getElementById('deleteMessage').innerHTML = `Delete this game post?`;
+            document.getElementById('deletePassword').value = '';
+            modal.style.display = 'block';
         }
 
         // ============== DEVICES ==============
@@ -826,14 +1071,19 @@
 
         // ============== ADMIN PANEL ==============
         function loadAdminPanel() {
+            loadAdminUsers();
+            loadAdminGames();
+        }
+
+        function loadAdminUsers() {
             const container = document.getElementById("admin-user-list");
-            container.innerHTML = "<h3>📊 User Database</h3>";
+            container.innerHTML = "";
             
             let users = JSON.parse(localStorage.getItem("allUsers")) || [];
             let devices = JSON.parse(localStorage.getItem("userDevices")) || {};
             
             if (users.length === 0) {
-                container.innerHTML += '<div class="empty-state">No users registered yet</div>';
+                container.innerHTML = '<div class="empty-state">No users registered yet</div>';
                 return;
             }
 
@@ -850,26 +1100,98 @@
                         <br>
                         <small style="color: #999;">📱 ${userDeviceCount} device${userDeviceCount !== 1 ? 's' : ''}</small>
                     </span>
-                    ${!isSelf ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">DELETE</button>` : ''}
+                    ${!isSelf ? `<button class="admin-del-btn" onclick="openDeleteUserModal('${u.username}')">DELETE</button>` : ''}
                 `;
                 
                 container.appendChild(div);
             });
         }
 
-        function deleteAccount(target) {
-            if (confirm(`Delete user '${target}' permanently?`)) {
-                let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-                users = users.filter(u => u.username !== target);
-                localStorage.setItem("allUsers", JSON.stringify(users));
-                
-                let devices = JSON.parse(localStorage.getItem("userDevices")) || {};
-                delete devices[target];
-                localStorage.setItem("userDevices", JSON.stringify(devices));
-                
-                showNotification(`User ${target} deleted`, 'success');
-                loadAdminPanel();
+        function loadAdminGames() {
+            const container = document.getElementById("admin-game-list");
+            container.innerHTML = "";
+            
+            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="empty-state">No games posted yet</div>';
+                return;
             }
+
+            posts.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "game-card";
+                
+                div.innerHTML = `
+                    <button class="admin-del-btn" onclick="openDeletePostModal(${p.id})">DELETE</button>
+                    <strong>${sanitizeInput(p.title)}</strong>
+                    <br>
+                    <small style="color: #999;">by ${sanitizeInput(p.user)}</small>
+                    <br>
+                    <button class="submit-btn success" style="font-size: 0.8rem;" onclick="window.open('${p.link}', '_blank')">Open Link</button>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function openDeleteUserModal(username) {
+            deleteAction = { type: 'user', username: username };
+            const modal = document.getElementById('deleteModal');
+            document.getElementById('deleteMessage').innerHTML = `Delete user <strong>${sanitizeInput(username)}</strong> and all their games?<br><br>⚠️ This action cannot be undone!`;
+            document.getElementById('deletePassword').value = '';
+            modal.style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteAction = null;
+        }
+
+        function confirmDelete() {
+            const password = document.getElementById('deletePassword').value;
+
+            if (!password) {
+                showNotification('Password required', 'error');
+                return;
+            }
+
+            if (password !== ownerPassword) {
+                showNotification('Invalid admin password', 'error');
+                return;
+            }
+
+            if (deleteAction.type === 'user') {
+                if (deleteAction.username === ownerName) {
+                    showNotification('Cannot delete your own account', 'error');
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+                users = users.filter(u => u.username !== deleteAction.username);
+                localStorage.setItem("allUsers", JSON.stringify(users));
+
+                let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+                posts = posts.filter(p => p.user !== deleteAction.username);
+                localStorage.setItem("gamePosts", JSON.stringify(posts));
+
+                let devices = JSON.parse(localStorage.getItem("userDevices")) || {};
+                delete devices[deleteAction.username];
+                localStorage.setItem("userDevices", JSON.stringify(devices));
+
+                showNotification(`User ${deleteAction.username} and all their games deleted`, 'success');
+                loadAdminUsers();
+                loadAdminGames();
+            } else if (deleteAction.type === 'post') {
+                let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+                posts = posts.filter(p => p.id !== deleteAction.id);
+                localStorage.setItem("gamePosts", JSON.stringify(posts));
+                showNotification('Game post deleted', 'success');
+                loadAdminGames();
+                loadPosts();
+            }
+
+            closeDeleteModal();
         }
 
         // ============== THEME ==============
@@ -888,6 +1210,14 @@
             }
             updateNavbar();
         });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        }
     </script>
 </body>
 </html>
