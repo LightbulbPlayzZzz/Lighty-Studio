@@ -3,50 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Lighty Studio - Game Development & Distribution">
     <title>Lighty Studio</title>
     <style>
-        :root { --bg: #0a0a0a; --nav: #1e1e1e; --text: #f0f0f0; --card: #161616; --border: #333; --accent: #ff00ff; }
-        .light-mode { --bg: #ffffff; --nav: #e0e0e0; --text: #1a1a1a; --card: #f0f0f0; --border: #ccc; --accent: #d400d4; }
+        :root { 
+            --bg: #0a0a0a; 
+            --nav: #1e1e1e; 
+            --text: #f0f0f0; 
+            --card: #161616; 
+            --border: #333; 
+            --accent: #ff00ff;
+            --success: #00c853;
+            --error: #ff4444;
+            --warning: #ffa500;
+        }
         
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-top: 80px; display: flex; justify-content: center; min-height: 100vh; border: 10px solid; border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; box-sizing: border-box; transition: 0.3s; overflow-x: hidden; }
+        .light-mode { 
+            --bg: #ffffff; 
+            --nav: #e0e0e0; 
+            --text: #1a1a1a; 
+            --card: #f0f0f0; 
+            --border: #ccc; 
+            --accent: #d400d4; 
+        }
+        
+        * { box-sizing: border-box; }
+        
+        html, body { margin: 0; padding: 0; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
+            padding-top: 80px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            transition: 0.3s; 
+            overflow-x: hidden; 
+            border: 10px solid;
+            border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1;
+        }
 
-        .navbar { position: fixed; top: 0; left: 0; right: 0; height: 65px; background: var(--nav); display: flex; align-items: center; padding: 0 15px; z-index: 1000; border-bottom: 2px solid var(--border); }
-        .nav-left { display: flex; align-items: center; gap: 10px; margin-right: 20px; cursor: pointer; flex-shrink: 0; }
+        /* NAVBAR */
+        .navbar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 65px; 
+            background: var(--nav); 
+            display: flex; 
+            align-items: center; 
+            padding: 0 15px; 
+            z-index: 1000; 
+            border-bottom: 2px solid var(--border); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
         
-        /* SPINNING LOGO ANIMATION */
-        #studioLogo { width: 45px; height: 45px; border-radius: 50%; background: white; object-fit: cover; animation: rotateLogo 4s linear infinite; }
-        @keyframes rotateLogo { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .nav-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-right: 20px; 
+            cursor: pointer; 
+            flex-shrink: 0; 
+            user-select: none;
+        }
         
-        .tabs-container { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-grow: 1; align-items: center; }
-        .tab-btn { background: transparent; color: var(--text); border: none; padding: 10px 14px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 0.9rem; }
-        .tab-btn.active { background: #d3d3d3 !important; color: #222 !important; }
+        #studioLogo { 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            background: white; 
+            object-fit: cover; 
+            animation: rotateLogo 4s linear infinite; 
+        }
+        
+        @keyframes rotateLogo { 
+            from { transform: rotate(0deg); } 
+            to { transform: rotate(360deg); } 
+        }
+        
+        .tabs-container { 
+            display: flex; 
+            gap: 5px; 
+            overflow-x: auto; 
+            white-space: nowrap; 
+            flex-grow: 1; 
+            align-items: center; 
+            padding: 0 10px;
+        }
+        
+        .tab-btn { 
+            background: transparent; 
+            color: var(--text); 
+            border: none; 
+            padding: 10px 14px; 
+            cursor: pointer; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover { background: rgba(255, 0, 255, 0.1); }
+        .tab-btn.active { background: #d3d3d3; color: #222; }
 
-        .container { width: 95%; max-width: 800px; text-align: center; }
-        .content-section { display: none; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin-bottom: 50px; }
+        /* CONTAINER & SECTIONS */
+        .container { 
+            width: 95%; 
+            max-width: 800px; 
+            text-align: center; 
+            padding-bottom: 50px;
+        }
+        
+        .content-section { 
+            display: none; 
+            background: var(--card); 
+            padding: 30px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+            margin-bottom: 50px; 
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
         .content-section.active { display: block; }
         
+        .content-section h2 { margin-top: 0; }
+
+        /* FORM ELEMENTS */
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            background: var(--bg); 
+            border: 1px solid var(--border); 
+            color: var(--text); 
+            border-radius: 8px; 
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
         /* PASSWORD WRAPPER */
-        .pass-wrapper { position: relative; width: 100%; margin: 8px 0; }
-        .toggle-pass { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; box-sizing: border-box; }
-        .submit-btn { background: var(--accent); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; margin-top: 10px; }
+        .pass-wrapper { 
+            position: relative; 
+            width: 100%; 
+            margin: 8px 0; 
+        }
         
-        .game-card { background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; position: relative; }
-        .admin-del-btn { position: absolute; top: 10px; right: 10px; background: #ff4444; color: white; border: none; font-size: 0.7rem; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; z-index: 10; }
+        .pass-wrapper input { margin: 0; }
         
-        /* SEE MORE STYLES */
-        .desc-text { font-size: 0.9rem; margin-top: 10px; display: none; color: #ccc; border-top: 1px solid var(--border); padding-top: 10px; }
-        .see-more-btn { background: none; border: none; color: cyan; cursor: pointer; font-size: 0.8rem; text-decoration: underline; margin-top: 5px; }
+        .toggle-pass { 
+            position: absolute; 
+            right: 10px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: none; 
+            border: none; 
+            color: var(--accent); 
+            cursor: pointer; 
+            font-size: 0.7rem; 
+            font-weight: bold;
+            padding: 5px 10px;
+            transition: color 0.3s;
+        }
+        
+        .toggle-pass:hover { color: #ff6eff; }
 
-        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); text-align: left; background: rgba(255,255,255,0.02); margin-bottom: 5px; border-radius: 8px; }
+        /* BUTTONS */
+        .submit-btn { 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            width: 100%; 
+            font-weight: bold; 
+            margin-top: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover { 
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3);
+        }
+        
+        .submit-btn:active { transform: translateY(0); }
+        
+        .submit-btn.danger { background: var(--error); }
+        .submit-btn.success { background: var(--success); }
+
+        /* GAME CARD */
+        .game-card { 
+            background: rgba(128, 128, 128, 0.05); 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            text-align: left; 
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .game-card:hover { 
+            border-color: var(--accent);
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        /* ADMIN BUTTONS */
+        .admin-del-btn { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: var(--error); 
+            color: white; 
+            border: none; 
+            font-size: 0.7rem; 
+            padding: 6px 12px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .admin-del-btn:hover { background: #cc0000; }
+
+        /* DESCRIPTION TEXT */
+        .desc-text { 
+            font-size: 0.9rem; 
+            margin-top: 10px; 
+            display: none; 
+            color: #aaa; 
+            border-top: 1px solid var(--border); 
+            padding-top: 10px; 
+        }
+        
+        .see-more-btn { 
+            background: none; 
+            border: none; 
+            color: #00ffff; 
+            cursor: pointer; 
+            font-size: 0.8rem; 
+            text-decoration: underline;
+            margin-top: 5px;
+            transition: color 0.3s;
+        }
+        
+        .see-more-btn:hover { color: #00dddd; }
+
+        /* ADMIN USERS */
+        .admin-user-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px; 
+            border-bottom: 1px solid var(--border); 
+            text-align: left; 
+            background: rgba(255,255,255,0.02); 
+            margin-bottom: 5px; 
+            border-radius: 8px;
+        }
+
+        /* NOTIFICATIONS */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+            z-index: 2000;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification.success { background: var(--success); }
+        .notification.error { background: var(--error); }
+        .notification.warning { background: var(--warning); }
+
+        /* SUB-TABS */
+        .subtab-container { display: flex; gap: 10px; margin-bottom: 20px; }
+
+        /* EMPTY STATE */
+        .empty-state { color: #999; padding: 40px 20px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left" onclick="openTab(null, 'news')">
-            <img id="studioLogo" src="Lighty studio.png" class="studio-logo" alt="Logo">
+            <img id="studioLogo" src="Lighty studio.png" alt="Lighty Studio Logo">
             <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
         </div>
         <div class="tabs-container">
@@ -62,196 +330,401 @@
     </nav>
 
     <div class="container">
+        <!-- NEWS SECTION -->
         <div id="news" class="content-section active">
-            <h2>Activity</h2>
-            <p>Now has a YouTube Tutorial to learn more go to https://www.youtube.com/watch?v=rgzOUlxLRi0.</p>
+            <h2>📰 Activity</h2>
+            <p>Now has a YouTube Tutorial to learn more go to <a href="https://www.youtube.com/watch?v=rgzOUlxLRi0" target="_blank">Watch Tutorial</a>.</p>
         </div>
 
+        <!-- GAMES SECTION -->
         <div id="games" class="content-section">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">Library</button>
-                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">Post Game</button>
+            <div class="subtab-container">
+                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">📚 Library</button>
+                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">➕ Post Game</button>
             </div>
+            
             <div id="game-library">
                 <h2>Official Games</h2>
                 <div class="game-card">
-                    <strong>Paint V1</strong><br>
-                    <button class="submit-btn" style="background:#00c853;" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">Download</button>
+                    <strong>🎨 Paint V1</strong><br>
+                    <p style="font-size: 0.9rem; color: #aaa; margin: 5px 0;">A creative painting application</p>
+                    <button class="submit-btn success" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">⬇️ Download</button>
                 </div>
             </div>
+            
             <div id="game-posts" style="display: none;">
                 <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
-                    <input type="text" id="postTitle" placeholder="Game Title">
-                    <input type="text" id="postLink" placeholder="Download Link">
-                    <textarea id="postDesc" placeholder="Description"></textarea>
-                    <button class="submit-btn" onclick="addPost()">Publish</button>
+                    <h3>Submit Your Game</h3>
+                    <input type="text" id="postTitle" placeholder="Game Title" maxlength="50">
+                    <input type="text" id="postLink" placeholder="Download Link (URL)" maxlength="500">
+                    <textarea id="postDesc" placeholder="Description" maxlength="500" rows="4"></textarea>
+                    <button class="submit-btn success" onclick="addPost()">📤 Publish</button>
                 </div>
                 <div id="feed"></div>
             </div>
         </div>
 
+        <!-- SIGN IN SECTION -->
         <div id="signin" class="content-section">
-            <h2>Sign In</h2>
-            <input type="text" id="loginUser" placeholder="Username">
+            <h2>🔐 Sign In</h2>
+            <input type="text" id="loginUser" placeholder="Username" maxlength="30" autocomplete="username">
             <div class="pass-wrapper">
-                <input type="password" id="loginPass" placeholder="Password">
+                <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
                 <button class="toggle-pass" onclick="togglePass('loginPass')">SHOW</button>
             </div>
             <button class="submit-btn" onclick="checkLogin()">Login</button>
+            <p style="font-size: 0.85rem; color: #999;">Don't have an account? <a href="#" onclick="openTab(null, 'signup'); return false;" style="color: var(--accent);">Join here</a></p>
         </div>
 
+        <!-- SIGN UP SECTION -->
         <div id="signup" class="content-section">
-            <h2>Join</h2>
-            <input type="text" id="regUser" placeholder="Username">
+            <h2>👋 Join Lighty Studio</h2>
+            <input type="text" id="regUser" placeholder="Username (3-20 characters)" maxlength="20" autocomplete="username">
             <div class="pass-wrapper">
-                <input type="password" id="regPass" placeholder="Password">
+                <input type="password" id="regPass" placeholder="Password (min 6 characters)" autocomplete="new-password">
                 <button class="toggle-pass" onclick="togglePass('regPass')">SHOW</button>
             </div>
-            <button class="submit-btn" style="background:#4caf50;" onclick="checkRegister()">Create Account</button>
+            <small style="color: #999;">Password must be at least 6 characters</small>
+            <button class="submit-btn success" onclick="checkRegister()">✨ Create Account</button>
+            <p style="font-size: 0.85rem; color: #999;">Already have an account? <a href="#" onclick="openTab(null, 'signin'); return false;" style="color: var(--accent);">Sign in here</a></p>
         </div>
 
+        <!-- PROFILE SECTION -->
+        <div id="profile" class="content-section">
+            <h2 id="profName"></h2>
+            <div id="profile-info"></div>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="settings" class="content-section">
+            <h2>⚙️ Settings</h2>
+            <button class="submit-btn" onclick="toggleTheme()">🌓 Theme Toggle</button>
+            <button class="submit-btn danger" style="margin-top: 15px;" onclick="logout()">🚪 Logout</button>
+        </div>
+
+        <!-- ADMIN SECTION -->
         <div id="admin" class="content-section">
             <h2>👑 Admin Control Panel</h2>
             <div id="admin-user-list"></div>
         </div>
-
-        <div id="profile" class="content-section"><h2 id="profName"></h2></div>
-        <div id="settings" class="content-section"><h2>Settings</h2><button class="submit-btn" onclick="toggleTheme()">Theme Toggle</button></div>
     </div>
 
-<script>
-    let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-    const ownerName = "LightbulbPlayzZzz";
-    const masterPass = "POLKA08642OZX/";
+    <script>
+        // ============== SECURITY & DATA ==============
+        const APP_VERSION = "1.1";
+        const ownerName = "LightbulbPlayzZzz";
+        
+        // Session token instead of storing credentials
+        let currentUser = localStorage.getItem("lightyUser") || null;
 
-    function togglePass(id) {
-        const input = document.getElementById(id);
-        const btn = input.nextElementSibling;
-        input.type = input.type === "password" ? "text" : "password";
-        btn.innerText = input.type === "password" ? "SHOW" : "HIDE";
-    }
-
-    function updateNavbar() {
-        const user = localStorage.getItem("lightyUser");
-        const isAdmin = (user === ownerName);
-        document.getElementById("tab-signin").style.display = user ? "none" : "inline-block";
-        document.getElementById("tab-signup").style.display = user ? "none" : "inline-block";
-        document.getElementById("tab-profile").style.display = user ? "inline-block" : "none";
-        document.getElementById("tab-settings").style.display = user ? "inline-block" : "none";
-        document.getElementById("logoutBtn").style.display = user ? "inline-block" : "none";
-        document.getElementById("tab-admin").style.display = isAdmin ? "inline-block" : "none";
-        if (user) document.getElementById("profName").innerText = user;
-        if(isAdmin) loadAdminPanel();
-        const pubBox = document.getElementById("publish-box");
-        if(pubBox) pubBox.style.display = user ? "block" : "none";
-    }
-
-    function openTab(evt, tabName) {
-        document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById(tabName).classList.add("active");
-        if (evt) evt.currentTarget.classList.add("active");
-        if(tabName === 'games') loadPosts();
-        updateNavbar();
-    }
-
-    function loadAdminPanel() {
-        const container = document.getElementById("admin-user-list");
-        container.innerHTML = "<h3>User Database</h3>";
-        users.forEach(u => {
-            const div = document.createElement("div");
-            div.className = "admin-user-item";
-            const isSelf = u.username === ownerName;
-            div.innerHTML = `<span><strong>${u.username}</strong> (Pass: ${u.password})</span>
-                ${!isSelf ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">DELETE USER</button>` : `<span style="color:gold">OWNER</span>`}`;
-            container.appendChild(div);
-        });
-    }
-
-    function deleteAccount(target) {
-        if (confirm(`Delete user ${target}?`)) {
-            users = users.filter(u => u.username !== target);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            loadAdminPanel();
+        // ============== NOTIFICATIONS ==============
+        function showNotification(message, type = 'success') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => notif.remove(), 3000);
         }
-    }
 
-    function loadPosts() {
-        const feed = document.getElementById("feed");
-        feed.innerHTML = "";
-        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        const user = localStorage.getItem("lightyUser");
-        posts.forEach(p => {
-            const div = document.createElement("div");
-            div.className = "game-card";
-            div.innerHTML = `
-                ${user === ownerName ? `<button class="admin-del-btn" onclick="deletePost(${p.id})">DELETE POST</button>` : ""}
-                <strong>${p.title}</strong><br>
-                <button class="submit-btn" style="background:#00c853;" onclick="window.open('${p.link}', '_blank')">Download</button>
-                <button class="see-more-btn" onclick="toggleDesc(this)">See More</button>
-                <div class="desc-text">${p.desc}</div>`;
-            feed.appendChild(div);
-        });
-    }
+        // ============== INPUT VALIDATION ==============
+        function sanitizeInput(str) {
+            // Basic HTML entity encoding to prevent XSS
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
 
-    function toggleDesc(btn) {
-        const desc = btn.nextElementSibling;
-        const isHidden = desc.style.display === "none" || desc.style.display === "";
-        desc.style.display = isHidden ? "block" : "none";
-        btn.innerText = isHidden ? "See Less" : "See More";
-    }
+        function validateUsername(username) {
+            const regex = /^[a-zA-Z0-9_-]{3,20}$/;
+            return regex.test(username);
+        }
 
-    function deletePost(id) {
-        if (confirm("Delete this game post?")) {
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        function validateUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        // ============== AUTHENTICATION ==============
+        function checkLogin() {
+            const u = document.getElementById("loginUser").value.trim();
+            const p = document.getElementById("loginPass").value;
+
+            if (!u || !p) {
+                showNotification('Username and password required!', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+            
+            // Check credentials (in production, use backend authentication)
+            const found = users.find(x => x.username === u && x.password === p);
+            
+            if (found) {
+                localStorage.setItem("lightyUser", u);
+                currentUser = u;
+                showNotification(`Welcome back, ${u}!`, 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification('Invalid credentials', 'error');
+            }
+        }
+
+        function checkRegister() {
+            const u = document.getElementById("regUser").value.trim();
+            const p = document.getElementById("regPass").value;
+
+            // Validation
+            if (!validateUsername(u)) {
+                showNotification('Username must be 3-20 characters (letters, numbers, -, _)', 'error');
+                return;
+            }
+
+            if (!validatePassword(p)) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+            
+            // Check if user exists
+            if (users.find(x => x.username === u)) {
+                showNotification('Username already taken!', 'error');
+                return;
+            }
+
+            // Add new user
+            users.push({ username: u, password: p, createdAt: new Date().toISOString() });
+            localStorage.setItem("allUsers", JSON.stringify(users));
+            localStorage.setItem("lightyUser", u);
+            currentUser = u;
+            
+            showNotification(`Welcome to Lighty Studio, ${u}!`, 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem("lightyUser");
+                currentUser = null;
+                showNotification('Logged out successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+
+        // ============== PASSWORD VISIBILITY ==============
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            const btn = input.parentElement.querySelector('.toggle-pass');
+            input.type = input.type === "password" ? "text" : "password";
+            btn.innerText = input.type === "password" ? "SHOW" : "HIDE";
+        }
+
+        // ============== UI NAVIGATION ==============
+        function openTab(evt, tabName) {
+            document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".tabs-container .tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const section = document.getElementById(tabName);
+            if (section) {
+                section.classList.add("active");
+                if (evt) evt.currentTarget.classList.add("active");
+            }
+
+            if (tabName === 'games') loadPosts();
+            updateNavbar();
+        }
+
+        function toggleGameSub(type) {
+            const lib = document.getElementById('game-library');
+            const posts = document.getElementById('game-posts');
+            const btnLib = document.getElementById('subtab-lib');
+            const btnPost = document.getElementById('subtab-post');
+
+            if (type === 'lib') {
+                lib.style.display = 'block';
+                posts.style.display = 'none';
+                btnLib.classList.add('active');
+                btnPost.classList.remove('active');
+            } else {
+                lib.style.display = 'none';
+                posts.style.display = 'block';
+                btnPost.classList.add('active');
+                btnLib.classList.remove('active');
+                loadPosts();
+            }
+        }
+
+        // ============== NAVBAR ==============
+        function updateNavbar() {
+            const user = currentUser;
+            const isAdmin = user === ownerName;
+
+            document.getElementById("tab-signin").style.display = user ? "none" : "inline-block";
+            document.getElementById("tab-signup").style.display = user ? "none" : "inline-block";
+            document.getElementById("tab-profile").style.display = user ? "inline-block" : "none";
+            document.getElementById("tab-settings").style.display = user ? "inline-block" : "none";
+            document.getElementById("logoutBtn").style.display = user ? "inline-block" : "none";
+            document.getElementById("tab-admin").style.display = isAdmin ? "inline-block" : "none";
+
+            if (user) {
+                document.getElementById("profName").innerText = `👤 ${user}'s Profile`;
+                document.getElementById("profile-info").innerText = `Joined: ${new Date().toLocaleDateString()}`;
+            }
+
+            const pubBox = document.getElementById("publish-box");
+            if (pubBox) pubBox.style.display = user ? "block" : "none";
+
+            if (isAdmin) loadAdminPanel();
+        }
+
+        // ============== POSTS (GAMES) ==============
+        function loadPosts() {
+            const feed = document.getElementById("feed");
+            feed.innerHTML = "";
             let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-            localStorage.setItem("gamePosts", JSON.stringify(posts.filter(p => p.id !== id)));
+
+            if (posts.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No games posted yet. Be the first!</div>';
+                return;
+            }
+
+            posts.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "game-card";
+                
+                const isAdmin = currentUser === ownerName;
+                const deleteBtn = isAdmin ? `<button class="admin-del-btn" onclick="deletePost(${p.id})">DELETE</button>` : "";
+                
+                div.innerHTML = `
+                    ${deleteBtn}
+                    <strong>${sanitizeInput(p.title)}</strong>
+                    <br>
+                    <small style="color: #999;">by ${sanitizeInput(p.user)}</small>
+                    <br>
+                    <button class="submit-btn success" onclick="window.open('${p.link}', '_blank')">⬇️ Download</button>
+                    <button class="see-more-btn" onclick="toggleDesc(this)">📖 See More</button>
+                    <div class="desc-text">${sanitizeInput(p.desc)}</div>
+                `;
+                feed.appendChild(div);
+            });
+        }
+
+        function toggleDesc(btn) {
+            const desc = btn.nextElementSibling;
+            const isHidden = desc.style.display === "none" || desc.style.display === "";
+            desc.style.display = isHidden ? "block" : "none";
+            btn.innerText = isHidden ? "📖 See Less" : "📖 See More";
+        }
+
+        function addPost() {
+            const title = document.getElementById("postTitle").value.trim();
+            const link = document.getElementById("postLink").value.trim();
+            const desc = document.getElementById("postDesc").value.trim();
+
+            if (!title) {
+                showNotification('Game title required!', 'error');
+                return;
+            }
+
+            if (!link || !validateUrl(link)) {
+                showNotification('Valid download link required!', 'error');
+                return;
+            }
+
+            let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+            posts.unshift({ 
+                id: Date.now(), 
+                user: currentUser, 
+                title: title,
+                link: link,
+                desc: desc,
+                createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem("gamePosts", JSON.stringify(posts));
+            
+            document.getElementById("postTitle").value = "";
+            document.getElementById("postLink").value = "";
+            document.getElementById("postDesc").value = "";
+            
+            showNotification('Game posted successfully!', 'success');
             loadPosts();
         }
-    }
 
-    function addPost() {
-        const title = document.getElementById("postTitle").value;
-        const link = document.getElementById("postLink").value;
-        const desc = document.getElementById("postDesc").value;
-        if (!title || !link) return alert("Title and Link required!");
-        let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
-        posts.unshift({ id: Date.now(), user: localStorage.getItem("lightyUser"), title, link, desc });
-        localStorage.setItem("gamePosts", JSON.stringify(posts));
-        loadPosts();
-    }
-
-    function checkLogin() {
-        const u = document.getElementById("loginUser").value.trim();
-        const p = document.getElementById("loginPass").value;
-        if (u === ownerName && p === masterPass) {
-            if(!users.find(x => x.username === ownerName)) users.push({username: ownerName, password: masterPass});
-            localStorage.setItem("lightyUser", u);
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            location.reload();
-        } else {
-            const found = users.find(x => x.username === u && x.password === p);
-            if(found) { localStorage.setItem("lightyUser", u); location.reload(); } else alert("Login Failed");
+        function deletePost(id) {
+            if (confirm("Delete this game post?")) {
+                let posts = JSON.parse(localStorage.getItem("gamePosts")) || [];
+                posts = posts.filter(p => p.id !== id);
+                localStorage.setItem("gamePosts", JSON.stringify(posts));
+                showNotification('Post deleted', 'success');
+                loadPosts();
+            }
         }
-    }
 
-    function checkRegister() {
-        const u = document.getElementById("regUser").value.trim();
-        const p = document.getElementById("regPass").value;
-        if (!u || !p) return;
-        users.push({ username: u, password: p });
-        localStorage.setItem("allUsers", JSON.stringify(users));
-        localStorage.setItem("lightyUser", u);
-        location.reload();
-    }
+        // ============== ADMIN PANEL ==============
+        function loadAdminPanel() {
+            const container = document.getElementById("admin-user-list");
+            container.innerHTML = "<h3>📊 User Database</h3>";
+            
+            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+            
+            if (users.length === 0) {
+                container.innerHTML += '<div class="empty-state">No users registered yet</div>';
+                return;
+            }
 
-    function logout() { localStorage.removeItem("lightyUser"); location.reload(); }
-    function toggleTheme() { document.body.classList.toggle("light-mode"); }
-    function toggleGameSub(type) {
-        document.getElementById('game-library').style.display = (type === 'lib') ? 'block' : 'none';
-        document.getElementById('game-posts').style.display = (type === 'post') ? 'block' : 'none';
-        if(type === 'post') loadPosts();
-    }
-    window.onload = updateNavbar;
-</script>
+            users.forEach(u => {
+                const div = document.createElement("div");
+                div.className = "admin-user-item";
+                const isSelf = u.username === ownerName;
+                
+                div.innerHTML = `
+                    <span>
+                        <strong>${sanitizeInput(u.username)}</strong>
+                        ${isSelf ? '<span style="color:gold; margin-left: 10px;">👑 OWNER</span>' : ''}
+                    </span>
+                    ${!isSelf ? `<button class="admin-del-btn" onclick="deleteAccount('${u.username}')">DELETE</button>` : ''}
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function deleteAccount(target) {
+            if (confirm(`Delete user '${target}' permanently?`)) {
+                let users = JSON.parse(localStorage.getItem("allUsers")) || [];
+                users = users.filter(u => u.username !== target);
+                localStorage.setItem("allUsers", JSON.stringify(users));
+                showNotification(`User ${target} deleted`, 'success');
+                loadAdminPanel();
+            }
+        }
+
+        // ============== THEME ==============
+        function toggleTheme() {
+            document.body.classList.toggle("light-mode");
+            localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+            showNotification('Theme updated!', 'success');
+        }
+
+        // ============== INITIALIZATION ==============
+        window.addEventListener('load', () => {
+            currentUser = localStorage.getItem("lightyUser");
+            const theme = localStorage.getItem("theme");
+            if (theme === "light") {
+                document.body.classList.add("light-mode");
+            }
+            updateNavbar();
+        });
+    </script>
 </body>
 </html>
