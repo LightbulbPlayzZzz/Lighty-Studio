@@ -1,423 +1,1702 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="Lighty Studio - Game Development & Distribution">
-    <title>Lighty Studio</title>
-    <style>
-        :root { 
-            --bg: #0a0a0a; 
-            --nav: #1e1e1e; 
-            --text: #f0f0f0; 
-            --card: #161616; 
-            --border: #333; 
-            --accent: #ff00ff;
-            --success: #00c853;
-            --error: #ff4444;
-            --warning: #ffa500;
-        }
-        
-        .light-mode { 
-            --bg: #ffffff; 
-            --nav: #e0e0e0; 
-            --text: #1a1a1a; 
-            --card: #f0f0f0; 
-            --border: #ccc; 
-            --accent: #d400d4; 
-        }
-        
-        * { box-sizing: border-box; }
-        
-        html, body { margin: 0; padding: 0; }
-        
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
-            padding-top: 80px; 
-            display: flex; 
-            justify-content: center; 
-            min-height: 100vh; 
-            transition: 0.3s; 
-            overflow-x: hidden; 
-            border: 10px solid;
-            border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1;
-        }
+<!DOCTYPE html> 
 
-        /* NAVBAR */
-        .navbar { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            height: 65px; 
-            background: var(--nav); 
-            display: flex; 
-            align-items: center; 
-            padding: 0 15px; 
-            z-index: 1000; 
-            border-bottom: 2px solid var(--border); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .nav-left { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            margin-right: 20px; 
-            cursor: pointer; 
-            flex-shrink: 0; 
-            user-select: none;
-        }
-        
-        #studioLogo { 
-            width: 45px; 
-            height: 45px; 
-            border-radius: 50%; 
-            background: white; 
-            object-fit: cover; 
-            animation: rotateLogo 4s linear infinite; 
-        }
-        
-        @keyframes rotateLogo { 
-            from { transform: rotate(0deg); } 
-            to { transform: rotate(360deg); } 
-        }
-        
-        .tabs-container { 
-            display: flex; 
-            gap: 5px; 
-            overflow-x: auto; 
+<html lang="en"> 
+
+<head> 
+
+    <meta charset="UTF-8"> 
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+
+    <meta name="description" content="Lighty Studio - Game Development & Distribution"> 
+
+    <title>Lighty Studio</title> 
+
+    <style> 
+
+        :root {  
+
+            --bg: #0a0a0a;  
+
+            --nav: #1e1e1e;  
+
+            --text: #f0f0f0;  
+
+            --card: #161616;  
+
+            --border: #333;  
+
+            --accent: #ff00ff; 
+
+            --success: #00c853; 
+
+            --error: #ff4444; 
+
+            --warning: #ffa500; 
+
+        } 
+
+         
+
+        .light-mode {  
+
+            --bg: #ffffff;  
+
+            --nav: #e0e0e0;  
+
+            --text: #1a1a1a;  
+
+            --card: #f0f0f0;  
+
+            --border: #ccc;  
+
+            --accent: #d400d4;  
+
+        } 
+
+         
+
+        * { box-sizing: border-box; } 
+
+         
+
+        html, body { margin: 0; padding: 0; } 
+
+         
+
+        body {  
+
+            background-color: var(--bg);  
+
+            color: var(--text);  
+
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;  
+
+            padding-top: 80px;  
+
+            display: flex;  
+
+            justify-content: center;  
+
+            min-height: 100vh;  
+
+            transition: 0.3s;  
+
+            overflow-x: hidden;  
+
+            border: 10px solid; 
+
+            border-image: linear-gradient(45deg, #f00, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #f00) 1; 
+
+        } 
+
+  
+
+        /* NAVBAR */ 
+
+        .navbar {  
+
+            position: fixed;  
+
+            top: 0;  
+
+            left: 0;  
+
+            right: 0;  
+
+            height: 65px;  
+
+            background: var(--nav);  
+
+            display: flex;  
+
+            align-items: center;  
+
+            padding: 0 15px;  
+
+            z-index: 1000;  
+
+            border-bottom: 2px solid var(--border);  
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+
+        } 
+
+         
+
+        .nav-left {  
+
+            display: flex;  
+
+            align-items: center;  
+
+            gap: 10px;  
+
+            margin-right: 20px;  
+
+            cursor: pointer;  
+
+            flex-shrink: 0;  
+
+            user-select: none; 
+
+        } 
+
+         
+
+        #studioLogo {  
+
+            width: 45px;  
+
+            height: 45px;  
+
+            border-radius: 50%;  
+
+            background: white;  
+
+            object-fit: cover;  
+
+            animation: rotateLogo 4s linear infinite;  
+
+        } 
+
+         
+
+        @keyframes rotateLogo {  
+
+            from { transform: rotate(0deg); }  
+
+            to { transform: rotate(360deg); }  
+
+        } 
+
+         
+
+        .tabs-container {  
+
+            display: flex;  
+
+            gap: 5px;  
+
+            overflow-x: auto;  
+
+            white-space: nowrap;  
+
+            flex-grow: 1;  
+
+            align-items: center;  
+
+            padding: 0 10px; 
+
+        } 
+
+         
+
+        .tab-btn {  
+
+            background: transparent;  
+
+            color: var(--text);  
+
+            border: none;  
+
+            padding: 10px 14px;  
+
+            cursor: pointer;  
+
+            border-radius: 5px;  
+
+            font-weight: bold;  
+
+            font-size: 0.9rem; 
+
+            transition: all 0.3s ease; 
+
             white-space: nowrap; 
-            flex-grow: 1; 
-            align-items: center; 
-            padding: 0 10px;
-        }
-        
-        .tab-btn { 
-            background: transparent; 
-            color: var(--text); 
-            border: none; 
-            padding: 10px 14px; 
-            cursor: pointer; 
-            border-radius: 5px; 
+
+        } 
+
+         
+
+        .tab-btn:hover { background: rgba(255, 0, 255, 0.1); } 
+
+        .tab-btn.active { background: #d3d3d3; color: #222; } 
+
+  
+
+        /* CONTAINER & SECTIONS */ 
+
+        .container {  
+
+            width: 95%;  
+
+            max-width: 800px;  
+
+            text-align: center;  
+
+            padding-bottom: 50px; 
+
+        } 
+
+         
+
+        .content-section {  
+
+            display: none;  
+
+            background: var(--card);  
+
+            padding: 30px;  
+
+            border-radius: 20px;  
+
+            border: 1px solid var(--border);  
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);  
+
+            margin-bottom: 50px;  
+
+            animation: fadeIn 0.3s ease; 
+
+        } 
+
+         
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } 
+
+         
+
+        .content-section.active { display: block; } 
+
+         
+
+        .content-section h2 { margin-top: 0; } 
+
+  
+
+        /* FORM ELEMENTS */ 
+
+        input, select, textarea {  
+
+            width: 100%;  
+
+            padding: 12px;  
+
+            margin: 8px 0;  
+
+            background: var(--bg);  
+
+            border: 1px solid var(--border);  
+
+            color: var(--text);  
+
+            border-radius: 8px;  
+
+            font-size: 1rem; 
+
+            transition: border-color 0.3s; 
+
+        } 
+
+         
+
+        input:focus, select:focus, textarea:focus { 
+
+            outline: none; 
+
+            border-color: var(--accent); 
+
+            box-shadow: 0 0 5px var(--accent); 
+
+        } 
+
+  
+
+        /* PASSWORD WRAPPER */ 
+
+        .pass-wrapper {  
+
+            position: relative;  
+
+            width: 100%;  
+
+            margin: 8px 0;  
+
+        } 
+
+         
+
+        .pass-wrapper input { margin: 0; } 
+
+         
+
+        .toggle-pass {  
+
+            position: absolute;  
+
+            right: 10px;  
+
+            top: 50%;  
+
+            transform: translateY(-50%);  
+
+            background: none;  
+
+            border: none;  
+
+            color: var(--accent);  
+
+            cursor: pointer;  
+
+            font-size: 0.7rem;  
+
             font-weight: bold; 
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .tab-btn:hover { background: rgba(255, 0, 255, 0.1); }
-        .tab-btn.active { background: #d3d3d3; color: #222; }
 
-        .container { 
-            width: 95%; 
-            max-width: 800px; 
-            text-align: center; 
-            padding-bottom: 50px;
-        }
-        
-        .content-section { 
-            display: none; 
-            background: var(--card); 
-            padding: 30px; 
-            border-radius: 20px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
-            margin-bottom: 50px; 
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .content-section.active { display: block; }
+            padding: 5px 10px; 
 
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            background: var(--bg); 
-            border: 1px solid var(--border); 
-            color: var(--text); 
+            transition: color 0.3s; 
+
+        } 
+
+         
+
+        .toggle-pass:hover { color: #ff6eff; } 
+
+  
+
+        /* BUTTONS */ 
+
+        .submit-btn {  
+
+            background: var(--accent);  
+
+            color: white;  
+
+            border: none;  
+
+            padding: 12px;  
+
+            cursor: pointer;  
+
+            border-radius: 8px;  
+
+            width: 100%;  
+
+            font-weight: bold;  
+
+            margin-top: 10px; 
+
+            font-size: 1rem; 
+
+            transition: all 0.3s; 
+
+        } 
+
+         
+
+        .submit-btn:hover {  
+
+            opacity: 0.9; 
+
+            transform: translateY(-2px); 
+
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.3); 
+
+        } 
+
+         
+
+        .submit-btn:active { transform: translateY(0); } 
+
+         
+
+        .submit-btn.danger { background: var(--error); } 
+
+        .submit-btn.success { background: var(--success); } 
+
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; } 
+
+  
+
+        /* GAME CARD */ 
+
+        .game-card {  
+
+            background: rgba(128, 128, 128, 0.05);  
+
+            padding: 15px;  
+
+            margin-bottom: 15px;  
+
+            border-radius: 12px;  
+
+            border: 1px solid var(--border);  
+
+            text-align: left;  
+
+            position: relative; 
+
+            transition: all 0.3s; 
+
+        } 
+
+         
+
+        .game-card:hover {  
+
+            border-color: var(--accent); 
+
+            background: rgba(255, 0, 255, 0.05); 
+
+        } 
+
+  
+
+        /* USER CARD */ 
+
+        .user-card { 
+
+            background: rgba(128, 128, 128, 0.05);  
+
+            padding: 15px;  
+
+            margin-bottom: 15px;  
+
+            border-radius: 12px;  
+
+            border: 1px solid var(--border);  
+
+            text-align: left; 
+
+            display: flex; 
+
+            justify-content: space-between; 
+
+            align-items: center; 
+
+            transition: all 0.3s; 
+
+        } 
+
+  
+
+        .user-card:hover { 
+
+            border-color: var(--accent); 
+
+            background: rgba(255, 0, 255, 0.05); 
+
+        } 
+
+  
+
+        .user-info { 
+
+            flex: 1; 
+
+        } 
+
+  
+
+        .user-info strong { 
+
+            display: block; 
+
+            margin-bottom: 5px; 
+
+        } 
+
+  
+
+        .user-info small { 
+
+            color: #999; 
+
+        } 
+
+  
+
+        .follow-btn { 
+
+            padding: 8px 16px; 
+
+            min-width: 100px; 
+
+            font-size: 0.9rem; 
+
+        } 
+
+  
+
+        /* ADMIN BUTTONS */ 
+
+        .admin-del-btn {  
+
+            position: absolute;  
+
+            top: 10px;  
+
+            right: 10px;  
+
+            background: var(--error);  
+
+            color: white;  
+
+            border: none;  
+
+            font-size: 0.7rem;  
+
+            padding: 6px 12px;  
+
+            border-radius: 5px;  
+
+            cursor: pointer;  
+
+            font-weight: bold;  
+
+            z-index: 10; 
+
+            transition: all 0.3s; 
+
+        } 
+
+         
+
+        .admin-del-btn:hover { background: #cc0000; } 
+
+  
+
+        /* DESCRIPTION TEXT */ 
+
+        .desc-text {  
+
+            font-size: 0.9rem;  
+
+            margin-top: 10px;  
+
+            display: none;  
+
+            color: #aaa;  
+
+            border-top: 1px solid var(--border);  
+
+            padding-top: 10px;  
+
+        } 
+
+         
+
+        .see-more-btn {  
+
+            background: none;  
+
+            border: none;  
+
+            color: #00ffff;  
+
+            cursor: pointer;  
+
+            font-size: 0.8rem;  
+
+            text-decoration: underline; 
+
+            margin-top: 5px; 
+
+            transition: color 0.3s; 
+
+        } 
+
+         
+
+        .see-more-btn:hover { color: #00dddd; } 
+
+  
+
+        /* ADMIN USERS */ 
+
+        .admin-user-item {  
+
+            display: flex;  
+
+            justify-content: space-between;  
+
+            align-items: center;  
+
+            padding: 15px;  
+
+            border-bottom: 1px solid var(--border);  
+
+            text-align: left;  
+
+            background: rgba(255,255,255,0.02);  
+
+            margin-bottom: 5px;  
+
             border-radius: 8px; 
-            font-size: 1rem;
-            transition: border-color 0.3s;
+
+        } 
+
+  
+
+        /* NOTIFICATIONS */ 
+
+        .notification { 
+
+            position: fixed; 
+
+            top: 80px; 
+
+            right: 20px; 
+
+            padding: 15px 20px; 
+
+            border-radius: 8px; 
+
+            color: white; 
+
+            font-weight: bold; 
+
+            animation: slideIn 0.3s ease; 
+
+            z-index: 2000; 
+
+            max-width: 300px; 
+
+        } 
+
+  
+
+        @keyframes slideIn { 
+
+            from { transform: translateX(400px); opacity: 0; } 
+
+            to { transform: translateX(0); opacity: 1; } 
+
+        } 
+
+  
+
+        .notification.success { background: var(--success); } 
+
+        .notification.error { background: var(--error); } 
+
+        .notification.warning { background: var(--warning); } 
+
+  
+
+        /* SUB-TABS */ 
+
+        .subtab-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; } 
+
+  
+
+        /* EMPTY STATE */ 
+
+        .empty-state { color: #999; padding: 40px 20px; } 
+
+  
+
+        /* GOOGLE DRIVE VALIDATION */ 
+
+        .link-validation { 
+
+            margin-top: 5px; 
+
+            font-size: 0.85rem; 
+
+            display: flex; 
+
+            align-items: center; 
+
+            gap: 5px; 
+
+        } 
+
+  
+
+        .link-validation.valid { color: var(--success); } 
+
+        .link-validation.invalid { color: var(--error); } 
+
+        .link-validation.pending { color: var(--warning); } 
+
+  
+
+        /* SEARCH BOX */ 
+
+        .search-container { 
+
+            display: flex; 
+
+            gap: 10px; 
+
+            margin-bottom: 20px; 
+
+        } 
+
+  
+
+        .search-container input { 
+
+            flex: 1; 
+
+            margin: 0; 
+
+        } 
+
+  
+
+        .search-container button { 
+
+            width: auto; 
+
+            min-width: 100px; 
+
+            padding: 12px; 
+
+            margin: 0; 
+
+        } 
+
+  
+
+        /* MODAL */ 
+
+        .modal { 
+
+            display: none; 
+
+            position: fixed; 
+
+            z-index: 3000; 
+
+            left: 0; 
+
+            top: 0; 
+
+            width: 100%; 
+
+            height: 100%; 
+
+            background-color: rgba(0, 0, 0, 0.8); 
+
+            animation: fadeIn 0.3s ease; 
+
+        } 
+
+  
+
+        .modal-content { 
+
+            background: var(--card); 
+
+            margin: 5% auto; 
+
+            padding: 30px; 
+
+            border: 1px solid var(--border); 
+
+            border-radius: 15px; 
+
+            width: 90%; 
+
+            max-width: 400px; 
+
+            text-align: center; 
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+
+        } 
+
+  
+
+        .modal-content h3 { 
+
+            margin-top: 0; 
+
+            color: var(--accent); 
+
+        } 
+
+  
+
+        .modal-content p { 
+
+            color: #ccc; 
+
+            margin: 15px 0; 
+
+        } 
+
+  
+
+        .modal-buttons { 
+
+            display: flex; 
+
+            gap: 10px; 
+
+            margin-top: 20px; 
+
+        } 
+
+  
+
+        .modal-buttons button { 
+
+            flex: 1; 
+
+            padding: 12px; 
+
+            margin: 0; 
+
+            border: none; 
+
+            border-radius: 8px; 
+
+            font-weight: bold; 
+
+            cursor: pointer; 
+
+            transition: all 0.3s; 
+
+        } 
+
+  
+
+        .modal-buttons .confirm-btn { 
+
+            background: var(--error); 
+
+            color: white; 
+
+        } 
+
+  
+
+        .modal-buttons .cancel-btn { 
+
+            background: var(--border); 
+
+            color: var(--text); 
+
+        } 
+
+  
+
+        .modal-buttons button:hover { 
+
+            opacity: 0.9; 
+
+            transform: translateY(-2px); 
+
+        } 
+
+  
+
+        .modal-pass { 
+
+            margin: 15px 0; 
+
+        } 
+
+  
+
+        .modal-pass input { 
+
+            margin: 0; 
+
+        } 
+
+    </style> 
+
+</head> 
+
+<body> 
+
+  
+
+    <nav class="navbar"> 
+
+        <div class="nav-left" onclick="openTab(null, 'news')"> 
+
+            <img id="studioLogo" src="Lighty studio.png" alt="Lighty Studio Logo"> 
+
+            <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span> 
+
+        </div> 
+
+        <div class="tabs-container"> 
+
+            <button class="tab-btn active" onclick="openTab(event, 'news')">News</button> 
+
+            <button class="tab-btn" onclick="openTab(event, 'games')">Games</button> 
+
+            <button id="tab-people" class="tab-btn" style="display:none;" onclick="openTab(event, 'people')">👥 People</button> 
+
+            <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button> 
+
+            <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button> 
+
+            <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button> 
+
+            <button id="tab-devices" class="tab-btn" style="display:none;" onclick="openTab(event, 'devices')">📱 Devices</button> 
+
+            <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button> 
+
+            <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button> 
+
+            <button id="logoutBtn" class="tab-btn" style="display:none; color: #ff4444;" onclick="logout()">Logout</button> 
+
+        </div> 
+
+    </nav> 
+
+  
+
+    <div class="container"> 
+
+        <!-- NEWS SECTION --> 
+
+        <div id="news" class="content-section active"> 
+
+            <h2>📰 Activity</h2> 
+
+            <p>Lighty Studio now supports multi-device login! Sign in from any device and access your data everywhere.</p> 
+
+            <p>Now has a YouTube Tutorial to learn more go to <a href="https://www.youtube.com/watch?v=rgzOUlxLRi0" target="_blank">Watch Tutorial</a>.</p> 
+
+        </div> 
+
+  
+
+        <!-- GAMES SECTION --> 
+
+        <div id="games" class="content-section"> 
+
+            <div class="subtab-container"> 
+
+                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">📚 Library</button> 
+
+                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">➕ Post Game</button> 
+
+            </div> 
+
+             
+
+            <div id="game-library"> 
+
+                <h2>Official Games</h2> 
+
+                <div class="game-card"> 
+
+                    <strong>🎨 Paint V1</strong><br> 
+
+                    <p style="font-size: 0.9rem; color: #aaa; margin: 5px 0;">A creative painting application</p> 
+
+                    <button class="submit-btn success" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">⬇️ Download</button> 
+
+                </div> 
+
+            </div> 
+
+             
+
+            <div id="game-posts" style="display: none;"> 
+
+                <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;"> 
+
+                    <h3>Submit Your Game</h3> 
+
+                    <input type="text" id="postTitle" placeholder="Game Title" maxlength="50"> 
+
+                    <input type="text" id="postLink" placeholder="Google Drive Link (must be https://drive.google.com)" maxlength="500" oninput="validateGoogleDriveLink()"> 
+
+                    <div id="linkValidation" class="link-validation" style="display:none;"></div> 
+
+                    <textarea id="postDesc" placeholder="Description" maxlength="500" rows="4"></textarea> 
+
+                    <button class="submit-btn success" id="publishBtn" onclick="addPost()" disabled>📤 Publish</button> 
+
+                </div> 
+
+                <div id="feed"></div> 
+
+            </div> 
+
+        </div> 
+
+  
+
+        <!-- PEOPLE SECTION --> 
+
+        <div id="people" class="content-section"> 
+
+            <h2>👥 Find People</h2> 
+
+            <div class="search-container"> 
+
+                <input type="text" id="searchInput" placeholder="Search username..." maxlength="20"> 
+
+                <button class="submit-btn" onclick="searchPeople()">🔍 Search</button> 
+
+            </div> 
+
+            <div id="people-list"></div> 
+
+        </div> 
+
+  
+
+        <!-- SIGN IN SECTION --> 
+
+        <div id="signin" class="content-section"> 
+
+            <h2>🔐 Sign In</h2> 
+
+            <input type="text" id="loginUser" placeholder="Username" maxlength="30" autocomplete="username"> 
+
+            <div class="pass-wrapper"> 
+
+                <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password"> 
+
+                <button class="toggle-pass" onclick="togglePass('loginPass')">SHOW</button> 
+
+            </div> 
+
+            <button class="submit-btn" onclick="checkLogin()">Login</button> 
+
+            <p style="font-size: 0.85rem; color: #999;">Don't have an account? <a href="#" onclick="openTab(null, 'signup'); return false;" style="color: var(--accent);">Join here</a></p> 
+
+        </div> 
+
+  
+
+        <!-- SIGN UP SECTION --> 
+
+        <div id="signup" class="content-section"> 
+
+            <h2>👋 Join Lighty Studio</h2> 
+
+            <input type="text" id="regUser" placeholder="Username (3-20 characters)" maxlength="20" autocomplete="username"> 
+
+            <div class="pass-wrapper"> 
+
+                <input type="password" id="regPass" placeholder="Password (min 6 characters)" autocomplete="new-password"> 
+
+                <button class="toggle-pass" onclick="togglePass('regPass')">SHOW</button> 
+
+            </div> 
+
+            <small style="color: #999;">Password must be at least 6 characters</small> 
+
+            <button class="submit-btn success" onclick="checkRegister()">✨ Create Account</button> 
+
+            <p style="font-size: 0.85rem; color: #999;">Already have an account? <a href="#" onclick="openTab(null, 'signin'); return false;" style="color: var(--accent);">Sign in here</a></p> 
+
+        </div> 
+
+  
+
+        <!-- PROFILE SECTION --> 
+
+        <div id="profile" class="content-section"> 
+
+            <h2 id="profName"></h2> 
+
+            <div id="profile-info"></div> 
+
+        </div> 
+
+  
+
+        <!-- DEVICES SECTION --> 
+
+        <div id="devices" class="content-section"> 
+
+            <h2>📱 Active Devices</h2> 
+
+            <div id="device-list"></div> 
+
+        </div> 
+
+  
+
+        <!-- SETTINGS SECTION --> 
+
+        <div id="settings" class="content-section"> 
+
+            <h2>⚙️ Settings</h2> 
+
+            <button class="submit-btn" onclick="toggleTheme()">🌓 Theme Toggle</button> 
+
+            <button class="submit-btn danger" style="margin-top: 15px;" onclick="logout()">🚪 Logout from This Device</button> 
+
+        </div> 
+
+  
+
+        <!-- ADMIN SECTION --> 
+
+        <div id="admin" class="content-section"> 
+
+            <h2>👑 Admin Control Panel</h2> 
+
+            <div style="margin-bottom: 30px;"> 
+
+                <h3 style="color: var(--accent); text-align: left;">👥 User Management</h3> 
+
+                <div id="admin-user-list"></div> 
+
+            </div> 
+
+            <div style="border-top: 2px solid var(--border); padding-top: 20px;"> 
+
+                <h3 style="color: var(--accent); text-align: left;">🎮 Game Management</h3> 
+
+                <div id="admin-game-list"></div> 
+
+            </div> 
+
+        </div> 
+
+    </div> 
+
+  
+
+    <!-- DELETION CONFIRMATION MODAL --> 
+
+    <div id="deleteModal" class="modal"> 
+
+        <div class="modal-content"> 
+
+            <h3>⚠️ Confirm Deletion</h3> 
+
+            <p id="deleteMessage"></p> 
+
+            <div class="modal-pass"> 
+
+                <input type="password" id="deletePassword" placeholder="Enter your admin password"> 
+
+            </div> 
+
+            <div class="modal-buttons"> 
+
+                <button class="confirm-btn" onclick="confirmDelete()">🗑️ Confirm Delete</button> 
+
+                <button class="cancel-btn" onclick="closeDeleteModal()">❌ Cancel</button> 
+
+            </div> 
+
+        </div> 
+
+    </div> 
+
+  
+
+    <script> 
+
+        // ============== SECURITY & DATA ============== 
+
+        const APP_VERSION = "3.0"; 
+
+        const ownerName = "LightbulbPlayzZzz"; 
+
+        const ownerPassword = "POLKA08642OZX/"; 
+
+         
+
+        let currentUser = localStorage.getItem("lightyUser") || null; 
+
+        let deleteAction = null; 
+
+  
+
+        // ============== DEVICE MANAGEMENT ============== 
+
+        function getOrCreateDeviceId() { 
+
+            let deviceId = localStorage.getItem('deviceId'); 
+
+            if (!deviceId) { 
+
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); 
+
+                localStorage.setItem('deviceId', deviceId); 
+
+            } 
+
+            return deviceId; 
+
+        } 
+
+  
+
+        function getDeviceName() { 
+
+            const ua = navigator.userAgent; 
+
+            if (ua.includes('Chrome') && !ua.includes('Edge')) return '💻 Chrome Browser'; 
+
+            if (ua.includes('Firefox')) return '🦊 Firefox Browser'; 
+
+            if (ua.includes('Safari') && !ua.includes('Chrome')) return '🧭 Safari Browser'; 
+
+            if (ua.includes('Edge')) return '📘 Edge Browser'; 
+
+            if (ua.includes('Mobile') || ua.includes('Android') || ua.includes('iPhone')) return '📱 Mobile Device'; 
+
+            return '💾 Unknown Device'; 
+
+        } 
+
+  
+
+        function registerDevice(username) { 
+
+            const deviceId = getOrCreateDeviceId(); 
+
+            const deviceName = getDeviceName(); 
+
+             
+
+            let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
+
+            if (!devices[username]) { 
+
+                devices[username] = []; 
+
+            } 
+
+             
+
+            const deviceExists = devices[username].find(d => d.id === deviceId); 
+
+            if (!deviceExists) { 
+
+                devices[username].push({ 
+
+                    id: deviceId, 
+
+                    name: deviceName, 
+
+                    lastLogin: new Date().toISOString() 
+
+                }); 
+
+            } else { 
+
+                deviceExists.lastLogin = new Date().toISOString(); 
+
+            } 
+
+             
+
+            localStorage.setItem("userDevices", JSON.stringify(devices)); 
+
+        } 
+
+  
+
+        // ============== NOTIFICATIONS ============== 
+
+        function showNotification(message, type = 'success') { 
+
+            const notif = document.createElement('div'); 
+
+            notif.className = `notification ${type}`; 
+
+            notif.textContent = message; 
+
+            document.body.appendChild(notif); 
+
+             
+
+            setTimeout(() => notif.remove(), 3000); 
+
+        } 
+
+  
+
+        // ============== INPUT VALIDATION ============== 
+
+        function sanitizeInput(str) { 
+
+            const div = document.createElement('div'); 
+
+            div.textContent = str; 
+
+            return div.innerHTML; 
+
+        } 
+
+  
+
+        function validateUsername(username) { 
+
+            const regex = /^[a-zA-Z0-9_-]{3,20}$/; 
+
+            return regex.test(username); 
+
+        } 
+
+  
+
+        function validatePassword(password) { 
+
+            return password.length >= 6; 
+
+        } 
+
+  
+
+        function validateUrl(url) { 
+
+            try { 
+
+                new URL(url); 
+
+                return true; 
+
+            } catch { 
+
+                return false; 
+
+            } 
+
+        } 
+
+  
+
+        // ============== GOOGLE DRIVE LINK VALIDATION ============== 
+
+        function validateGoogleDriveLink() { 
+
+            const link = document.getElementById("postLink").value.trim(); 
+
+            const validation = document.getElementById("linkValidation"); 
+
+            const publishBtn = document.getElementById("publishBtn"); 
+
+  
+
+            if (!link) { 
+
+                validation.style.display = "none"; 
+
+                publishBtn.disabled = true; 
+
+                return false; 
+
+            } 
+
+  
+
+            const isValidUrl = validateUrl(link); 
+
+            const isGoogleDrive = link.includes("https://drive.google.com"); 
+
+  
+
+            validation.style.display = "flex"; 
+
+  
+
+            if (!isValidUrl) { 
+
+                validation.className = "link-validation invalid"; 
+
+                validation.innerHTML = "❌ Invalid URL format"; 
+
+                publishBtn.disabled = true; 
+
+                return false; 
+
+            } 
+
+  
+
+            if (!isGoogleDrive) { 
+
+                validation.className = "link-validation invalid"; 
+
+                validation.innerHTML = "❌ Link must be from https://drive.google.com"; 
+
+                publishBtn.disabled = true; 
+
+                return false; 
+
+            } 
+
+  
+
+            validation.className = "link-validation valid"; 
+
+            validation.innerHTML = "✅ Valid Google Drive link"; 
+
+            publishBtn.disabled = false; 
+
+            return true; 
+
+        } 
+
+  
+
+        // ============== AUTHENTICATION ============== 
+
+        function checkLogin() { 
+
+            const u = document.getElementById("loginUser").value.trim(); 
+
+            const p = document.getElementById("loginPass").value; 
+
+  
+
+            if (!u || !p) { 
+
+                showNotification('Username and password required!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
+
+             
+
+            const found = users.find(x => x.username === u && x.password === p); 
+
+             
+
+            if (found) { 
+
+                localStorage.setItem("lightyUser", u); 
+
+                currentUser = u; 
+
+                registerDevice(u); 
+
+                showNotification(`Welcome back, ${u}!`, 'success'); 
+
+                setTimeout(() => location.reload(), 1000); 
+
+            } else { 
+
+                showNotification('Invalid credentials', 'error'); 
+
+            } 
+
+        } 
+
+  
+
+        function checkRegister() { 
+
+            const u = document.getElementById("regUser").value.trim(); 
+
+            const p = document.getElementById("regPass").value; 
+
+  
+
+            if (!validateUsername(u)) { 
+
+                showNotification('Username must be 3-20 characters (letters, numbers, -, _)', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            if (!validatePassword(p)) { 
+
+                showNotification('Password must be at least 6 characters', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
+
+             
+
+            if (users.find(x => x.username === u)) { 
+
+                showNotification('Username already taken!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            users.push({  
+
+                username: u,  
+
+                password: p,  
+
+                createdAt: new Date().toISOString()  
+
+            }); 
+
+            localStorage.setItem("allUsers", JSON.stringify(users)); 
+
+            localStorage.setItem("lightyUser", u); 
+
+            currentUser = u; 
+
+            registerDevice(u); 
+
+             
+
+            showNotification(`Welcome to Lighty Studio, ${u}!`, 'success'); 
+
+            setTimeout(() => location.reload(), 1000); 
+
+        } 
+
+  
+
+        function logout() { 
+
+            if (confirm('Are you sure you want to logout from this device?')) { 
+
+                localStorage.removeItem("lightyUser"); 
+
+                currentUser = null; 
+
+                showNotification('Logged out successfully', 'success'); 
+
+                setTimeout(() => location.reload(), 1000); 
+
+            } 
+
+        } 
+
+  
+
+        // ============== PASSWORD VISIBILITY ============== 
+
+        function togglePass(id) { 
+
+            const input = document.getElementById(id); 
+
+            const btn = input.parentElement.querySelector('.toggle-pass'); 
+
+            input.type = input.type === "password" ? "text" : "password"; 
+
+            btn.innerText = input.type === "password" ? "SHOW" : "HIDE"; 
+
+        } 
+
+  
+
+        // ============== UI NAVIGATION ============== 
+
+        function openTab(evt, tabName) { 
+
+            document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active")); 
+
+            document.querySelectorAll(".tabs-container .tab-btn").forEach(b => b.classList.remove("active")); 
+
+             
+
+            const section = document.getElementById(tabName); 
+
+            if (section) { 
+
+                section.classList.add("active"); 
+
+                if (evt) evt.currentTarget.classList.add("active"); 
+
+            } 
+
+  
+
+            if (tabName === 'games') loadPosts(); 
+
+            if (tabName === 'devices') loadDevices(); 
+
+            if (tabName === 'people') loadPeople(); 
+
+            updateNavbar(); 
+
+        } 
+
+  
+
+        function toggleGameSub(type) { 
+
+            const lib = document.getElementById('game-library'); 
+
+            const posts = document.getElementById('game-posts'); 
+
+            const btnLib = document.getElementById('subtab-lib'); 
+
+            const btnPost = document.getElementById('subtab-post'); 
+
+  
+
+            if (type === 'lib') { 
+
+                lib.style.display = 'block'; 
+
+                posts.style.display = 'none'; 
+
+                btnLib.classList.add('active'); 
+
+                btnPost.classList.remove('active'); 
+
+            } else { 
+
+                lib.style.display = 'none'; 
+
+                posts.style.display = 'block'; 
+
+                btnPost.classList.add('active'); 
+
+                btnLib.classList.remove('active'); 
+
+                loadPosts(); 
+
+            } 
+
+        } 
+
+  
+
+        // ============== NAVBAR ============== 
+
+        function updateNavbar() { 
+
+            const user = currentUser; 
+
+            const isAdmin = user === ownerName; 
+
+  
+
+            document.getElementById("tab-signin").style.display = user ? "none" : "inline-block"; 
+
+            document.getElementById("tab-signup").style.display = user ? "none" : "inline-block"; 
+
+            document.getElementById("tab-people").style.display = user ? "inline-block" : "none"; 
+
+            document.getElementById("tab-profile").style.display = user ? "inline-block" : "none"; 
+
+            document.getElementById("tab-devices").style.display = user ? "inline-block" : "none"; 
+
+            document.getElementById("tab-settings").style.display = user ? "inline-block" : "none"; 
+
+            document.getElementById("logoutBtn").style.display = user ? "inline-block" : "none";
+            document.getElementById("tab-admin").style.display = isAdmin ? "inline-block" : "none";
         }
-
-        .pass-wrapper { position: relative; width: 100%; margin: 8px 0; }
-        .pass-wrapper input { margin: 0; }
-        
-        .toggle-pass { 
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
-            background: none; border: none; color: var(--accent); 
-            cursor: pointer; font-size: 0.7rem; font-weight: bold; padding: 5px 10px;
-        }
-
-        .submit-btn { 
-            background: var(--accent); color: white; border: none; padding: 12px; 
-            cursor: pointer; border-radius: 8px; width: 100%; font-weight: bold; 
-            margin-top: 10px; font-size: 1rem; transition: all 0.3s;
-        }
-        .submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .submit-btn.danger { background: var(--error); }
-        .submit-btn.success { background: var(--success); }
-
-        .game-card, .user-card, .admin-user-item { 
-            background: rgba(128, 128, 128, 0.05); padding: 15px; margin-bottom: 15px; 
-            border-radius: 12px; border: 1px solid var(--border); text-align: left; 
-            position: relative; transition: all 0.3s;
-        }
-
-        .notification {
-            position: fixed; top: 80px; right: 20px; padding: 15px 20px;
-            border-radius: 8px; color: white; font-weight: bold;
-            animation: slideIn 0.3s ease; z-index: 2000;
-        }
-        @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .notification.success { background: var(--success); }
-        .notification.error { background: var(--error); }
-
-        .link-validation { margin-top: 5px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
-        .link-validation.valid { color: var(--success); }
-        .link-validation.invalid { color: var(--error); }
-
-        .modal {
-            display: none; position: fixed; z-index: 3000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8);
-        }
-        .modal-content {
-            background: var(--card); margin: 10% auto; padding: 30px;
-            border-radius: 15px; width: 90%; max-width: 400px; text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <div class="nav-left" onclick="openTab(null, 'news')">
-            <img id="studioLogo" src="Lighty studio.png" alt="Lighty Studio Logo">
-            <span style="font-weight: 800; font-size: 1.1rem;">Lighty Studio</span>
-        </div>
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="openTab(event, 'news')">News</button>
-            <button class="tab-btn" onclick="openTab(event, 'games')">Games</button>
-            <button id="tab-people" class="tab-btn" style="display:none;" onclick="openTab(event, 'people')">👥 People</button>
-            <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button>
-            <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button>
-            <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button>
-            <button id="tab-devices" class="tab-btn" style="display:none;" onclick="openTab(event, 'devices')">📱 Devices</button>
-            <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button>
-            <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button>
-            <button id="logoutBtn" class="tab-btn" style="display:none; color: #ff4444;" onclick="logout()">Logout</button>
-        </div>
-    </nav>
-
-    <div class="container">
-        <!-- NEWS SECTION -->
-        <div id="news" class="content-section active">
-            <h2>📰 Activity</h2>
-            <p>Lighty Studio now supports multi-device login! Sign in from any device and access your data everywhere.</p>
-            <p>Watch our tutorial: <a href="https://www.youtube.com/watch?v=rgzOUlxLRi0" target="_blank" style="color:var(--accent)">Watch Tutorial</a>.</p>
-        </div>
-
-        <!-- GAMES SECTION -->
-        <div id="games" class="content-section">
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">📚 Library</button>
-                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">➕ Post Game</button>
-            </div>
-            
-            <div id="game-library">
-                <h2>Official Games</h2>
-                <div class="game-card">
-                    <strong>🎨 Paint V1</strong>
-                    <p style="font-size: 0.9rem; color: #aaa;">A creative painting application</p>
-                    <button class="submit-btn success" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">⬇️ Download</button>
-                </div>
-            </div>
-            
-            <div id="game-posts" style="display: none;">
-                <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
-                    <h3>Submit Your Game</h3>
-                    <input type="text" id="postTitle" placeholder="Game Title">
-                    <input type="text" id="postLink" placeholder="Google Drive Link" oninput="validateGoogleDriveLink()">
-                    <div id="linkValidation" class="link-validation" style="display:none;"></div>
-                    <textarea id="postDesc" placeholder="Description" rows="3"></textarea>
-                    <button class="submit-btn success" id="publishBtn" onclick="addPost()" disabled>📤 Publish</button>
-                </div>
-                <div id="feed"></div>
-            </div>
-        </div>
-
-        <!-- PEOPLE SECTION -->
-        <div id="people" class="content-section">
-            <h2>👥 Find People</h2>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="searchInput" placeholder="Search username...">
-                <button class="submit-btn" style="width:auto; padding:0 20px;" onclick="loadPeople(document.getElementById('searchInput').value)">🔍</button>
-            </div>
-            <div id="people-list" style="margin-top:20px;"></div>
-        </div>
-
-        <!-- SIGN IN/UP (Simplified) -->
-        <div id="signin" class="content-section">
-            <h2>🔐 Sign In</h2>
-            <input type="text" id="loginUser" placeholder="Username">
-            <div class="pass-wrapper">
-                <input type="password" id="loginPass" placeholder="Password">
-                <button class="toggle-pass" onclick="togglePass('loginPass')">SHOW</button>
-            </div>
-            <button class="submit-btn" onclick="checkLogin()">Login</button>
-        </div>
-
-        <div id="signup" class="content-section">
-            <h2>👋 Join Lighty Studio</h2>
-            <input type="text" id="regUser" placeholder="Username">
-            <div class="pass-wrapper">
-                <input type="password" id="regPass" placeholder="Password">
-                <button class="toggle-pass" onclick="togglePass('regPass')">SHOW</button>
-            </div>
-            <button class="submit-btn success" onclick="checkRegister()">✨ Create Account</button>
-        </div>
-
-        <!-- DEVICES -->
-        <div id="devices" class="content-section">
-            <h2>📱 Active Devices</h2>
-            <div id="device-list"></div>
-        </div>
-
-        <!-- ADMIN -->
-        <div id="admin" class="content-section">
-            <h2>👑 Admin Control</h2>
-            <div id="admin-user-list"></div>
-        </div>
-    </div>
-
-    <script>
-        const ownerName = "LightbulbPlayzZzz";
-        let currentUser = localStorage.getItem("lightyUser") || null;
-
-        // Device Management
-        function getDeviceId() {
-            let id = localStorage.getItem('deviceId');
-            if (!id) {
-                id = 'dev-' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('deviceId', id);
-            }
-            return id;
-        }
-
-        function updateNavbar() {
-            const user = currentUser;
-            const isAdmin = user === ownerName;
-            document.getElementById("tab-signin").style.display = user ? "none" : "block";
-            document.getElementById("tab-signup").style.display = user ? "none" : "block";
-            document.getElementById("tab-people").style.display = user ? "block" : "none";
-            document.getElementById("tab-devices").style.display = user ? "block" : "none";
-            document.getElementById("tab-admin").style.display = isAdmin ? "block" : "none";
-            document.getElementById("logoutBtn").style.display = user ? "block" : "none";
-            document.getElementById("publish-box").style.display = user ? "block" : "none";
-        }
-
-        function showNotification(msg, type) {
-            const n = document.createElement('div');
-            n.className = `notification ${type}`;
-            n.innerText = msg;
-            document.body.appendChild(n);
-            setTimeout(() => n.remove(), 3000);
-        }
-
-        function validateGoogleDriveLink() {
-            const link = document.getElementById("postLink").value;
-            const val = document.getElementById("linkValidation");
-            const btn = document.getElementById("publishBtn");
-            const isGDrive = link.includes("drive.google.com");
-            val.style.display = "block";
-            val.className = isGDrive ? "link-validation valid" : "link-validation invalid";
-            val.innerText = isGDrive ? "✅ Valid Link" : "❌ Must be Google Drive";
-            btn.disabled = !isGDrive;
-        }
-
-        function checkLogin() {
-            const u = document.getElementById("loginUser").value;
-            const p = document.getElementById("loginPass").value;
-            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-            const found = users.find(x => x.username === u && x.password === p);
-            if(found) {
-                localStorage.setItem("lightyUser", u);
-                location.reload();
-            } else {
-                showNotification("Invalid Login", "error");
-            }
-        }
-
-        function checkRegister() {
-            const u = document.getElementById("regUser").value;
-            const p = document.getElementById("regPass").value;
-            if(u.length < 3) return showNotification("Username too short", "error");
-            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-            users.push({username: u, password: p});
-            localStorage.setItem("allUsers", JSON.stringify(users));
-            localStorage.setItem("lightyUser", u);
-            location.reload();
-        }
-
-        function openTab(evt, name) {
-            document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
-            document.getElementById(name).classList.add("active");
-            if(name === 'devices') loadDevices();
-            if(name === 'people') loadPeople();
-            if(name === 'admin') loadAdmin();
-        }
-
-        function toggleGameSub(type) {
-            document.getElementById('game-library').style.display = type === 'lib' ? 'block' : 'none';
-            document.getElementById('game-posts').style.display = type === 'post' ? 'block' : 'none';
-        }
-
-        function loadDevices() {
-            const list = document.getElementById("device-list");
-            list.innerHTML = `<div class="game-card">Current Device ID: ${getDeviceId()}</div>`;
-        }
-
-        function loadPeople(search = "") {
-            const list = document.getElementById("people-list");
-            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-            list.innerHTML = users
-                .filter(u => u.username.includes(search))
-                .map(u => `<div class="user-card">👤 ${u.username}</div>`).join('');
-        }
-
-        function loadAdmin() {
-            const list = document.getElementById("admin-user-list");
-            let users = JSON.parse(localStorage.getItem("allUsers")) || [];
-            list.innerHTML = users.map(u => `
-                <div class="admin-user-item">
-                    ${u.username} 
-                    <button class="submit-btn danger" style="width:auto; margin:0;" onclick="deleteUser('${u.username}')">BAN</button>
-                </div>`).join('');
-        }
-
-        function deleteUser(u) {
-            if(confirm("Delete " + u + "?")) {
-                let users = JSON.parse(localStorage.getItem("allUsers")).filter(x => x.username !== u);
-                localStorage.setItem("allUsers", JSON.stringify(users));
-                loadAdmin();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem("lightyUser");
-            location.reload();
-        }
-
-        function togglePass(id) {
-            const x = document.getElementById(id);
-            x.type = x.type === "password" ? "text" : "password";
-        }
-
-        window.onload = updateNavbar;
     </script>
 </body>
 </html>
