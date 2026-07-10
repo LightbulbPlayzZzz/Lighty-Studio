@@ -971,6 +971,27 @@
             margin-top: 0;
         }
 
+        /* SIGNIN INFO BOX */
+        .signin-info-box {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #00ffff;
+        }
+
+        .signin-info-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .signin-info-box p {
+            margin: 5px 0;
+        }
+
     </style> 
 
 </head> 
@@ -1113,7 +1134,12 @@
 
                 <button class="toggle-pass" onclick="toggleSigninPass()">Show</button> 
 
-            </div> 
+            </div>
+
+            <div class="signin-info-box">
+                <strong>💡 Multi-Device Login</strong>
+                <p>If you added a Gmail address when creating your account, you can sign in from any device and access your account anywhere!</p>
+            </div>
 
             <button class="submit-btn" onclick="signin()">Sign In</button> 
 
