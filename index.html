@@ -955,6 +955,22 @@
             cursor: pointer;
         }
 
+        /* LOGIN SECTIONS */
+        .login-section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .login-section-title:first-of-type {
+            margin-top: 0;
+        }
+
     </style> 
 
 </head> 
@@ -1089,7 +1105,7 @@
 
             <h2>Sign In</h2> 
 
-            <input type="email" id="signinEmail" placeholder="Email Address"> 
+            <input type="text" id="signinUsername" placeholder="Username"> 
 
             <div class="pass-wrapper"> 
 
@@ -1113,9 +1129,11 @@
 
             <h2>Join Lighty Studio</h2> 
 
-            <input type="text" id="signupName" placeholder="Full Name"> 
+            <input type="text" id="signupUsername" placeholder="Username"> 
 
             <input type="email" id="signupEmail" placeholder="Email Address"> 
+
+            <input type="email" id="signupGmail" placeholder="Gmail (for account recovery)"> 
 
             <div class="pass-wrapper"> 
 
@@ -1165,6 +1183,8 @@
 
                 <button class="tab-btn active" id="subtab-general" onclick="toggleSettingsSub('general')">General</button> 
 
+                <button class="tab-btn" id="subtab-gmail" onclick="toggleSettingsSub('gmail')">📧 Gmail Recovery</button> 
+
                 <button class="tab-btn" id="subtab-devices" onclick="toggleSettingsSub('devices')">📱 Devices</button> 
 
                 <button class="tab-btn" id="subtab-security" onclick="toggleSettingsSub('security')">Security</button> 
@@ -1187,7 +1207,16 @@
 
                 </label> 
 
-            </div> 
+            </div>
+
+            <!-- Gmail Recovery Settings -->
+            <div id="settings-gmail" style="display: none;">
+                <h3>Gmail Recovery</h3>
+                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Add or update your Gmail address for account recovery and multi-device login.</p>
+                <input type="email" id="gmailInput" placeholder="Enter your Gmail address">
+                <button class="submit-btn success" onclick="updateGmail()">Update Gmail</button>
+                <div id="gmailStatus" style="margin-top: 10px;"></div>
+            </div>
 
   
 
@@ -1199,7 +1228,17 @@
 
                 <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">View and manage all devices where you're signed in. You can sign out from any device remotely.</p> 
 
-                <div id="devicesList"></div> 
+                <!-- Normal Device Login Section -->
+                <div id="normalDeviceSection">
+                    <div class="login-section-title">✅ Normal Device Login</div>
+                    <div id="normalDevicesList"></div>
+                </div>
+
+                <!-- Different Device Login Section -->
+                <div id="differentDeviceSection">
+                    <div class="login-section-title">⚠️ Different Device Login</div>
+                    <div id="differentDevicesList"></div>
+                </div>
 
                 <button class="submit-btn success" onclick="loadDevices()">Refresh Devices</button> 
 
@@ -1265,7 +1304,7 @@
 
                 <button class="tab-btn active" id="admin-subtab-games" onclick="toggleAdminSub('games')">Manage Games</button> 
 
-                <button class="tab-btn" id="admin-subtab-users" onclick="toggleAdminSub('users')">Manage Users</button> 
+                <button class="tab-btn" id="admin-subtab-users" onclick="toggleAdminSub('users')">Manage All Users</button> 
 
             </div> 
 
@@ -1287,7 +1326,7 @@
 
             <div id="admin-users" style="display: none;"> 
 
-                <h3>All Users</h3> 
+                <h3>All Users in System</h3> 
 
                 <div id="adminUsersList"></div> 
 
@@ -1328,16 +1367,16 @@
             return 'Unknown Device';
         }
 
-        function recordDeviceLogin(email) {
+        function recordDeviceLogin(username) {
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
             const deviceId = getOrCreateDeviceId();
-            if (!devices[email]) {
-                devices[email] = [];
+            if (!devices[username]) {
+                devices[username] = [];
             }
             
             const loginTime = new Date();
-            devices[email] = devices[email].filter(d => d.id !== deviceId);
-            devices[email].push({
+            devices[username] = devices[username].filter(d => d.id !== deviceId);
+            devices[username].push({
                 id: deviceId,
                 name: getDeviceName(),
                 lastLogin: loginTime,
@@ -1349,57 +1388,107 @@
 
         function loadDevices() {
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
-            if (!sessionData.email) {
+            if (!sessionData.username) {
                 showNotification('Please sign in first', 'error');
                 return;
             }
 
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-            const userDevices = devices[sessionData.email] || [];
+            const userDevices = devices[sessionData.username] || [];
             const currentDeviceId = getOrCreateDeviceId();
 
-            let html = '';
+            let normalHtml = '';
+            let differentHtml = '';
+
             if (userDevices.length === 0) {
-                html = '<p class="empty-state">No devices recorded yet.</p>';
+                normalHtml = '<p class="empty-state">No devices recorded yet.</p>';
             } else {
                 userDevices.forEach(device => {
                     const loginDate = new Date(device.lastLogin).toLocaleString();
                     const isCurrent = device.id === currentDeviceId;
-                    html += `
+                    const deviceCard = `
                         <div class="device-card">
                             <div class="device-info">
                                 <strong>${device.name}${isCurrent ? ' (Current)' : ''}</strong>
                                 <small>Last login: ${loginDate}</small>
                             </div>
                             <div class="device-actions">
-                                ${!isCurrent ? `<button class="submit-btn danger" onclick="removeDevice('${sessionData.email}', '${device.id}')">Sign Out</button>` : ''}
+                                ${!isCurrent ? `<button class="submit-btn danger" onclick="removeDevice('${sessionData.username}', '${device.id}')">Sign Out</button>` : ''}
                             </div>
                         </div>
                     `;
+
+                    if (isCurrent) {
+                        normalHtml += deviceCard;
+                    } else {
+                        differentHtml += deviceCard;
+                    }
                 });
             }
-            document.getElementById('devicesList').innerHTML = html;
+
+            document.getElementById('normalDevicesList').innerHTML = normalHtml || '<p class="empty-state">No normal device logins.</p>';
+            document.getElementById('differentDevicesList').innerHTML = differentHtml || '<p class="empty-state">No different device logins.</p>';
         }
 
-        function removeDevice(email, deviceId) {
+        function removeDevice(username, deviceId) {
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-            if (devices[email]) {
-                devices[email] = devices[email].filter(d => d.id !== deviceId);
+            if (devices[username]) {
+                devices[username] = devices[username].filter(d => d.id !== deviceId);
                 localStorage.setItem('user_devices', JSON.stringify(devices));
                 loadDevices();
                 showNotification('Device removed successfully', 'success');
             }
         }
 
+        function updateGmail() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            if (!sessionData.username) {
+                showNotification('Please sign in first', 'error');
+                return;
+            }
+
+            const gmail = document.getElementById('gmailInput').value.trim();
+            if (!gmail || !gmail.includes('@gmail.com')) {
+                showNotification('Please enter a valid Gmail address', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[sessionData.username]) {
+                users[sessionData.username].gmail = gmail;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                sessionData.gmail = gmail;
+                localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+                
+                showNotification('Gmail updated successfully!', 'success');
+                document.getElementById('gmailInput').value = '';
+                displayGmailStatus();
+            }
+        }
+
+        function displayGmailStatus() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            const statusDiv = document.getElementById('gmailStatus');
+            if (sessionData.gmail) {
+                statusDiv.innerHTML = `<p style="color: var(--success); font-size: 0.9rem;">✓ Gmail set: <strong>${sessionData.gmail}</strong></p>`;
+            } else {
+                statusDiv.innerHTML = '<p style="color: var(--warning); font-size: 0.9rem;">⚠ No Gmail set yet. Add one for account recovery.</p>';
+            }
+        }
+
         function toggleSettingsSub(tab) {
             document.querySelectorAll('[id^="settings-"]').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('#subtab-general, #subtab-devices, #subtab-security').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#subtab-general, #subtab-gmail, #subtab-devices, #subtab-security').forEach(btn => btn.classList.remove('active'));
             
             document.getElementById('settings-' + tab).style.display = 'block';
             event.target.classList.add('active');
 
             if (tab === 'devices') {
                 loadDevices();
+            }
+            if (tab === 'gmail') {
+                displayGmailStatus();
             }
         }
 
@@ -1461,9 +1550,11 @@
 
         function signup() { 
 
-            const name = document.getElementById('signupName').value; 
+            const username = document.getElementById('signupUsername').value; 
 
             const email = document.getElementById('signupEmail').value; 
+
+            const gmail = document.getElementById('signupGmail').value;
 
             const pass = document.getElementById('signupPass').value; 
 
@@ -1471,13 +1562,18 @@
 
   
 
-            if (!name || !email || !pass || !passConf) { 
+            if (!username || !email || !gmail || !pass || !passConf) { 
 
                 showNotification('All fields required!', 'error'); 
 
                 return; 
 
             } 
+
+            if (!gmail.includes('@gmail.com')) {
+                showNotification('Please enter a valid Gmail address', 'error');
+                return;
+            }
 
             if (pass !== passConf) { 
 
@@ -1493,9 +1589,9 @@
 
   
 
-            if (users[email]) { 
+            if (users[username]) { 
 
-                showNotification('Email already registered!', 'error'); 
+                showNotification('Username already taken!', 'error'); 
 
                 return; 
 
@@ -1503,7 +1599,7 @@
 
   
 
-            users[email] = { name, pass, createdAt: new Date() }; 
+            users[username] = { username, email, gmail, pass, createdAt: new Date() }; 
 
             localStorage.setItem('users', JSON.stringify(users)); 
 
@@ -1517,15 +1613,15 @@
 
         function signin() { 
 
-            const email = document.getElementById('signinEmail').value; 
+            const username = document.getElementById('signinUsername').value; 
 
             const pass = document.getElementById('signinPass').value; 
 
   
 
-            if (!email || !pass) { 
+            if (!username || !pass) { 
 
-                showNotification('Email and password required!', 'error'); 
+                showNotification('Username and password required!', 'error'); 
 
                 return; 
 
@@ -1537,9 +1633,9 @@
 
   
 
-            if (!users[email] || users[email].pass !== pass) { 
+            if (!users[username] || users[username].pass !== pass) { 
 
-                showNotification('Invalid email or password!', 'error'); 
+                showNotification('Invalid username or password!', 'error'); 
 
                 return; 
 
@@ -1548,13 +1644,14 @@
   
 
             // Record device login before creating session
-            recordDeviceLogin(email);
+            recordDeviceLogin(username);
 
             const sessionData = { 
 
-                email, 
+                username, 
 
-                name: users[email].name, 
+                email: users[username].email,
+                gmail: users[username].gmail,
 
                 loginTime: new Date(),
                 deviceId: getOrCreateDeviceId()
@@ -1565,7 +1662,7 @@
 
   
 
-            showNotification(`Welcome back, ${users[email].name}!`, 'success'); 
+            showNotification(`Welcome back, ${username}!`, 'success'); 
 
             updateUIAfterLogin(); 
 
@@ -1589,14 +1686,14 @@
 
         function logoutAllDevices() {
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
-            if (!sessionData.email) {
+            if (!sessionData.username) {
                 showNotification('Please sign in first', 'error');
                 return;
             }
 
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-            if (devices[sessionData.email]) {
-                delete devices[sessionData.email];
+            if (devices[sessionData.username]) {
+                delete devices[sessionData.username];
                 localStorage.setItem('user_devices', JSON.stringify(devices));
             }
 
@@ -1614,12 +1711,12 @@
 
                 const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-                delete users[sessionData.email]; 
+                delete users[sessionData.username]; 
 
                 localStorage.setItem('users', JSON.stringify(users)); 
 
                 const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-                delete devices[sessionData.email];
+                delete devices[sessionData.username];
                 localStorage.setItem('user_devices', JSON.stringify(devices));
 
                 logout(); 
@@ -1646,7 +1743,7 @@
 
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-            const isAdmin = sessionData.email === 'admin@lightystu.dio'; 
+            const isAdmin = sessionData.username === 'admin'; 
 
             if (isAdmin) { 
 
@@ -1688,9 +1785,9 @@
 
   
 
-            if (sessionData.email && users[sessionData.email]) { 
+            if (sessionData.username && users[sessionData.username]) { 
 
-                const user = users[sessionData.email]; 
+                const user = users[sessionData.username]; 
 
                 document.getElementById('profileData').innerHTML = ` 
 
@@ -1698,9 +1795,9 @@
 
                         <div class="user-info"> 
 
-                            <strong>${user.name}</strong> 
+                            <strong>${user.username}</strong> 
 
-                            <small>${sessionData.email}</small> 
+                            <small>${user.email}</small> 
 
                         </div> 
 
@@ -1716,7 +1813,14 @@
 
                         </div> 
 
-                    </div> 
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-info">
+                            <strong>Gmail Recovery</strong>
+                            <small>${user.gmail || 'Not set'}</small>
+                        </div>
+                    </div>
 
                 `; 
 
@@ -1750,7 +1854,7 @@
 
             const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-            const user = users[sessionData.email]; 
+            const user = users[sessionData.username]; 
 
   
 
@@ -1776,7 +1880,7 @@
 
             user.pass = newPass; 
 
-            users[sessionData.email] = user; 
+            users[sessionData.username] = user; 
 
             localStorage.setItem('users', JSON.stringify(users)); 
 
@@ -1894,7 +1998,7 @@
 
   
 
-            if (!sessionData.email) { 
+            if (!sessionData.username) { 
 
                 showNotification('Please sign in to post!', 'error'); 
 
@@ -1934,7 +2038,7 @@
 
             const games = JSON.parse(localStorage.getItem('games') || '[]'); 
 
-            games.push({ title, desc, link, author: sessionData.name, email: sessionData.email, createdAt: new Date() }); 
+            games.push({ title, desc, link, author: sessionData.username, createdAt: new Date() }); 
 
             localStorage.setItem('games', JSON.stringify(games)); 
 
@@ -1964,9 +2068,9 @@
 
             let html = ''; 
 
-            for (const email in users) { 
+            for (const username in users) { 
 
-                if (users[email].name.toLowerCase().includes(query)) { 
+                if (username.toLowerCase().includes(query)) { 
 
                     html += ` 
 
@@ -1974,13 +2078,13 @@
 
                             <div class="user-info"> 
 
-                                <strong>${users[email].name}</strong> 
+                                <strong>${users[username].username}</strong> 
 
-                                <small>${email}</small> 
+                                <small>${users[username].email}</small> 
 
                             </div> 
 
-                            <button class="follow-btn submit-btn" onclick="followUser('${email}')">Follow</button> 
+                            <button class="follow-btn submit-btn" onclick="followUser('${username}')">Follow</button> 
 
                         </div> 
 
@@ -1998,9 +2102,9 @@
 
   
 
-        function followUser(email) { 
+        function followUser(username) { 
 
-            showNotification(`You followed ${email}!`, 'success'); 
+            showNotification(`You followed ${username}!`, 'success'); 
 
         } 
 
@@ -2080,7 +2184,7 @@
 
   
 
-            for (const email in users) { 
+            for (const username in users) { 
 
                 html += ` 
 
@@ -2088,13 +2192,15 @@
 
                         <div> 
 
-                            <strong>${users[email].name}</strong><br> 
+                            <strong>${users[username].username}</strong><br> 
 
-                            <small>${email}</small> 
+                            <small>${users[username].email}</small><br>
+
+                            <small style="color: #00ffff;">Gmail: ${users[username].gmail || 'Not set'}</small>
 
                         </div> 
 
-                        <button class="submit-btn danger" onclick="deleteUserAdmin('${email}')">Delete</button> 
+                        <button class="submit-btn danger" onclick="deleteUserAdmin('${username}')">Delete</button> 
 
                     </div> 
 
@@ -2130,18 +2236,18 @@
 
   
 
-        function deleteUserAdmin(email) { 
+        function deleteUserAdmin(username) { 
 
-            if (confirm(`Delete user ${email}?`)) { 
+            if (confirm(`Delete user ${username}?`)) { 
 
                 const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-                delete users[email]; 
+                delete users[username]; 
 
                 localStorage.setItem('users', JSON.stringify(users)); 
 
                 const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-                delete devices[email];
+                delete devices[username];
                 localStorage.setItem('user_devices', JSON.stringify(devices));
 
                 loadAdminUsers(); 
@@ -2172,7 +2278,7 @@
 
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-            if (sessionData.email) { 
+            if (sessionData.username) { 
 
                 updateUIAfterLogin(); 
 
