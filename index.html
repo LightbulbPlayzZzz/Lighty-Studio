@@ -910,6 +910,51 @@
 
         } 
 
+        
+        /* DEVICE CARD */
+        .device-card {
+            background: rgba(128, 128, 128, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .device-card:hover {
+            border-color: var(--accent);
+            background: rgba(255, 0, 255, 0.05);
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .device-info small {
+            color: #999;
+        }
+
+        .device-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .device-actions button {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            min-width: 80px;
+            cursor: pointer;
+        }
+
     </style> 
 
 </head> 
@@ -942,13 +987,9 @@
 
             <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button> 
 
-            <button id="tab-devices" class="tab-btn" style="display:none;" onclick="openTab(event, 'devices')">📱 Devices</button> 
-
             <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button> 
 
             <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button> 
-
-            <button id="logoutBtn" class="tab-btn" style="display:none; color: #ff4444;" onclick="logout()">Logout</button> 
 
         </div> 
 
@@ -1004,25 +1045,17 @@
 
              
 
-            <div id="game-posts" style="display: none;"> 
+            <div id="game-post" style="display: none;"> 
 
-                <div id="publish-box" style="display: none; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;"> 
+                <h2>Post Your Game</h2> 
 
-                    <h3>Submit Your Game</h3> 
+                <input type="text" id="gameTitle" placeholder="Game Title"> 
 
-                    <input type="text" id="postTitle" placeholder="Game Title" maxlength="50"> 
+                <input type="text" id="gameDesc" placeholder="Game Description"> 
 
-                    <input type="text" id="postLink" placeholder="Google Drive Link (must be https://drive.google.com)" maxlength="500" oninput="validateGoogleDriveLink()"> 
+                <input type="text" id="gameLink" placeholder="Google Drive Link"> 
 
-                    <div id="linkValidation" class="link-validation" style="display:none;"></div> 
-
-                    <textarea id="postDesc" placeholder="Description" maxlength="500" rows="4"></textarea> 
-
-                    <button class="submit-btn success" id="publishBtn" onclick="addPost()" disabled>📤 Publish</button> 
-
-                </div> 
-
-                <div id="feed"></div> 
+                <button class="submit-btn" onclick="postGame()">Post Game</button> 
 
             </div> 
 
@@ -1034,17 +1067,17 @@
 
         <div id="people" class="content-section"> 
 
-            <h2>👥 Find People</h2> 
+            <h2>👥 People</h2> 
 
             <div class="search-container"> 
 
-                <input type="text" id="searchInput" placeholder="Search username..." maxlength="20"> 
+                <input type="text" id="searchUser" placeholder="Search users..."> 
 
-                <button class="submit-btn" onclick="searchPeople()">🔍 Search</button> 
+                <button class="submit-btn" style="width: auto; min-width: 100px;" onclick="searchUsers()">Search</button> 
 
             </div> 
 
-            <div id="people-list"></div> 
+            <div id="userList"></div> 
 
         </div> 
 
@@ -1054,21 +1087,21 @@
 
         <div id="signin" class="content-section"> 
 
-            <h2>🔐 Sign In</h2> 
+            <h2>Sign In</h2> 
 
-            <input type="text" id="loginUser" placeholder="Username" maxlength="30" autocomplete="username"> 
+            <input type="email" id="signinEmail" placeholder="Email Address"> 
 
             <div class="pass-wrapper"> 
 
-                <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password"> 
+                <input type="password" id="signinPass" placeholder="Password"> 
 
-                <button class="toggle-pass" onclick="togglePass('loginPass')">SHOW</button> 
+                <button class="toggle-pass" onclick="toggleSigninPass()">Show</button> 
 
             </div> 
 
-            <button class="submit-btn" onclick="checkLogin()">Login</button> 
+            <button class="submit-btn" onclick="signin()">Sign In</button> 
 
-            <p style="font-size: 0.85rem; color: #999;">Don't have an account? <a href="#" onclick="openTab(null, 'signup'); return false;" style="color: var(--accent);">Join here</a></p> 
+            <p style="margin-top: 15px; font-size: 0.9rem;">Don't have an account? <a href="#" onclick="openTab(null, 'signup')" style="color: var(--accent); cursor: pointer;">Sign up here</a></p> 
 
         </div> 
 
@@ -1078,23 +1111,31 @@
 
         <div id="signup" class="content-section"> 
 
-            <h2>👋 Join Lighty Studio</h2> 
+            <h2>Join Lighty Studio</h2> 
 
-            <input type="text" id="regUser" placeholder="Username (3-20 characters)" maxlength="20" autocomplete="username"> 
+            <input type="text" id="signupName" placeholder="Full Name"> 
+
+            <input type="email" id="signupEmail" placeholder="Email Address"> 
 
             <div class="pass-wrapper"> 
 
-                <input type="password" id="regPass" placeholder="Password (min 6 characters)" autocomplete="new-password"> 
+                <input type="password" id="signupPass" placeholder="Password"> 
 
-                <button class="toggle-pass" onclick="togglePass('regPass')">SHOW</button> 
+                <button class="toggle-pass" onclick="toggleSignupPass()">Show</button> 
 
             </div> 
 
-            <small style="color: #999;">Password must be at least 6 characters</small> 
+            <div class="pass-wrapper"> 
 
-            <button class="submit-btn success" onclick="checkRegister()">✨ Create Account</button> 
+                <input type="password" id="signupPassConf" placeholder="Confirm Password"> 
 
-            <p style="font-size: 0.85rem; color: #999;">Already have an account? <a href="#" onclick="openTab(null, 'signin'); return false;" style="color: var(--accent);">Sign in here</a></p> 
+                <button class="toggle-pass" onclick="toggleSignupConfPass()">Show</button> 
+
+            </div> 
+
+            <button class="submit-btn" onclick="signup()">Create Account</button> 
+
+            <p style="margin-top: 15px; font-size: 0.9rem;">Already have an account? <a href="#" onclick="openTab(null, 'signin')" style="color: var(--accent); cursor: pointer;">Sign in here</a></p> 
 
         </div> 
 
@@ -1104,21 +1145,11 @@
 
         <div id="profile" class="content-section"> 
 
-            <h2 id="profName"></h2> 
+            <h2>👤 My Profile</h2> 
 
-            <div id="profile-info"></div> 
+            <div id="profileData"></div> 
 
-        </div> 
-
-  
-
-        <!-- DEVICES SECTION --> 
-
-        <div id="devices" class="content-section"> 
-
-            <h2>📱 Active Devices</h2> 
-
-            <div id="device-list"></div> 
+            <button class="submit-btn danger" onclick="deleteAccount()">Delete Account</button> 
 
         </div> 
 
@@ -1130,9 +1161,95 @@
 
             <h2>⚙️ Settings</h2> 
 
-            <button class="submit-btn" onclick="toggleTheme()">🌓 Theme Toggle</button> 
+            <div class="subtab-container"> 
 
-            <button class="submit-btn danger" style="margin-top: 15px;" onclick="logout()">🚪 Logout from This Device</button> 
+                <button class="tab-btn active" id="subtab-general" onclick="toggleSettingsSub('general')">General</button> 
+
+                <button class="tab-btn" id="subtab-devices" onclick="toggleSettingsSub('devices')">📱 Devices</button> 
+
+                <button class="tab-btn" id="subtab-security" onclick="toggleSettingsSub('security')">Security</button> 
+
+            </div> 
+
+  
+
+            <!-- General Settings --> 
+
+            <div id="settings-general"> 
+
+                <h3>General Settings</h3> 
+
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;"> 
+
+                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"> 
+
+                    <span>Dark Mode</span> 
+
+                </label> 
+
+            </div> 
+
+  
+
+            <!-- Devices Settings --> 
+
+            <div id="settings-devices" style="display: none;"> 
+
+                <h3>Manage Devices</h3> 
+
+                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">View and manage all devices where you're signed in. You can sign out from any device remotely.</p> 
+
+                <div id="devicesList"></div> 
+
+                <button class="submit-btn success" onclick="loadDevices()">Refresh Devices</button> 
+
+            </div> 
+
+  
+
+            <!-- Security Settings --> 
+
+            <div id="settings-security" style="display: none;"> 
+
+                <h3>Security</h3> 
+
+                <h4>Change Password</h4> 
+
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="oldPass" placeholder="Current Password"> 
+
+                    <button class="toggle-pass" onclick="toggleOldPass()">Show</button> 
+
+                </div> 
+
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="newPass" placeholder="New Password"> 
+
+                    <button class="toggle-pass" onclick="toggleNewPass()">Show</button> 
+
+                </div> 
+
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="newPassConf" placeholder="Confirm New Password"> 
+
+                    <button class="toggle-pass" onclick="toggleNewPassConf()">Show</button> 
+
+                </div> 
+
+                <button class="submit-btn" onclick="changePassword()">Update Password</button> 
+
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);"> 
+
+                <h4>Logout from all devices</h4> 
+
+                <p style="font-size: 0.9rem; color: #aaa;">This will sign you out from all devices. You'll need to sign in again.</p> 
+
+                <button class="submit-btn danger" onclick="logoutAllDevices()">Logout from All Devices</button> 
+
+            </div> 
 
         </div> 
 
@@ -1142,51 +1259,37 @@
 
         <div id="admin" class="content-section"> 
 
-            <h2>👑 Admin Control Panel</h2> 
+            <h2>👑 Admin Panel</h2> 
 
-            <div style="margin-bottom: 30px;"> 
+            <div class="subtab-container"> 
 
-                <h3 style="color: var(--accent); text-align: left;">👥 User Management</h3> 
+                <button class="tab-btn active" id="admin-subtab-games" onclick="toggleAdminSub('games')">Manage Games</button> 
 
-                <div id="admin-user-list"></div> 
-
-            </div> 
-
-            <div style="border-top: 2px solid var(--border); padding-top: 20px;"> 
-
-                <h3 style="color: var(--accent); text-align: left;">🎮 Game Management</h3> 
-
-                <div id="admin-game-list"></div> 
+                <button class="tab-btn" id="admin-subtab-users" onclick="toggleAdminSub('users')">Manage Users</button> 
 
             </div> 
-
-        </div> 
-
-    </div> 
 
   
 
-    <!-- DELETION CONFIRMATION MODAL --> 
+            <!-- Manage Games --> 
 
-    <div id="deleteModal" class="modal"> 
+            <div id="admin-games"> 
 
-        <div class="modal-content"> 
+                <h3>All Games</h3> 
 
-            <h3>⚠️ Confirm Deletion</h3> 
-
-            <p id="deleteMessage"></p> 
-
-            <div class="modal-pass"> 
-
-                <input type="password" id="deletePassword" placeholder="Enter your admin password"> 
+                <div id="adminGamesList"></div> 
 
             </div> 
 
-            <div class="modal-buttons"> 
+  
 
-                <button class="confirm-btn" onclick="confirmDelete()">🗑️ Confirm Delete</button> 
+            <!-- Manage Users --> 
 
-                <button class="cancel-btn" onclick="closeDeleteModal()">❌ Cancel</button> 
+            <div id="admin-users" style="display: none;"> 
+
+                <h3>All Users</h3> 
+
+                <div id="adminUsersList"></div> 
 
             </div> 
 
@@ -1198,109 +1301,137 @@
 
     <script> 
 
-        // ============== SECURITY & DATA ============== 
+        // Multi-device login support
+        const DEVICE_ID_KEY = 'lighty_device_id';
+        const SESSION_KEY = 'lighty_session';
 
-        const APP_VERSION = "3.0"; 
+        function generateDeviceId() {
+            return 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        }
 
-        const ownerName = "LightbulbPlayzZzz"; 
+        function getOrCreateDeviceId() {
+            let deviceId = localStorage.getItem(DEVICE_ID_KEY);
+            if (!deviceId) {
+                deviceId = generateDeviceId();
+                localStorage.setItem(DEVICE_ID_KEY, deviceId);
+            }
+            return deviceId;
+        }
 
-        const ownerPassword = "POLKA08642OZX/"; 
+        function getDeviceName() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Windows')) return 'Windows PC';
+            if (ua.includes('Mac')) return 'MacBook';
+            if (ua.includes('iPhone')) return 'iPhone';
+            if (ua.includes('iPad')) return 'iPad';
+            if (ua.includes('Android')) return 'Android Device';
+            return 'Unknown Device';
+        }
 
-         
+        function recordDeviceLogin(email) {
+            const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+            const deviceId = getOrCreateDeviceId();
+            if (!devices[email]) {
+                devices[email] = [];
+            }
+            
+            const loginTime = new Date();
+            devices[email] = devices[email].filter(d => d.id !== deviceId);
+            devices[email].push({
+                id: deviceId,
+                name: getDeviceName(),
+                lastLogin: loginTime,
+                ip: 'local'
+            });
+            
+            localStorage.setItem('user_devices', JSON.stringify(devices));
+        }
 
-        let currentUser = localStorage.getItem("lightyUser") || null; 
+        function loadDevices() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            if (!sessionData.email) {
+                showNotification('Please sign in first', 'error');
+                return;
+            }
 
-        let deleteAction = null; 
+            const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+            const userDevices = devices[sessionData.email] || [];
+            const currentDeviceId = getOrCreateDeviceId();
+
+            let html = '';
+            if (userDevices.length === 0) {
+                html = '<p class="empty-state">No devices recorded yet.</p>';
+            } else {
+                userDevices.forEach(device => {
+                    const loginDate = new Date(device.lastLogin).toLocaleString();
+                    const isCurrent = device.id === currentDeviceId;
+                    html += `
+                        <div class="device-card">
+                            <div class="device-info">
+                                <strong>${device.name}${isCurrent ? ' (Current)' : ''}</strong>
+                                <small>Last login: ${loginDate}</small>
+                            </div>
+                            <div class="device-actions">
+                                ${!isCurrent ? `<button class="submit-btn danger" onclick="removeDevice('${sessionData.email}', '${device.id}')">Sign Out</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('devicesList').innerHTML = html;
+        }
+
+        function removeDevice(email, deviceId) {
+            const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+            if (devices[email]) {
+                devices[email] = devices[email].filter(d => d.id !== deviceId);
+                localStorage.setItem('user_devices', JSON.stringify(devices));
+                loadDevices();
+                showNotification('Device removed successfully', 'success');
+            }
+        }
+
+        function toggleSettingsSub(tab) {
+            document.querySelectorAll('[id^="settings-"]').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('#subtab-general, #subtab-devices, #subtab-security').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('settings-' + tab).style.display = 'block';
+            event.target.classList.add('active');
+
+            if (tab === 'devices') {
+                loadDevices();
+            }
+        }
+
+        // Basic utility functions
+
+        function openTab(evt, tabName) { 
+
+            const sections = document.querySelectorAll('.content-section'); 
+
+            sections.forEach(section => section.classList.remove('active')); 
+
+            document.getElementById(tabName).classList.add('active'); 
 
   
 
-        // ============== DEVICE MANAGEMENT ============== 
+            const tabs = document.querySelectorAll('.tab-btn'); 
 
-        function getOrCreateDeviceId() { 
+            tabs.forEach(tab => tab.classList.remove('active')); 
 
-            let deviceId = localStorage.getItem('deviceId'); 
+            if (evt) { 
 
-            if (!deviceId) { 
-
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); 
-
-                localStorage.setItem('deviceId', deviceId); 
-
-            } 
-
-            return deviceId; 
-
-        } 
-
-  
-
-        function getDeviceName() { 
-
-            const ua = navigator.userAgent; 
-
-            if (ua.includes('Chrome') && !ua.includes('Edge')) return '💻 Chrome Browser'; 
-
-            if (ua.includes('Firefox')) return '🦊 Firefox Browser'; 
-
-            if (ua.includes('Safari') && !ua.includes('Chrome')) return '🧭 Safari Browser'; 
-
-            if (ua.includes('Edge')) return '📘 Edge Browser'; 
-
-            if (ua.includes('Mobile') || ua.includes('Android') || ua.includes('iPhone')) return '📱 Mobile Device'; 
-
-            return '💾 Unknown Device'; 
-
-        } 
-
-  
-
-        function registerDevice(username) { 
-
-            const deviceId = getOrCreateDeviceId(); 
-
-            const deviceName = getDeviceName(); 
-
-             
-
-            let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
-
-            if (!devices[username]) { 
-
-                devices[username] = []; 
-
-            } 
-
-             
-
-            const deviceExists = devices[username].find(d => d.id === deviceId); 
-
-            if (!deviceExists) { 
-
-                devices[username].push({ 
-
-                    id: deviceId, 
-
-                    name: deviceName, 
-
-                    lastLogin: new Date().toISOString() 
-
-                }); 
+                evt.currentTarget.classList.add('active'); 
 
             } else { 
 
-                deviceExists.lastLogin = new Date().toISOString(); 
+                document.querySelector(`button[onclick="openTab(null, '${tabName}')"]`).classList.add('active'); 
 
             } 
-
-             
-
-            localStorage.setItem("userDevices", JSON.stringify(devices)); 
 
         } 
 
   
-
-        // ============== NOTIFICATIONS ============== 
 
         function showNotification(message, type = 'success') { 
 
@@ -1312,151 +1443,45 @@
 
             document.body.appendChild(notif); 
 
-             
+  
 
-            setTimeout(() => notif.remove(), 3000); 
+            setTimeout(() => { 
+
+                notif.style.animation = 'slideIn 0.3s ease reverse'; 
+
+                setTimeout(() => notif.remove(), 300); 
+
+            }, 3000); 
 
         } 
 
   
 
-        // ============== INPUT VALIDATION ============== 
+        // AUTH FUNCTIONS 
 
-        function sanitizeInput(str) { 
+        function signup() { 
 
-            const div = document.createElement('div'); 
+            const name = document.getElementById('signupName').value; 
 
-            div.textContent = str; 
+            const email = document.getElementById('signupEmail').value; 
 
-            return div.innerHTML; 
+            const pass = document.getElementById('signupPass').value; 
 
-        } 
-
-  
-
-        function validateUsername(username) { 
-
-            const regex = /^[a-zA-Z0-9_-]{3,20}$/; 
-
-            return regex.test(username); 
-
-        } 
+            const passConf = document.getElementById('signupPassConf').value; 
 
   
 
-        function validatePassword(password) { 
+            if (!name || !email || !pass || !passConf) { 
 
-            return password.length >= 6; 
+                showNotification('All fields required!', 'error'); 
 
-        } 
-
-  
-
-        function validateUrl(url) { 
-
-            try { 
-
-                new URL(url); 
-
-                return true; 
-
-            } catch { 
-
-                return false; 
+                return; 
 
             } 
 
-        } 
+            if (pass !== passConf) { 
 
-  
-
-        // ============== GOOGLE DRIVE LINK VALIDATION ============== 
-
-        function validateGoogleDriveLink() { 
-
-            const link = document.getElementById("postLink").value.trim(); 
-
-            const validation = document.getElementById("linkValidation"); 
-
-            const publishBtn = document.getElementById("publishBtn"); 
-
-  
-
-            if (!link) { 
-
-                validation.style.display = "none"; 
-
-                publishBtn.disabled = true; 
-
-                return false; 
-
-            } 
-
-  
-
-            const isValidUrl = validateUrl(link); 
-
-            const isGoogleDrive = link.includes("https://drive.google.com"); 
-
-  
-
-            validation.style.display = "flex"; 
-
-  
-
-            if (!isValidUrl) { 
-
-                validation.className = "link-validation invalid"; 
-
-                validation.innerHTML = "❌ Invalid URL format"; 
-
-                publishBtn.disabled = true; 
-
-                return false; 
-
-            } 
-
-  
-
-            if (!isGoogleDrive) { 
-
-                validation.className = "link-validation invalid"; 
-
-                validation.innerHTML = "❌ Link must be from https://drive.google.com"; 
-
-                publishBtn.disabled = true; 
-
-                return false; 
-
-            } 
-
-  
-
-            validation.className = "link-validation valid"; 
-
-            validation.innerHTML = "✅ Valid Google Drive link"; 
-
-            publishBtn.disabled = false; 
-
-            return true; 
-
-        } 
-
-  
-
-        // ============== AUTHENTICATION ============== 
-
-        function checkLogin() { 
-
-            const u = document.getElementById("loginUser").value.trim(); 
-
-            const p = document.getElementById("loginPass").value; 
-
-  
-
-            if (!u || !p) { 
-
-                showNotification('Username and password required!', 'error'); 
+                showNotification('Passwords do not match!', 'error'); 
 
                 return; 
 
@@ -1464,47 +1489,43 @@
 
   
 
-            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-             
+  
 
-            const found = users.find(x => x.username === u && x.password === p); 
+            if (users[email]) { 
 
-             
+                showNotification('Email already registered!', 'error'); 
 
-            if (found) { 
-
-                localStorage.setItem("lightyUser", u); 
-
-                currentUser = u; 
-
-                registerDevice(u); 
-
-                showNotification(`Welcome back, ${u}!`, 'success'); 
-
-                setTimeout(() => location.reload(), 1000); 
-
-            } else { 
-
-                showNotification('Invalid credentials', 'error'); 
+                return; 
 
             } 
+
+  
+
+            users[email] = { name, pass, createdAt: new Date() }; 
+
+            localStorage.setItem('users', JSON.stringify(users)); 
+
+            showNotification('Account created! Please sign in.', 'success'); 
+
+            openTab(null, 'signin'); 
 
         } 
 
   
 
-        function checkRegister() { 
+        function signin() { 
 
-            const u = document.getElementById("regUser").value.trim(); 
+            const email = document.getElementById('signinEmail').value; 
 
-            const p = document.getElementById("regPass").value; 
+            const pass = document.getElementById('signinPass').value; 
 
   
 
-            if (!validateUsername(u)) { 
+            if (!email || !pass) { 
 
-                showNotification('Username must be 3-20 characters (letters, numbers, -, _)', 'error'); 
+                showNotification('Email and password required!', 'error'); 
 
                 return; 
 
@@ -1512,9 +1533,13 @@
 
   
 
-            if (!validatePassword(p)) { 
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-                showNotification('Password must be at least 6 characters', 'error'); 
+  
+
+            if (!users[email] || users[email].pass !== pass) { 
+
+                showNotification('Invalid email or password!', 'error'); 
 
                 return; 
 
@@ -1522,43 +1547,29 @@
 
   
 
-            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
+            // Record device login before creating session
+            recordDeviceLogin(email);
 
-             
+            const sessionData = { 
 
-            if (users.find(x => x.username === u)) { 
+                email, 
 
-                showNotification('Username already taken!', 'error'); 
+                name: users[email].name, 
 
-                return; 
+                loginTime: new Date(),
+                deviceId: getOrCreateDeviceId()
 
-            } 
+            }; 
+
+            localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData)); 
 
   
 
-            users.push({  
+            showNotification(`Welcome back, ${users[email].name}!`, 'success'); 
 
-                username: u,  
+            updateUIAfterLogin(); 
 
-                password: p,  
-
-                createdAt: new Date().toISOString()  
-
-            }); 
-
-            localStorage.setItem("allUsers", JSON.stringify(users)); 
-
-            localStorage.setItem("lightyUser", u); 
-
-            currentUser = u; 
-
-            registerDevice(u); 
-
-             
-
-            showNotification(`Welcome to Lighty Studio, ${u}!`, 'success'); 
-
-            setTimeout(() => location.reload(), 1000); 
+            openTab(null, 'profile'); 
 
         } 
 
@@ -1566,15 +1577,54 @@
 
         function logout() { 
 
-            if (confirm('Are you sure you want to logout from this device?')) { 
+            localStorage.removeItem(SESSION_KEY); 
 
-                localStorage.removeItem("lightyUser"); 
+            showNotification('You have been logged out.', 'success'); 
 
-                currentUser = null; 
+            updateUIAfterLogout(); 
 
-                showNotification('Logged out successfully', 'success'); 
+            openTab(null, 'news'); 
 
-                setTimeout(() => location.reload(), 1000); 
+        } 
+
+        function logoutAllDevices() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            if (!sessionData.email) {
+                showNotification('Please sign in first', 'error');
+                return;
+            }
+
+            const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+            if (devices[sessionData.email]) {
+                delete devices[sessionData.email];
+                localStorage.setItem('user_devices', JSON.stringify(devices));
+            }
+
+            logout();
+            showNotification('Logged out from all devices', 'success');
+        }
+
+  
+
+        function deleteAccount() { 
+
+            if (confirm('Are you sure? This action cannot be undone!')) { 
+
+                const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
+
+                const users = JSON.parse(localStorage.getItem('users') || '{}'); 
+
+                delete users[sessionData.email]; 
+
+                localStorage.setItem('users', JSON.stringify(users)); 
+
+                const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+                delete devices[sessionData.email];
+                localStorage.setItem('user_devices', JSON.stringify(devices));
+
+                logout(); 
+
+                showNotification('Account deleted.', 'success'); 
 
             } 
 
@@ -1582,635 +1632,399 @@
 
   
 
-        // ============== PASSWORD VISIBILITY ============== 
+        function updateUIAfterLogin() { 
 
-        function togglePass(id) { 
+            document.getElementById('tab-signin').style.display = 'none'; 
 
-            const input = document.getElementById(id); 
+            document.getElementById('tab-signup').style.display = 'none'; 
 
-            const btn = input.parentElement.querySelector('.toggle-pass'); 
+            document.getElementById('tab-profile').style.display = 'block'; 
 
-            input.type = input.type === "password" ? "text" : "password"; 
+            document.getElementById('tab-settings').style.display = 'block'; 
 
-            btn.innerText = input.type === "password" ? "SHOW" : "HIDE"; 
+            document.getElementById('tab-people').style.display = 'block'; 
 
-        } 
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-  
-
-        // ============== UI NAVIGATION ============== 
-
-        function openTab(evt, tabName) { 
-
-            document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active")); 
-
-            document.querySelectorAll(".tabs-container .tab-btn").forEach(b => b.classList.remove("active")); 
-
-             
-
-            const section = document.getElementById(tabName); 
-
-            if (section) { 
-
-                section.classList.add("active"); 
-
-                if (evt) evt.currentTarget.classList.add("active"); 
-
-            } 
-
-  
-
-            if (tabName === 'games') loadPosts(); 
-
-            if (tabName === 'devices') loadDevices(); 
-
-            if (tabName === 'people') loadPeople(); 
-
-            updateNavbar(); 
-
-        } 
-
-  
-
-        function toggleGameSub(type) { 
-
-            const lib = document.getElementById('game-library'); 
-
-            const posts = document.getElementById('game-posts'); 
-
-            const btnLib = document.getElementById('subtab-lib'); 
-
-            const btnPost = document.getElementById('subtab-post'); 
-
-  
-
-            if (type === 'lib') { 
-
-                lib.style.display = 'block'; 
-
-                posts.style.display = 'none'; 
-
-                btnLib.classList.add('active'); 
-
-                btnPost.classList.remove('active'); 
-
-            } else { 
-
-                lib.style.display = 'none'; 
-
-                posts.style.display = 'block'; 
-
-                btnPost.classList.add('active'); 
-
-                btnLib.classList.remove('active'); 
-
-                loadPosts(); 
-
-            } 
-
-        } 
-
-  
-
-        // ============== NAVBAR ============== 
-
-        function updateNavbar() { 
-
-            const user = currentUser; 
-
-            const isAdmin = user === ownerName; 
-
-  
-
-            document.getElementById("tab-signin").style.display = user ? "none" : "inline-block"; 
-
-            document.getElementById("tab-signup").style.display = user ? "none" : "inline-block"; 
-
-            document.getElementById("tab-people").style.display = user ? "inline-block" : "none"; 
-
-            document.getElementById("tab-profile").style.display = user ? "inline-block" : "none"; 
-
-            document.getElementById("tab-devices").style.display = user ? "inline-block" : "none"; 
-
-            document.getElementById("tab-settings").style.display = user ? "inline-block" : "none"; 
-
-            document.getElementById("logoutBtn").style.display = user ? "inline-block" : "none"; 
-
-            document.getElementById("tab-admin").style.display = isAdmin ? "inline-block" : "none"; 
-
-  
-
-            if (user) { 
-
-                document.getElementById("profName").innerText = `👤 ${user}'s Profile`; 
-
-                document.getElementById("profile-info").innerHTML = `<p><strong>Member Since:</strong> ${new Date().toLocaleDateString()}</p><p><strong>Device ID:</strong> ${getOrCreateDeviceId()}</p>`; 
-
-            } 
-
-  
-
-            const pubBox = document.getElementById("publish-box"); 
-
-            if (pubBox) pubBox.style.display = user ? "block" : "none"; 
-
-  
+            const isAdmin = sessionData.email === 'admin@lightystu.dio'; 
 
             if (isAdmin) { 
 
-                loadAdminPanel(); 
+                document.getElementById('tab-admin').style.display = 'block'; 
 
             } 
+
+  
+
+            loadProfile(); 
 
         } 
 
   
 
-        // ============== PEOPLE SEARCH ============== 
+        function updateUIAfterLogout() { 
 
-        function searchPeople() { 
+            document.getElementById('tab-signin').style.display = 'block'; 
 
-            const search = document.getElementById("searchInput").value.trim().toLowerCase(); 
+            document.getElementById('tab-signup').style.display = 'block'; 
 
-             
+            document.getElementById('tab-profile').style.display = 'none'; 
 
-            if (!search) { 
+            document.getElementById('tab-settings').style.display = 'none'; 
 
-                showNotification('Please enter a username to search', 'warning'); 
+            document.getElementById('tab-people').style.display = 'none'; 
 
-                return; 
-
-            } 
-
-  
-
-            loadPeople(search); 
+            document.getElementById('tab-admin').style.display = 'none'; 
 
         } 
 
   
 
-        function loadPeople(searchTerm = "") { 
+        function loadProfile() { 
 
-            const peopleList = document.getElementById("people-list"); 
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-            peopleList.innerHTML = ""; 
-
-  
-
-            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
-
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
-
-            let following = JSON.parse(localStorage.getItem("following_" + currentUser)) || []; 
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
   
 
-            // Filter users 
+            if (sessionData.email && users[sessionData.email]) { 
 
-            if (searchTerm) { 
+                const user = users[sessionData.email]; 
 
-                users = users.filter(u => u.username.toLowerCase().includes(searchTerm) && u.username !== currentUser); 
+                document.getElementById('profileData').innerHTML = ` 
 
-            } else { 
+                    <div class="user-card"> 
 
-                users = users.filter(u => u.username !== currentUser); 
+                        <div class="user-info"> 
 
-            } 
+                            <strong>${user.name}</strong> 
 
-  
+                            <small>${sessionData.email}</small> 
 
-            if (users.length === 0) { 
-
-                peopleList.innerHTML = '<div class="empty-state">No users found</div>'; 
-
-                return; 
-
-            } 
-
-  
-
-            users.forEach(u => { 
-
-                const userPostCount = posts.filter(p => p.user === u.username).length; 
-
-                const isFollowing = following.includes(u.username); 
-
-  
-
-                const div = document.createElement("div"); 
-
-                div.className = "user-card"; 
-
-  
-
-                const userInfoDiv = document.createElement("div"); 
-
-                userInfoDiv.className = "user-info"; 
-
-                userInfoDiv.innerHTML = ` 
-
-                    <strong>${sanitizeInput(u.username)}</strong> 
-
-                    <small>📦 ${userPostCount} game${userPostCount !== 1 ? 's' : ''} posted</small> 
-
-                `; 
-
-  
-
-                const followBtn = document.createElement("button"); 
-
-                followBtn.className = isFollowing ? "submit-btn success follow-btn" : "submit-btn follow-btn"; 
-
-                followBtn.innerHTML = isFollowing ? "✓ Following" : "+ Follow"; 
-
-                followBtn.onclick = () => toggleFollow(u.username, followBtn); 
-
-  
-
-                div.appendChild(userInfoDiv); 
-
-                div.appendChild(followBtn); 
-
-  
-
-                peopleList.appendChild(div); 
-
-            }); 
-
-        } 
-
-  
-
-        function toggleFollow(username, btn) { 
-
-            let following = JSON.parse(localStorage.getItem("following_" + currentUser)) || []; 
-
-             
-
-            if (following.includes(username)) { 
-
-                following = following.filter(u => u !== username); 
-
-                btn.classList.remove("success"); 
-
-                btn.innerHTML = "+ Follow"; 
-
-                showNotification(`Unfollowed ${username}`, 'success'); 
-
-            } else { 
-
-                following.push(username); 
-
-                btn.classList.add("success"); 
-
-                btn.innerHTML = "✓ Following"; 
-
-                showNotification(`Following ${username}! 🎉`, 'success'); 
-
-            } 
-
-  
-
-            localStorage.setItem("following_" + currentUser, JSON.stringify(following)); 
-
-        } 
-
-  
-
-        // ============== POSTS (GAMES) ============== 
-
-        function loadPosts() { 
-
-            const feed = document.getElementById("feed"); 
-
-            feed.innerHTML = ""; 
-
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
-
-  
-
-            if (posts.length === 0) { 
-
-                feed.innerHTML = '<div class="empty-state">No games posted yet. Be the first!</div>'; 
-
-                return; 
-
-            } 
-
-  
-
-            posts.forEach(p => { 
-
-                const div = document.createElement("div"); 
-
-                div.className = "game-card"; 
-
-                 
-
-                const isAdmin = currentUser === ownerName; 
-
-                const deleteBtn = isAdmin ? `<button class="admin-del-btn" onclick="openDeletePostModal(${p.id})">DELETE</button>` : ""; 
-
-                 
-
-                div.innerHTML = ` 
-
-                    ${deleteBtn} 
-
-                    <strong>${sanitizeInput(p.title)}</strong> 
-
-                    <br> 
-
-                    <small style="color: #999;">by ${sanitizeInput(p.user)}</small> 
-
-                    <br> 
-
-                    <button class="submit-btn success" onclick="window.open('${p.link}', '_blank')">⬇️ Download</button> 
-
-                    <button class="see-more-btn" onclick="toggleDesc(this)">📖 See More</button> 
-
-                    <div class="desc-text">${sanitizeInput(p.desc)}</div> 
-
-                `; 
-
-                feed.appendChild(div); 
-
-            }); 
-
-        } 
-
-  
-
-        function toggleDesc(btn) { 
-
-            const desc = btn.nextElementSibling; 
-
-            const isHidden = desc.style.display === "none" || desc.style.display === ""; 
-
-            desc.style.display = isHidden ? "block" : "none"; 
-
-            btn.innerText = isHidden ? "📖 See Less" : "📖 See More"; 
-
-        } 
-
-  
-
-        function addPost() { 
-
-            const title = document.getElementById("postTitle").value.trim(); 
-
-            const link = document.getElementById("postLink").value.trim(); 
-
-            const desc = document.getElementById("postDesc").value.trim(); 
-
-  
-
-            if (!title) { 
-
-                showNotification('Game title required!', 'error'); 
-
-                return; 
-
-            } 
-
-  
-
-            if (!validateGoogleDriveLink()) { 
-
-                showNotification('Link must be from https://drive.google.com', 'error'); 
-
-                return; 
-
-            } 
-
-  
-
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
-
-            posts.unshift({  
-
-                id: Date.now(),  
-
-                user: currentUser,  
-
-                title: title, 
-
-                link: link, 
-
-                desc: desc, 
-
-                createdAt: new Date().toISOString() 
-
-            }); 
-
-             
-
-            localStorage.setItem("gamePosts", JSON.stringify(posts)); 
-
-             
-
-            document.getElementById("postTitle").value = ""; 
-
-            document.getElementById("postLink").value = ""; 
-
-            document.getElementById("postDesc").value = ""; 
-
-            document.getElementById("linkValidation").style.display = "none"; 
-
-            document.getElementById("publishBtn").disabled = true; 
-
-             
-
-            showNotification('Game posted successfully! 🎉', 'success'); 
-
-            loadPosts(); 
-
-        } 
-
-  
-
-        function openDeletePostModal(postId) { 
-
-            deleteAction = { type: 'post', id: postId }; 
-
-            const modal = document.getElementById('deleteModal'); 
-
-            document.getElementById('deleteMessage').innerHTML = `Delete this game post?`; 
-
-            document.getElementById('deletePassword').value = ''; 
-
-            modal.style.display = 'block'; 
-
-        } 
-
-  
-
-        // ============== DEVICES ============== 
-
-        function loadDevices() { 
-
-            const user = currentUser; 
-
-            if (!user) return; 
-
-  
-
-            const deviceList = document.getElementById('device-list'); 
-
-            deviceList.innerHTML = ''; 
-
-  
-
-            let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
-
-            const userDevices = devices[user] || []; 
-
-            const currentDeviceId = getOrCreateDeviceId(); 
-
-  
-
-            if (userDevices.length === 0) { 
-
-                deviceList.innerHTML = '<div class="empty-state">No devices logged in</div>'; 
-
-                return; 
-
-            } 
-
-  
-
-            userDevices.forEach(device => { 
-
-                const isCurrent = device.id === currentDeviceId; 
-
-                const lastLogin = new Date(device.lastLogin).toLocaleDateString(); 
-
-  
-
-                const div = document.createElement('div'); 
-
-                div.className = 'admin-user-item'; 
-
-                div.innerHTML = ` 
-
-                    <div> 
-
-                        <strong>${device.name}</strong> ${isCurrent ? '<span style="color: var(--success);">(This Device)</span>' : ''} 
-
-                        <br> 
-
-                        <small style="color: #999;">Last login: ${lastLogin}</small> 
+                        </div> 
 
                     </div> 
 
-                    ${!isCurrent ? `<button class="submit-btn danger" style="width: 120px; padding: 8px;" onclick="removeDevice('${user}', '${device.id}')">Remove</button>` : ''} 
+                    <div class="user-card"> 
+
+                        <div class="user-info"> 
+
+                            <strong>Account Created</strong> 
+
+                            <small>${new Date(user.createdAt).toLocaleDateString()}</small> 
+
+                        </div> 
+
+                    </div> 
 
                 `; 
 
-                deviceList.appendChild(div); 
-
-            }); 
+            } 
 
         } 
 
   
 
-        function removeDevice(username, deviceId) { 
+        function changePassword() { 
 
-            if (confirm('Remove this device from your account?')) { 
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-                let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
+            const oldPass = document.getElementById('oldPass').value; 
 
-                if (devices[username]) { 
+            const newPass = document.getElementById('newPass').value; 
 
-                    devices[username] = devices[username].filter(d => d.id !== deviceId); 
+            const newPassConf = document.getElementById('newPassConf').value; 
 
-                    localStorage.setItem("userDevices", JSON.stringify(devices)); 
+  
 
-                    showNotification('Device removed', 'success'); 
+            if (!oldPass || !newPass || !newPassConf) { 
 
-                    loadDevices(); 
+                showNotification('All password fields required!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
+
+            const user = users[sessionData.email]; 
+
+  
+
+            if (!user || user.pass !== oldPass) { 
+
+                showNotification('Current password is incorrect!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            if (newPass !== newPassConf) { 
+
+                showNotification('New passwords do not match!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            user.pass = newPass; 
+
+            users[sessionData.email] = user; 
+
+            localStorage.setItem('users', JSON.stringify(users)); 
+
+  
+
+            showNotification('Password changed successfully!', 'success'); 
+
+        } 
+
+  
+
+        function toggleSigninPass() { 
+
+            const input = document.getElementById('signinPass'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleSignupPass() { 
+
+            const input = document.getElementById('signupPass'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleSignupConfPass() { 
+
+            const input = document.getElementById('signupPassConf'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleOldPass() { 
+
+            const input = document.getElementById('oldPass'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleNewPass() { 
+
+            const input = document.getElementById('newPass'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleNewPassConf() { 
+
+            const input = document.getElementById('newPassConf'); 
+
+            input.type = input.type === 'password' ? 'text' : 'password'; 
+
+            event.target.textContent = input.type === 'password' ? 'Show' : 'Hide'; 
+
+        } 
+
+  
+
+        function toggleDarkMode() { 
+
+            document.body.classList.toggle('light-mode'); 
+
+            localStorage.setItem('darkMode', document.body.classList.contains('light-mode') ? 'light' : 'dark'); 
+
+        } 
+
+  
+
+        // GAMES FUNCTIONS 
+
+        function toggleGameSub(sub) { 
+
+            document.getElementById('game-library').style.display = sub === 'lib' ? 'block' : 'none'; 
+
+            document.getElementById('game-post').style.display = sub === 'post' ? 'block' : 'none'; 
+
+  
+
+            document.getElementById('subtab-lib').classList.toggle('active'); 
+
+            document.getElementById('subtab-post').classList.toggle('active'); 
+
+        } 
+
+  
+
+        function postGame() { 
+
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
+
+  
+
+            if (!sessionData.email) { 
+
+                showNotification('Please sign in to post!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            const title = document.getElementById('gameTitle').value; 
+
+            const desc = document.getElementById('gameDesc').value; 
+
+            const link = document.getElementById('gameLink').value; 
+
+  
+
+            if (!title || !desc || !link) { 
+
+                showNotification('All fields required!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            if (!link.includes('drive.google.com')) { 
+
+                showNotification('Please provide a valid Google Drive link!', 'error'); 
+
+                return; 
+
+            } 
+
+  
+
+            const games = JSON.parse(localStorage.getItem('games') || '[]'); 
+
+            games.push({ title, desc, link, author: sessionData.name, email: sessionData.email, createdAt: new Date() }); 
+
+            localStorage.setItem('games', JSON.stringify(games)); 
+
+  
+
+            showNotification('Game posted successfully!', 'success'); 
+
+            document.getElementById('gameTitle').value = ''; 
+
+            document.getElementById('gameDesc').value = ''; 
+
+            document.getElementById('gameLink').value = ''; 
+
+        } 
+
+  
+
+        // PEOPLE FUNCTIONS 
+
+        function searchUsers() { 
+
+            const query = document.getElementById('searchUser').value.toLowerCase(); 
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
+
+  
+
+            let html = ''; 
+
+            for (const email in users) { 
+
+                if (users[email].name.toLowerCase().includes(query)) { 
+
+                    html += ` 
+
+                        <div class="user-card"> 
+
+                            <div class="user-info"> 
+
+                                <strong>${users[email].name}</strong> 
+
+                                <small>${email}</small> 
+
+                            </div> 
+
+                            <button class="follow-btn submit-btn" onclick="followUser('${email}')">Follow</button> 
+
+                        </div> 
+
+                    `; 
 
                 } 
 
             } 
 
-        } 
-
   
 
-        // ============== ADMIN PANEL ============== 
-
-        function loadAdminPanel() { 
-
-            loadAdminUsers(); 
-
-            loadAdminGames(); 
+            document.getElementById('userList').innerHTML = html || '<p class="empty-state">No users found.</p>'; 
 
         } 
 
   
 
-        function loadAdminUsers() { 
+        function followUser(email) { 
 
-            const container = document.getElementById("admin-user-list"); 
+            showNotification(`You followed ${email}!`, 'success'); 
 
-            container.innerHTML = ""; 
-
-             
-
-            let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
-
-            let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
-
-             
-
-            if (users.length === 0) { 
-
-                container.innerHTML = '<div class="empty-state">No users registered yet</div>'; 
-
-                return; 
-
-            } 
+        } 
 
   
 
-            users.forEach(u => { 
+        // ADMIN FUNCTIONS 
 
-                const div = document.createElement("div"); 
+        function toggleAdminSub(tab) { 
 
-                div.className = "admin-user-item"; 
+            document.getElementById('admin-games').style.display = tab === 'games' ? 'block' : 'none'; 
 
-                const isSelf = u.username === ownerName; 
+            document.getElementById('admin-users').style.display = tab === 'users' ? 'block' : 'none'; 
 
-                const userDeviceCount = (devices[u.username] || []).length; 
+  
 
-                 
+            document.getElementById('admin-subtab-games').classList.toggle('active'); 
 
-                div.innerHTML = ` 
+            document.getElementById('admin-subtab-users').classList.toggle('active'); 
 
-                    <span> 
+  
 
-                        <strong>${sanitizeInput(u.username)}</strong> 
+            if (tab === 'games') loadAdminGames(); 
 
-                        ${isSelf ? '<span style="color:gold; margin-left: 10px;">👑 OWNER</span>' : ''} 
-
-                        <br> 
-
-                        <small style="color: #999;">📱 ${userDeviceCount} device${userDeviceCount !== 1 ? 's' : ''}</small> 
-
-                    </span> 
-
-                    ${!isSelf ? `<button class="admin-del-btn" onclick="openDeleteUserModal('${u.username}')">DELETE</button>` : ''} 
-
-                `; 
-
-                 
-
-                container.appendChild(div); 
-
-            }); 
+            if (tab === 'users') loadAdminUsers(); 
 
         } 
 
@@ -2218,230 +2032,172 @@
 
         function loadAdminGames() { 
 
-            const container = document.getElementById("admin-game-list"); 
+            const games = JSON.parse(localStorage.getItem('games') || '[]'); 
 
-            container.innerHTML = ""; 
-
-             
-
-            let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
-
-             
-
-            if (posts.length === 0) { 
-
-                container.innerHTML = '<div class="empty-state">No games posted yet</div>'; 
-
-                return; 
-
-            } 
+            let html = ''; 
 
   
 
-            posts.forEach(p => { 
+            games.forEach((game, index) => { 
 
-                const div = document.createElement("div"); 
+                html += ` 
 
-                div.className = "game-card"; 
+                    <div class="game-card"> 
 
-                 
+                        <button class="admin-del-btn" onclick="deleteGameAdmin(${index})">Delete</button> 
 
-                div.innerHTML = ` 
+                        <strong>${game.title}</strong><br> 
 
-                    <button class="admin-del-btn" onclick="openDeletePostModal(${p.id})">DELETE</button> 
+                        <small>${game.author}</small> 
 
-                    <strong>${sanitizeInput(p.title)}</strong> 
+                        <div class="desc-text" id="desc-${index}"> 
 
-                    <br> 
+                            ${game.desc} 
 
-                    <small style="color: #999;">by ${sanitizeInput(p.user)}</small> 
+                        </div> 
 
-                    <br> 
+                        <button class="see-more-btn" onclick="toggleDesc(${index})">See more...</button> 
 
-                    <button class="submit-btn success" style="font-size: 0.8rem;" onclick="window.open('${p.link}', '_blank')">Open Link</button> 
+                    </div> 
 
                 `; 
 
-                 
-
-                container.appendChild(div); 
-
             }); 
 
-        } 
-
   
 
-        function openDeleteUserModal(username) { 
-
-            deleteAction = { type: 'user', username: username }; 
-
-            const modal = document.getElementById('deleteModal'); 
-
-            document.getElementById('deleteMessage').innerHTML = `Delete user <strong>${sanitizeInput(username)}</strong> and all their games?<br><br>⚠️ This action cannot be undone!`; 
-
-            document.getElementById('deletePassword').value = ''; 
-
-            modal.style.display = 'block'; 
+            document.getElementById('adminGamesList').innerHTML = html || '<p class="empty-state">No games.</p>'; 
 
         } 
 
   
 
-        function closeDeleteModal() { 
+        function loadAdminUsers() { 
 
-            document.getElementById('deleteModal').style.display = 'none'; 
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-            deleteAction = null; 
-
-        } 
+            let html = ''; 
 
   
 
-        function confirmDelete() { 
+            for (const email in users) { 
 
-            const password = document.getElementById('deletePassword').value; 
+                html += ` 
 
-  
+                    <div class="admin-user-item"> 
 
-            if (!password) { 
+                        <div> 
 
-                showNotification('Password required', 'error'); 
+                            <strong>${users[email].name}</strong><br> 
 
-                return; 
+                            <small>${email}</small> 
+
+                        </div> 
+
+                        <button class="submit-btn danger" onclick="deleteUserAdmin('${email}')">Delete</button> 
+
+                    </div> 
+
+                `; 
 
             } 
 
   
 
-            if (password !== ownerPassword) { 
+            document.getElementById('adminUsersList').innerHTML = html || '<p class="empty-state">No users.</p>'; 
 
-                showNotification('Invalid admin password', 'error'); 
+        } 
 
-                return; 
+  
+
+        function deleteGameAdmin(index) { 
+
+            if (confirm('Delete this game?')) { 
+
+                const games = JSON.parse(localStorage.getItem('games') || '[]'); 
+
+                games.splice(index, 1); 
+
+                localStorage.setItem('games', JSON.stringify(games)); 
+
+                loadAdminGames(); 
+
+                showNotification('Game deleted!', 'success'); 
 
             } 
 
-  
-
-            if (deleteAction.type === 'user') { 
-
-                if (deleteAction.username === ownerName) { 
-
-                    showNotification('Cannot delete your own account', 'error'); 
-
-                    return; 
-
-                } 
+        } 
 
   
 
-                let users = JSON.parse(localStorage.getItem("allUsers")) || []; 
+        function deleteUserAdmin(email) { 
 
-                users = users.filter(u => u.username !== deleteAction.username); 
+            if (confirm(`Delete user ${email}?`)) { 
 
-                localStorage.setItem("allUsers", JSON.stringify(users)); 
+                const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
-  
+                delete users[email]; 
 
-                let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
+                localStorage.setItem('users', JSON.stringify(users)); 
 
-                posts = posts.filter(p => p.user !== deleteAction.username); 
-
-                localStorage.setItem("gamePosts", JSON.stringify(posts)); 
-
-  
-
-                let devices = JSON.parse(localStorage.getItem("userDevices")) || {}; 
-
-                delete devices[deleteAction.username]; 
-
-                localStorage.setItem("userDevices", JSON.stringify(devices)); 
-
-  
-
-                showNotification(`User ${deleteAction.username} and all their games deleted`, 'success'); 
+                const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
+                delete devices[email];
+                localStorage.setItem('user_devices', JSON.stringify(devices));
 
                 loadAdminUsers(); 
 
-                loadAdminGames(); 
-
-            } else if (deleteAction.type === 'post') { 
-
-                let posts = JSON.parse(localStorage.getItem("gamePosts")) || []; 
-
-                posts = posts.filter(p => p.id !== deleteAction.id); 
-
-                localStorage.setItem("gamePosts", JSON.stringify(posts)); 
-
-                showNotification('Game post deleted', 'success'); 
-
-                loadAdminGames(); 
-
-                loadPosts(); 
+                showNotification('User deleted!', 'success'); 
 
             } 
 
+        } 
+
   
 
-            closeDeleteModal(); 
+        function toggleDesc(index) { 
+
+            const desc = document.getElementById(`desc-${index}`); 
+
+            desc.style.display = desc.style.display === 'none' ? 'block' : 'none'; 
+
+            event.target.textContent = desc.style.display === 'none' ? 'See more...' : 'See less'; 
 
         } 
 
   
 
-        // ============== THEME ============== 
-
-        function toggleTheme() { 
-
-            document.body.classList.toggle("light-mode"); 
-
-            localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark"); 
-
-            showNotification('Theme updated!', 'success'); 
-
-        } 
-
-  
-
-        // ============== INITIALIZATION ============== 
+        // ON PAGE LOAD 
 
         window.addEventListener('load', () => { 
 
-            currentUser = localStorage.getItem("lightyUser"); 
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
-            const theme = localStorage.getItem("theme"); 
+            if (sessionData.email) { 
 
-            if (theme === "light") { 
+                updateUIAfterLogin(); 
 
-                document.body.classList.add("light-mode"); 
+            } else { 
+
+                updateUIAfterLogout(); 
 
             } 
-
-            updateNavbar(); 
-
-        }); 
 
   
 
-        // Close modal when clicking outside 
+            const darkMode = localStorage.getItem('darkMode'); 
 
-        window.onclick = function(event) { 
+            if (darkMode === 'light') { 
 
-            const modal = document.getElementById('deleteModal'); 
+                document.body.classList.add('light-mode'); 
 
-            if (event.target === modal) { 
-
-                closeDeleteModal(); 
+                document.getElementById('darkModeToggle').checked = true; 
 
             } 
 
-        } 
+        }); 
 
     </script> 
 
 </body> 
 
-</html> 
-
- 
+</html>
