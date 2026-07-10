@@ -910,7 +910,8 @@
 
         } 
 
-        
+         
+
         /* DEVICE CARD */
         .device-card {
             background: rgba(128, 128, 128, 0.05);
@@ -1016,17 +1017,19 @@
 
             <button class="tab-btn" onclick="openTab(event, 'games')">Games</button> 
 
-            <button id="tab-people" class="tab-btn" style="display:none;" onclick="openTab(event, 'people')">👥 People</button> 
+            <button class="tab-btn" id="tab-signin" onclick="openTab(event, 'signin')">Sign In</button> 
 
-            <button id="tab-signin" class="tab-btn" onclick="openTab(event, 'signin')">Sign In</button> 
+            <button class="tab-btn" id="tab-signup" onclick="openTab(event, 'signup')">Sign Up</button> 
 
-            <button id="tab-signup" class="tab-btn" onclick="openTab(event, 'signup')">Join</button> 
+            <button class="tab-btn" id="tab-profile" style="display: none;" onclick="openTab(event, 'profile')">Profile</button> 
 
-            <button id="tab-profile" class="tab-btn" style="display:none;" onclick="openTab(event, 'profile')">Profile</button> 
+            <button class="tab-btn" id="tab-settings" style="display: none;" onclick="openTab(event, 'settings')">Settings</button> 
 
-            <button id="tab-settings" class="tab-btn" style="display:none;" onclick="openTab(event, 'settings')">Settings</button> 
+            <button class="tab-btn" id="tab-people" style="display: none;" onclick="openTab(event, 'people')">People</button> 
 
-            <button id="tab-admin" class="tab-btn" style="display:none; color: gold;" onclick="openTab(event, 'admin')">Admin</button> 
+            <button class="tab-btn" id="tab-admin" style="display: none;" onclick="openTab(event, 'admin')">Admin</button> 
+
+            <button class="tab-btn" id="logout-btn" style="display: none;" onclick="logout()" style="background: var(--error); color: white;">Logout</button> 
 
         </div> 
 
@@ -1036,15 +1039,15 @@
 
     <div class="container"> 
 
+  
+
         <!-- NEWS SECTION --> 
 
         <div id="news" class="content-section active"> 
 
-            <h2>📰 Activity</h2> 
+            <h2>📰 Lighty Studio News</h2> 
 
-            <p>Lighty Studio now supports multi-device login! Sign in from any device and access your data everywhere.</p> 
-
-            <p>Now has a YouTube Tutorial to learn more go to <a href="https://www.youtube.com/watch?v=rgzOUlxLRi0" target="_blank">Watch Tutorial</a>.</p> 
+            <p style="color: #aaa;">Welcome to Lighty Studio! Sign in or create an account to get started.</p> 
 
         </div> 
 
@@ -1054,45 +1057,151 @@
 
         <div id="games" class="content-section"> 
 
+            <h2>🎮 Games</h2> 
+
+            <div id="gamesList"></div> 
+
+        </div> 
+
+  
+
+        <!-- PROFILE SECTION --> 
+
+        <div id="profile" class="content-section"> 
+
+            <h2>👤 Profile</h2> 
+
+            <div id="profileContent"></div> 
+
+        </div> 
+
+  
+
+        <!-- SETTINGS SECTION --> 
+
+        <div id="settings" class="content-section"> 
+
             <div class="subtab-container"> 
 
-                <button class="tab-btn active" id="subtab-lib" onclick="toggleGameSub('lib')">📚 Library</button> 
+                <button class="tab-btn active" onclick="openSubTab(event, 'settings-account')">Account</button> 
 
-                <button class="tab-btn" id="subtab-post" onclick="toggleGameSub('post')">➕ Post Game</button> 
+                <button class="tab-btn" onclick="openSubTab(event, 'settings-security')">Security</button> 
+
+                <button class="tab-btn" onclick="openSubTab(event, 'settings-devices')">Devices</button> 
+
+                <button class="tab-btn" onclick="openSubTab(event, 'settings-danger')">Danger Zone</button> 
 
             </div> 
 
-             
+  
 
-            <div id="game-library"> 
+            <!-- Account Settings --> 
 
-                <h2>Official Games</h2> 
+            <div id="settings-account" style="display: block;"> 
 
-                <div class="game-card"> 
+                <h3>Account Settings</h3> 
 
-                    <strong>🎨 Paint V1</strong><br> 
+                <p style="color: #aaa;">Manage your account information</p> 
 
-                    <p style="font-size: 0.9rem; color: #aaa; margin: 5px 0;">A creative painting application</p> 
+                <h4>Gmail Recovery</h4> 
 
-                    <button class="submit-btn success" onclick="window.open('https://drive.google.com/file/d/1IADQoPzjqIxE4V2h5iwdo5hCTIHNlMrb/view?usp=sharing', '_blank')">⬇️ Download</button> 
+                <input type="email" id="gmailInput" placeholder="Gmail address (for account recovery)"> 
+
+                <div id="gmailStatus"></div> 
+
+                <button class="submit-btn" onclick="updateGmail()">Update Gmail</button> 
+
+            </div> 
+
+  
+
+            <!-- Device Settings --> 
+
+            <div id="settings-devices" style="display: none;"> 
+
+                <h3>Devices</h3> 
+
+                <p style="color: #aaa;">Manage devices logged into your account</p> 
+
+  
+
+                <!-- Normal Device Login Section -->
+                <div id="normalDeviceSection">
+                    <div class="login-section-title">✅ Normal Device Login</div>
+                    <div id="normalDevicesList"></div>
+                </div>
+
+                <!-- Different Device Login Section -->
+                <div id="differentDeviceSection">
+                    <div class="login-section-title">⚠️ Different Device Login</div>
+                    <div id="differentDevicesList"></div>
+                </div>
+
+                <button class="submit-btn success" onclick="loadDevices()">Refresh Devices</button> 
+
+            </div> 
+
+  
+
+            <!-- Security Settings --> 
+
+            <div id="settings-security" style="display: none;"> 
+
+                <h3>Security</h3> 
+
+                <h4>Change Password</h4> 
+
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="oldPass" placeholder="Current Password"> 
+
+                    <button class="toggle-pass" onclick="toggleOldPass()">Show</button> 
 
                 </div> 
 
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="newPass" placeholder="New Password"> 
+
+                    <button class="toggle-pass" onclick="toggleNewPass()">Show</button> 
+
+                </div> 
+
+                <div class="pass-wrapper"> 
+
+                    <input type="password" id="newPassConf" placeholder="Confirm New Password"> 
+
+                    <button class="toggle-pass" onclick="toggleNewPassConf()">Show</button> 
+
+                </div> 
+
+                <button class="submit-btn" onclick="changePassword()">Update Password</button> 
+
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);"> 
+
+                <h4>Logout from all devices</h4> 
+
+                <p style="font-size: 0.9rem; color: #aaa;">This will sign you out from all devices. You'll need to sign in again.</p> 
+
+                <button class="submit-btn danger" onclick="logoutAllDevices()">Logout from All Devices</button> 
+
             </div> 
 
-             
+  
 
-            <div id="game-post" style="display: none;"> 
+            <!-- Danger Zone --> 
 
-                <h2>Post Your Game</h2> 
+            <div id="settings-danger" style="display: none;"> 
 
-                <input type="text" id="gameTitle" placeholder="Game Title"> 
+                <h3 style="color: var(--error);">⚠️ Danger Zone</h3> 
 
-                <input type="text" id="gameDesc" placeholder="Game Description"> 
+                <p style="color: #aaa;">These actions cannot be undone!</p> 
 
-                <input type="text" id="gameLink" placeholder="Google Drive Link"> 
+                <h4>Delete Account</h4> 
 
-                <button class="submit-btn" onclick="postGame()">Post Game</button> 
+                <p style="font-size: 0.9rem; color: #aaa;">Permanently delete your account and all associated data.</p> 
+
+                <button class="submit-btn danger" onclick="deleteAccount()">Delete Account</button> 
 
             </div> 
 
@@ -1185,141 +1294,6 @@
 
   
 
-        <!-- PROFILE SECTION --> 
-
-        <div id="profile" class="content-section"> 
-
-            <h2>👤 My Profile</h2> 
-
-            <div id="profileData"></div> 
-
-            <button class="submit-btn danger" onclick="deleteAccount()">Delete Account</button> 
-
-        </div> 
-
-  
-
-        <!-- SETTINGS SECTION --> 
-
-        <div id="settings" class="content-section"> 
-
-            <h2>⚙️ Settings</h2> 
-
-            <div class="subtab-container"> 
-
-                <button class="tab-btn active" id="subtab-general" onclick="toggleSettingsSub('general')">General</button> 
-
-                <button class="tab-btn" id="subtab-gmail" onclick="toggleSettingsSub('gmail')">📧 Gmail Recovery</button> 
-
-                <button class="tab-btn" id="subtab-devices" onclick="toggleSettingsSub('devices')">📱 Devices</button> 
-
-                <button class="tab-btn" id="subtab-security" onclick="toggleSettingsSub('security')">Security</button> 
-
-            </div> 
-
-  
-
-            <!-- General Settings --> 
-
-            <div id="settings-general"> 
-
-                <h3>General Settings</h3> 
-
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;"> 
-
-                    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"> 
-
-                    <span>Dark Mode</span> 
-
-                </label> 
-
-            </div>
-
-            <!-- Gmail Recovery Settings -->
-            <div id="settings-gmail" style="display: none;">
-                <h3>Gmail Recovery</h3>
-                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">Add or update your Gmail address for account recovery and multi-device login.</p>
-                <input type="email" id="gmailInput" placeholder="Enter your Gmail address">
-                <button class="submit-btn success" onclick="updateGmail()">Update Gmail</button>
-                <div id="gmailStatus" style="margin-top: 10px;"></div>
-            </div>
-
-  
-
-            <!-- Devices Settings --> 
-
-            <div id="settings-devices" style="display: none;"> 
-
-                <h3>Manage Devices</h3> 
-
-                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 20px;">View and manage all devices where you're signed in. You can sign out from any device remotely.</p> 
-
-                <!-- Normal Device Login Section -->
-                <div id="normalDeviceSection">
-                    <div class="login-section-title">✅ Normal Device Login</div>
-                    <div id="normalDevicesList"></div>
-                </div>
-
-                <!-- Different Device Login Section -->
-                <div id="differentDeviceSection">
-                    <div class="login-section-title">⚠️ Different Device Login</div>
-                    <div id="differentDevicesList"></div>
-                </div>
-
-                <button class="submit-btn success" onclick="loadDevices()">Refresh Devices</button> 
-
-            </div> 
-
-  
-
-            <!-- Security Settings --> 
-
-            <div id="settings-security" style="display: none;"> 
-
-                <h3>Security</h3> 
-
-                <h4>Change Password</h4> 
-
-                <div class="pass-wrapper"> 
-
-                    <input type="password" id="oldPass" placeholder="Current Password"> 
-
-                    <button class="toggle-pass" onclick="toggleOldPass()">Show</button> 
-
-                </div> 
-
-                <div class="pass-wrapper"> 
-
-                    <input type="password" id="newPass" placeholder="New Password"> 
-
-                    <button class="toggle-pass" onclick="toggleNewPass()">Show</button> 
-
-                </div> 
-
-                <div class="pass-wrapper"> 
-
-                    <input type="password" id="newPassConf" placeholder="Confirm New Password"> 
-
-                    <button class="toggle-pass" onclick="toggleNewPassConf()">Show</button> 
-
-                </div> 
-
-                <button class="submit-btn" onclick="changePassword()">Update Password</button> 
-
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);"> 
-
-                <h4>Logout from all devices</h4> 
-
-                <p style="font-size: 0.9rem; color: #aaa;">This will sign you out from all devices. You'll need to sign in again.</p> 
-
-                <button class="submit-btn danger" onclick="logoutAllDevices()">Logout from All Devices</button> 
-
-            </div> 
-
-        </div> 
-
-  
-
         <!-- ADMIN SECTION --> 
 
         <div id="admin" class="content-section"> 
@@ -1328,31 +1302,39 @@
 
             <div class="subtab-container"> 
 
-                <button class="tab-btn active" id="admin-subtab-games" onclick="toggleAdminSub('games')">Manage Games</button> 
+                <button class="tab-btn active" onclick="openSubTab(event, 'admin-games')">Games</button> 
 
-                <button class="tab-btn" id="admin-subtab-users" onclick="toggleAdminSub('users')">Manage All Users</button> 
+                <button class="tab-btn" onclick="openSubTab(event, 'admin-users')">Users</button> 
 
             </div> 
 
   
 
-            <!-- Manage Games --> 
+            <div id="admin-games" style="display: block;"> 
 
-            <div id="admin-games"> 
-
-                <h3>All Games</h3> 
+                <h3>Manage Games</h3> 
 
                 <div id="adminGamesList"></div> 
 
+                <hr> 
+
+                <h3>Post New Game</h3> 
+
+                <input type="text" id="gameTitle" placeholder="Game Title"> 
+
+                <textarea id="gameDesc" placeholder="Game Description" rows="4"></textarea> 
+
+                <input type="text" id="gameLink" placeholder="Google Drive Link"> 
+
+                <button class="submit-btn" onclick="postGameAdmin()">Post Game</button> 
+
             </div> 
 
   
 
-            <!-- Manage Users --> 
-
             <div id="admin-users" style="display: none;"> 
 
-                <h3>All Users in System</h3> 
+                <h3>All Users</h3> 
 
                 <div id="adminUsersList"></div> 
 
@@ -1360,18 +1342,78 @@
 
         </div> 
 
+  
+
     </div> 
 
   
 
     <script> 
 
-        // Multi-device login support
-        const DEVICE_ID_KEY = 'lighty_device_id';
-        const SESSION_KEY = 'lighty_session';
+        const SESSION_KEY = 'session_data'; 
+
+        const DEVICE_ID_KEY = 'device_id'; 
+
+  
+
+        function openTab(evt, tabName) { 
+
+            const tabcontent = document.querySelectorAll('.content-section'); 
+
+            tabcontent.forEach(tab => tab.classList.remove('active')); 
+
+            document.getElementById(tabName).classList.add('active'); 
+
+  
+
+            const tabbtns = document.querySelectorAll('.tabs-container .tab-btn'); 
+
+            tabbtns.forEach(btn => btn.classList.remove('active')); 
+
+            if (evt) evt.target.classList.add('active'); 
+
+        } 
+
+  
+
+        function openSubTab(evt, subTabName) { 
+
+            const subtabs = evt.target.parentElement.parentElement.querySelectorAll('[id^="' + subTabName.split('-')[0] + '-"]'); 
+
+            subtabs.forEach(tab => tab.style.display = 'none'); 
+
+            document.getElementById(subTabName).style.display = 'block'; 
+
+  
+
+            evt.target.parentElement.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); 
+
+            evt.target.classList.add('active'); 
+
+        } 
+
+  
+
+        function showNotification(message, type = 'info') { 
+
+            const notification = document.createElement('div'); 
+
+            notification.className = `notification ${type}`; 
+
+            notification.textContent = message; 
+
+            document.body.appendChild(notification); 
+
+  
+
+            setTimeout(() => notification.remove(), 3000); 
+
+        } 
+
+  
 
         function generateDeviceId() {
-            return 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+            return 'device_' + Math.random().toString(36).substr(2, 9);
         }
 
         function getOrCreateDeviceId() {
@@ -1439,11 +1481,10 @@
                                 <small>Last login: ${loginDate}</small>
                             </div>
                             <div class="device-actions">
-                                ${!isCurrent ? `<button class="submit-btn danger" onclick="removeDevice('${sessionData.username}', '${device.id}')">Sign Out</button>` : ''}
+                                <button class="submit-btn danger" onclick="removeDevice('${device.id}')">Remove</button>
                             </div>
                         </div>
                     `;
-
                     if (isCurrent) {
                         normalHtml += deviceCard;
                     } else {
@@ -1452,135 +1493,30 @@
                 });
             }
 
-            document.getElementById('normalDevicesList').innerHTML = normalHtml || '<p class="empty-state">No normal device logins.</p>';
-            document.getElementById('differentDevicesList').innerHTML = differentHtml || '<p class="empty-state">No different device logins.</p>';
+            document.getElementById('normalDevicesList').innerHTML = normalHtml || '<p class="empty-state">No normal devices.</p>';
+            document.getElementById('differentDevicesList').innerHTML = differentHtml || '<p class="empty-state">No other devices.</p>';
         }
 
-        function removeDevice(username, deviceId) {
+        function removeDevice(deviceId) {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-            if (devices[username]) {
-                devices[username] = devices[username].filter(d => d.id !== deviceId);
+            
+            if (devices[sessionData.username]) {
+                devices[sessionData.username] = devices[sessionData.username].filter(d => d.id !== deviceId);
                 localStorage.setItem('user_devices', JSON.stringify(devices));
                 loadDevices();
-                showNotification('Device removed successfully', 'success');
+                showNotification('Device removed', 'success');
             }
         }
-
-        function updateGmail() {
-            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
-            if (!sessionData.username) {
-                showNotification('Please sign in first', 'error');
-                return;
-            }
-
-            const gmail = document.getElementById('gmailInput').value.trim();
-            if (!gmail || !gmail.includes('@gmail.com')) {
-                showNotification('Please enter a valid Gmail address', 'error');
-                return;
-            }
-
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[sessionData.username]) {
-                users[sessionData.username].gmail = gmail;
-                localStorage.setItem('users', JSON.stringify(users));
-                
-                sessionData.gmail = gmail;
-                localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-                
-                showNotification('Gmail updated successfully!', 'success');
-                document.getElementById('gmailInput').value = '';
-                displayGmailStatus();
-            }
-        }
-
-        function displayGmailStatus() {
-            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
-            const statusDiv = document.getElementById('gmailStatus');
-            if (sessionData.gmail) {
-                statusDiv.innerHTML = `<p style="color: var(--success); font-size: 0.9rem;">✓ Gmail set: <strong>${sessionData.gmail}</strong></p>`;
-            } else {
-                statusDiv.innerHTML = '<p style="color: var(--warning); font-size: 0.9rem;">⚠ No Gmail set yet. Add one for account recovery.</p>';
-            }
-        }
-
-        function toggleSettingsSub(tab) {
-            document.querySelectorAll('[id^="settings-"]').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('#subtab-general, #subtab-gmail, #subtab-devices, #subtab-security').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById('settings-' + tab).style.display = 'block';
-            event.target.classList.add('active');
-
-            if (tab === 'devices') {
-                loadDevices();
-            }
-            if (tab === 'gmail') {
-                displayGmailStatus();
-            }
-        }
-
-        // Basic utility functions
-
-        function openTab(evt, tabName) { 
-
-            const sections = document.querySelectorAll('.content-section'); 
-
-            sections.forEach(section => section.classList.remove('active')); 
-
-            document.getElementById(tabName).classList.add('active'); 
-
   
-
-            const tabs = document.querySelectorAll('.tab-btn'); 
-
-            tabs.forEach(tab => tab.classList.remove('active')); 
-
-            if (evt) { 
-
-                evt.currentTarget.classList.add('active'); 
-
-            } else { 
-
-                document.querySelector(`button[onclick="openTab(null, '${tabName}')"]`).classList.add('active'); 
-
-            } 
-
-        } 
-
-  
-
-        function showNotification(message, type = 'success') { 
-
-            const notif = document.createElement('div'); 
-
-            notif.className = `notification ${type}`; 
-
-            notif.textContent = message; 
-
-            document.body.appendChild(notif); 
-
-  
-
-            setTimeout(() => { 
-
-                notif.style.animation = 'slideIn 0.3s ease reverse'; 
-
-                setTimeout(() => notif.remove(), 300); 
-
-            }, 3000); 
-
-        } 
-
-  
-
-        // AUTH FUNCTIONS 
 
         function signup() { 
 
-            const username = document.getElementById('signupUsername').value; 
+            const username = document.getElementById('signupUsername').value.trim(); 
 
-            const email = document.getElementById('signupEmail').value; 
+            const email = document.getElementById('signupEmail').value.trim(); 
 
-            const gmail = document.getElementById('signupGmail').value;
+            const gmail = document.getElementById('signupGmail').value.trim(); 
 
             const pass = document.getElementById('signupPass').value; 
 
@@ -1639,7 +1575,7 @@
 
         function signin() { 
 
-            const username = document.getElementById('signinUsername').value; 
+            const username = document.getElementById('signinUsername').value.trim(); 
 
             const pass = document.getElementById('signinPass').value; 
 
@@ -1659,9 +1595,14 @@
 
   
 
-            if (!users[username] || users[username].pass !== pass) { 
+            if (!users[username]) {
+                showNotification('Username not found!', 'error');
+                return;
+            }
 
-                showNotification('Invalid username or password!', 'error'); 
+            if (users[username].pass !== pass) { 
+
+                showNotification('Invalid password!', 'error'); 
 
                 return; 
 
@@ -1692,8 +1633,6 @@
 
             updateUIAfterLogin(); 
 
-            openTab(null, 'profile'); 
-
         } 
 
   
@@ -1702,13 +1641,15 @@
 
             localStorage.removeItem(SESSION_KEY); 
 
-            showNotification('You have been logged out.', 'success'); 
-
             updateUIAfterLogout(); 
+
+            showNotification('Logged out successfully!', 'success'); 
 
             openTab(null, 'news'); 
 
         } 
+
+  
 
         function logoutAllDevices() {
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
@@ -1718,24 +1659,46 @@
             }
 
             const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-            if (devices[sessionData.username]) {
-                delete devices[sessionData.username];
-                localStorage.setItem('user_devices', JSON.stringify(devices));
-            }
+            delete devices[sessionData.username];
+            localStorage.setItem('user_devices', JSON.stringify(devices));
 
             logout();
             showNotification('Logged out from all devices', 'success');
         }
 
-  
-
         function deleteAccount() { 
 
-            if (confirm('Are you sure? This action cannot be undone!')) { 
+            if (!confirm('Are you sure you want to delete your account? This cannot be undone!')) return; 
 
-                const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
+  
 
-                const users = JSON.parse(localStorage.getItem('users') || '{}'); 
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
+
+            if (!sessionData.username) return; 
+
+  
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}'); 
+
+  
+
+            if (confirm('Type your password to confirm deletion:')) { 
+
+                const password = prompt('Enter your password:'); 
+
+                if (!password) return; 
+
+  
+
+                if (users[sessionData.username].pass !== password) { 
+
+                    showNotification('Incorrect password!', 'error'); 
+
+                    return; 
+
+                } 
+
+  
 
                 delete users[sessionData.username]; 
 
@@ -1766,6 +1729,8 @@
             document.getElementById('tab-settings').style.display = 'block'; 
 
             document.getElementById('tab-people').style.display = 'block'; 
+
+            document.getElementById('logout-btn').style.display = 'block'; 
 
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
@@ -1799,6 +1764,8 @@
 
             document.getElementById('tab-admin').style.display = 'none'; 
 
+            document.getElementById('logout-btn').style.display = 'none'; 
+
         } 
 
   
@@ -1809,19 +1776,31 @@
 
             const users = JSON.parse(localStorage.getItem('users') || '{}'); 
 
+            const user = users[sessionData.username]; 
+
   
 
-            if (sessionData.username && users[sessionData.username]) { 
+            if (user) { 
 
-                const user = users[sessionData.username]; 
-
-                document.getElementById('profileData').innerHTML = ` 
+                document.getElementById('profileContent').innerHTML = ` 
 
                     <div class="user-card"> 
 
                         <div class="user-info"> 
 
-                            <strong>${user.username}</strong> 
+                            <strong>Username</strong> 
+
+                            <small>${user.username}</small> 
+
+                        </div> 
+
+                    </div> 
+
+                    <div class="user-card"> 
+
+                        <div class="user-info"> 
+
+                            <strong>Email</strong> 
 
                             <small>${user.email}</small> 
 
@@ -1990,43 +1969,53 @@
 
   
 
-        function toggleDarkMode() { 
-
-            document.body.classList.toggle('light-mode'); 
-
-            localStorage.setItem('darkMode', document.body.classList.contains('light-mode') ? 'light' : 'dark'); 
-
-        } 
-
-  
-
         // GAMES FUNCTIONS 
 
-        function toggleGameSub(sub) { 
+        function loadGames() { 
 
-            document.getElementById('game-library').style.display = sub === 'lib' ? 'block' : 'none'; 
+            const games = JSON.parse(localStorage.getItem('games') || '[]'); 
 
-            document.getElementById('game-post').style.display = sub === 'post' ? 'block' : 'none'; 
+            let html = ''; 
 
   
 
-            document.getElementById('subtab-lib').classList.toggle('active'); 
+            games.forEach((game, index) => { 
 
-            document.getElementById('subtab-post').classList.toggle('active'); 
+                html += ` 
+
+                    <div class="game-card"> 
+
+                        <strong>${game.title}</strong> 
+
+                        <p style="font-size: 0.9rem; color: #aaa;">By ${game.author}</p> 
+
+                        <p>${game.desc}</p> 
+
+                        <a href="${game.link}" target="_blank" style="color: var(--accent); cursor: pointer;">Download</a> 
+
+                    </div> 
+
+                `; 
+
+            }); 
+
+  
+
+            document.getElementById('gamesList').innerHTML = html || '<p class="empty-state">No games available.</p>'; 
 
         } 
 
   
 
-        function postGame() { 
+        function postGameAdmin() { 
 
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
   
 
-            if (!sessionData.username) { 
+            if (sessionData.username !== 'admin') { 
 
-                showNotification('Please sign in to post!', 'error'); 
+                showNotification('Admin access required!', 'error'); 
 
                 return; 
 
@@ -2098,19 +2087,19 @@
 
                 if (username.toLowerCase().includes(query)) { 
 
+                    const user = users[username]; 
+
                     html += ` 
 
                         <div class="user-card"> 
 
                             <div class="user-info"> 
 
-                                <strong>${users[username].username}</strong> 
+                                <strong>${user.username}</strong> 
 
-                                <small>${users[username].email}</small> 
+                                <small>${user.email}</small> 
 
                             </div> 
-
-                            <button class="follow-btn submit-btn" onclick="followUser('${username}')">Follow</button> 
 
                         </div> 
 
@@ -2128,37 +2117,7 @@
 
   
 
-        function followUser(username) { 
-
-            showNotification(`You followed ${username}!`, 'success'); 
-
-        } 
-
-  
-
         // ADMIN FUNCTIONS 
-
-        function toggleAdminSub(tab) { 
-
-            document.getElementById('admin-games').style.display = tab === 'games' ? 'block' : 'none'; 
-
-            document.getElementById('admin-users').style.display = tab === 'users' ? 'block' : 'none'; 
-
-  
-
-            document.getElementById('admin-subtab-games').classList.toggle('active'); 
-
-            document.getElementById('admin-subtab-users').classList.toggle('active'); 
-
-  
-
-            if (tab === 'games') loadAdminGames(); 
-
-            if (tab === 'users') loadAdminUsers(); 
-
-        } 
-
-  
 
         function loadAdminGames() { 
 
@@ -2176,17 +2135,13 @@
 
                         <button class="admin-del-btn" onclick="deleteGameAdmin(${index})">Delete</button> 
 
-                        <strong>${game.title}</strong><br> 
+                        <strong>${game.title}</strong> 
 
-                        <small>${game.author}</small> 
+                        <p style="font-size: 0.9rem; color: #aaa;">By ${game.author}</p> 
 
-                        <div class="desc-text" id="desc-${index}"> 
+                        <p>${game.desc}</p> 
 
-                            ${game.desc} 
-
-                        </div> 
-
-                        <button class="see-more-btn" onclick="toggleDesc(${index})">See more...</button> 
+                        <a href="${game.link}" target="_blank" style="color: var(--accent); cursor: pointer;">Download</a> 
 
                     </div> 
 
@@ -2272,10 +2227,6 @@
 
                 localStorage.setItem('users', JSON.stringify(users)); 
 
-                const devices = JSON.parse(localStorage.getItem('user_devices') || '{}');
-                delete devices[username];
-                localStorage.setItem('user_devices', JSON.stringify(devices));
-
                 loadAdminUsers(); 
 
                 showNotification('User deleted!', 'success'); 
@@ -2286,21 +2237,46 @@
 
   
 
-        function toggleDesc(index) { 
+        function updateGmail() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            if (!sessionData.username) {
+                showNotification('Please sign in first', 'error');
+                return;
+            }
 
-            const desc = document.getElementById(`desc-${index}`); 
+            const gmail = document.getElementById('gmailInput').value.trim();
+            if (!gmail || !gmail.includes('@gmail.com')) {
+                showNotification('Please enter a valid Gmail address', 'error');
+                return;
+            }
 
-            desc.style.display = desc.style.display === 'none' ? 'block' : 'none'; 
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[sessionData.username]) {
+                users[sessionData.username].gmail = gmail;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                sessionData.gmail = gmail;
+                localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+                
+                showNotification('Gmail updated successfully!', 'success');
+                document.getElementById('gmailInput').value = '';
+                displayGmailStatus();
+            }
+        }
 
-            event.target.textContent = desc.style.display === 'none' ? 'See more...' : 'See less'; 
-
-        } 
-
-  
-
-        // ON PAGE LOAD 
+        function displayGmailStatus() {
+            const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+            const statusDiv = document.getElementById('gmailStatus');
+            if (sessionData.gmail) {
+                statusDiv.innerHTML = `<p style="color: var(--success); font-size: 0.9rem;">✅ Gmail: ${sessionData.gmail}</p>`;
+            } else {
+                statusDiv.innerHTML = `<p style="color: #aaa; font-size: 0.9rem;">❌ No Gmail set</p>`;
+            }
+        }
 
         window.addEventListener('load', () => { 
+
+            loadGames(); 
 
             const sessionData = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); 
 
